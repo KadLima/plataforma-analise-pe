@@ -1,0 +1,1337 @@
+2025-09-16 23:15:42,093 - INFO - [session_1758075338979] - Processando [Profundidade 0]: https://transparencia.pe.gov.br/
+2025-09-16 23:18:41,348 - INFO - [session_1758075518264] - Webdriver do Chrome configurado com sucesso.
+2025-09-16 23:18:41,349 - INFO - [session_1758075518264] - Iniciando varredura com profundidade máxima de 5.
+2025-09-16 23:18:41,349 - INFO - [session_1758075518264] - Processando [Profundidade 0]: https://transparencia.pe.gov.br/
+2025-09-16 23:24:58,076 - INFO - [session_1758075518264] - FASE 1: Mapeando a estrutura do site (links internos)...
+2025-09-16 23:25:00,146 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/responsabilidade-fiscal/relatorios-fiscais/relatorio-de-gestao-fiscal-rgf/
+2025-09-16 23:25:00,148 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/responsabilidade-fiscal/relatorios-fiscais/relatorio-de-gestao-fiscal-rgf/: Message: invalid session id: session deleted as the browser has closed the connection
+from disconnected: not connected to DevTools
+  (Session info: chrome=140.0.7339.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5cada]
+	(No symbol) [0x0x7ff764b48995]
+	(No symbol) [0x0x7ff764b6dbda]
+	(No symbol) [0x0x7ff764be4346]
+	(No symbol) [0x0x7ff764c048c2]
+	(No symbol) [0x0x7ff764bdc8b3]
+	(No symbol) [0x0x7ff764ba5272]
+	(No symbol) [0x0x7ff764ba6043]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	GetHandleVerifier [0x0x7ff764de8ab4+116244]
+	GetHandleVerifier [0x0x7ff764de8c69+116681]
+	GetHandleVerifier [0x0x7ff764dcf048+11176]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:25:04,307 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/gestao-estadual/educacao/fundeb/
+2025-09-16 23:25:04,309 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/gestao-estadual/educacao/fundeb/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:25:08,467 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/despesas/transferencias/fem/
+2025-09-16 23:25:08,469 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/despesas/transferencias/fem/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:25:12,614 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/participacao-cidada-pe/ouvidoria/
+2025-09-16 23:25:12,616 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/participacao-cidada-pe/ouvidoria/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:25:16,775 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/participacao-cidada-pe/acesso-a-informacao/consulta-publica-de-pedidos-de-acesso-a-informacao/
+2025-09-16 23:25:16,777 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/participacao-cidada-pe/acesso-a-informacao/consulta-publica-de-pedidos-de-acesso-a-informacao/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:25:20,923 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/todas-as-consultas-responsabilidade-fiscal/
+2025-09-16 23:25:20,924 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/todas-as-consultas-responsabilidade-fiscal/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:25:25,056 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/responsabilidade-fiscal/demonstracoes-contabeis/
+2025-09-16 23:25:25,058 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/responsabilidade-fiscal/demonstracoes-contabeis/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:25:29,195 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/gestao-estadual/saude/contratacoes-emergenciais-covid-19/
+2025-09-16 23:25:29,197 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/gestao-estadual/saude/contratacoes-emergenciais-covid-19/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:25:33,304 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/despesas/menu-despesas/pagamentos/
+2025-09-16 23:25:33,305 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/despesas/menu-despesas/pagamentos/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:25:37,429 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/participacao-cidada-pe/conselhos/
+2025-09-16 23:25:37,431 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/participacao-cidada-pe/conselhos/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:25:41,543 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/participacao-cidada-pe/acesso-a-informacao/estatistica-dos-pedidos-de-acesso-a-informacao/
+2025-09-16 23:25:41,546 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/participacao-cidada-pe/acesso-a-informacao/estatistica-dos-pedidos-de-acesso-a-informacao/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:25:45,662 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/responsabilidade-fiscal/planejamento-e-orcamento/
+2025-09-16 23:25:45,663 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/responsabilidade-fiscal/planejamento-e-orcamento/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:25:49,824 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/licitacoes-e-contratos/menu-contratos/mapa-de-contratos-dos-orgaos/
+2025-09-16 23:25:49,826 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/licitacoes-e-contratos/menu-contratos/mapa-de-contratos-dos-orgaos/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:25:53,994 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/gestao-estadual/saude/como-obter-medicamentos/
+2025-09-16 23:25:53,996 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/gestao-estadual/saude/como-obter-medicamentos/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:25:58,111 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/receitas/renuncia-de-receita/
+2025-09-16 23:25:58,113 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/receitas/renuncia-de-receita/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:26:02,287 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/glossario/
+2025-09-16 23:26:02,288 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/glossario/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:26:06,421 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/licitacoes-e-contratos/
+2025-09-16 23:26:06,422 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/licitacoes-e-contratos/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:26:10,580 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/mapa-do-site/
+2025-09-16 23:26:10,581 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/mapa-do-site/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:26:14,750 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/gestao-estadual/avaliacoes-de-transparencia/
+2025-09-16 23:26:14,751 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/gestao-estadual/avaliacoes-de-transparencia/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:26:18,905 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/despesas/transferencias/
+2025-09-16 23:26:18,907 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/despesas/transferencias/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:26:23,053 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/participacao-cidada-pe/acesso-a-informacao/legislacao-do-acesso-a-informacao/
+2025-09-16 23:26:23,055 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/participacao-cidada-pe/acesso-a-informacao/legislacao-do-acesso-a-informacao/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:26:27,208 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/todas-as-consultas-participacao-cidada/
+2025-09-16 23:26:27,210 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/todas-as-consultas-participacao-cidada/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:26:31,352 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/recursos-humanos/painel-de-cadastro-dos-servidores/
+2025-09-16 23:26:31,353 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/recursos-humanos/painel-de-cadastro-dos-servidores/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:26:35,495 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/recursos-humanos/estagiarios/
+2025-09-16 23:26:35,497 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/recursos-humanos/estagiarios/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:26:39,649 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/gestao-estadual/patrimonio-publico/doacoes-recebidas/
+2025-09-16 23:26:39,650 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/gestao-estadual/patrimonio-publico/doacoes-recebidas/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:26:43,775 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/gestao-estadual/saude/covid-19/
+2025-09-16 23:26:43,777 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/gestao-estadual/saude/covid-19/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:26:47,884 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/participacao-cidada/formulario-abertura-de-dados/
+2025-09-16 23:26:47,886 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/participacao-cidada/formulario-abertura-de-dados/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:26:51,999 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/participacao-cidada-pe/acesso-a-informacao/protecao-de-dados-pessoais/
+2025-09-16 23:26:52,000 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/participacao-cidada-pe/acesso-a-informacao/protecao-de-dados-pessoais/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:26:56,135 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/responsabilidade-fiscal/prestacao-de-contas/prestacoes-de-contas-dos-orgaos-e-entidades/
+2025-09-16 23:26:56,137 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/responsabilidade-fiscal/prestacao-de-contas/prestacoes-de-contas-dos-orgaos-e-entidades/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:27:00,318 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/gestao-estadual/
+2025-09-16 23:27:00,320 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/gestao-estadual/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:27:04,470 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/recursos-humanos/diarias/
+2025-09-16 23:27:04,471 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/recursos-humanos/diarias/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:27:08,587 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/recursos-humanos/concursos/
+2025-09-16 23:27:08,589 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/recursos-humanos/concursos/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:27:12,747 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/gestao-estadual/saude/remuneracoes-covid/
+2025-09-16 23:27:12,748 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/gestao-estadual/saude/remuneracoes-covid/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:27:16,894 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/ouvidoria/
+2025-09-16 23:27:16,896 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/ouvidoria/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:27:21,030 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/responsabilidade-fiscal/planejamento-e-orcamento/plano-plurianual-ppa/
+2025-09-16 23:27:21,031 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/responsabilidade-fiscal/planejamento-e-orcamento/plano-plurianual-ppa/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:27:25,158 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/receitas/beneficios-fiscais/
+2025-09-16 23:27:25,160 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/receitas/beneficios-fiscais/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:27:29,295 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/gestao-estadual/patrimonio-publico/
+2025-09-16 23:27:29,297 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/gestao-estadual/patrimonio-publico/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:27:33,448 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/despesas/transferencias/transferencias-a-municipios/
+2025-09-16 23:27:33,449 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/despesas/transferencias/transferencias-a-municipios/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:27:37,605 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/gestao-estadual/fiscalizacao-e-controle/fundos-estaduais-receitas-e-despesas/
+2025-09-16 23:27:37,606 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/gestao-estadual/fiscalizacao-e-controle/fundos-estaduais-receitas-e-despesas/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:27:41,781 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/gestao-estadual/saude/despesas-covid-19-por-item-de-material/
+2025-09-16 23:27:41,783 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/gestao-estadual/saude/despesas-covid-19-por-item-de-material/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:27:45,921 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/todas-as-consultas-despesas/
+2025-09-16 23:27:45,922 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/todas-as-consultas-despesas/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:27:50,099 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/acesso-a-informacao/
+2025-09-16 23:27:50,100 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/acesso-a-informacao/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:27:54,247 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/participacao-cidada-pe/acesso-a-informacao/servico-de-informacoes-ao-cidadao-sic/
+2025-09-16 23:27:54,249 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/participacao-cidada-pe/acesso-a-informacao/servico-de-informacoes-ao-cidadao-sic/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:27:58,397 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/faq/
+2025-09-16 23:27:58,399 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/faq/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:28:02,557 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/recursos-humanos/mapa-de-diarias/
+2025-09-16 23:28:02,558 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/recursos-humanos/mapa-de-diarias/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:28:06,708 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/responsabilidade-fiscal/prestacao-de-contas/
+2025-09-16 23:28:06,709 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/responsabilidade-fiscal/prestacao-de-contas/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:28:10,833 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/responsabilidade-fiscal/relatorios-fiscais/
+2025-09-16 23:28:10,835 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/responsabilidade-fiscal/relatorios-fiscais/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:28:14,976 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/gestao-estadual/institucional/organograma/
+2025-09-16 23:28:14,977 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/gestao-estadual/institucional/organograma/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:28:19,129 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/gestao-estadual/institucional/atos-normativos-proprios/
+2025-09-16 23:28:19,131 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/gestao-estadual/institucional/atos-normativos-proprios/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:28:23,245 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/licitacoes-e-contratos/menu-contratos/painel-de-contratos/
+2025-09-16 23:28:23,247 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/licitacoes-e-contratos/menu-contratos/painel-de-contratos/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:28:27,391 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/responsabilidade-fiscal/relatorios-fiscais/relatorio-resumido-de-execucao-orcamentaria-rreo/
+2025-09-16 23:28:27,392 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/responsabilidade-fiscal/relatorios-fiscais/relatorio-resumido-de-execucao-orcamentaria-rreo/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:28:31,521 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/responsabilidade-fiscal/demonstracoes-contabeis/balancos-gerais-do-estado/
+2025-09-16 23:28:31,523 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/responsabilidade-fiscal/demonstracoes-contabeis/balancos-gerais-do-estado/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:28:35,673 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/institucional/
+2025-09-16 23:28:35,675 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/institucional/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:28:39,785 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/licitacoes-e-contratos/menu-contratos/show-e-eventos/
+2025-09-16 23:28:39,787 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/licitacoes-e-contratos/menu-contratos/show-e-eventos/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:28:43,904 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/despesas/menu-despesas/
+2025-09-16 23:28:43,905 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/despesas/menu-despesas/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:28:48,046 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/despesas/
+2025-09-16 23:28:48,048 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/despesas/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:28:52,210 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/gestao-estadual/educacao/percentual-25-da-educacao-lrf/
+2025-09-16 23:28:52,211 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/gestao-estadual/educacao/percentual-25-da-educacao-lrf/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:28:56,356 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/participacao-cidada-pe/acesso-a-informacao/decisoes-vinculantes-do-comite-de-acesso-a-informacao/
+2025-09-16 23:28:56,358 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/participacao-cidada-pe/acesso-a-informacao/decisoes-vinculantes-do-comite-de-acesso-a-informacao/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:29:00,475 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/gestao-estadual/saude/painel-de-estoque-de-medicamentos-das-farmacias/
+2025-09-16 23:29:00,477 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/gestao-estadual/saude/painel-de-estoque-de-medicamentos-das-farmacias/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:29:04,639 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/o-portal/
+2025-09-16 23:29:04,641 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/o-portal/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-16 23:29:08,789 - INFO - [session_1758075518264] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/participacao-cidada-pe/audiencias-publicas/
+2025-09-16 23:29:08,791 - ERROR - [session_1758075518264] - Não foi possível carregar a página https://transparencia.pe.gov.br/participacao-cidada-pe/audiencias-publicas/: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	GetHandleVerifier [0x0x7ff764ddfc95+79861]
+	GetHandleVerifier [0x0x7ff764ddfcf0+79952]
+	(No symbol) [0x0x7ff764b5c8fc]
+	(No symbol) [0x0x7ff764ba438d]
+	(No symbol) [0x0x7ff764bdc9a2]
+	(No symbol) [0x0x7ff764bd7374]
+	(No symbol) [0x0x7ff764bd642a]
+	(No symbol) [0x0x7ff764b27075]
+	GetHandleVerifier [0x0x7ff76509b9cd+2946349]
+	GetHandleVerifier [0x0x7ff765095c4a+2922410]
+	GetHandleVerifier [0x0x7ff7650b59d7+3052855]
+	GetHandleVerifier [0x0x7ff764dfaa7e+189918]
+	GetHandleVerifier [0x0x7ff764e02a1f+222591]
+	(No symbol) [0x0x7ff764b2602c]
+	GetHandleVerifier [0x0x7ff7651ce3f8+4202328]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-17 08:52:41,616 - INFO - [session_1758109953040] - Webdriver do Chrome configurado com sucesso.
+2025-09-17 08:52:41,617 - INFO - [session_1758109953040] - Iniciando varredura com profundidade máxima de 5.
+2025-09-17 08:52:43,680 - INFO - [session_1758109953040] - Processando [Profundidade 0]: https://transparencia.pe.gov.br/
+2025-09-17 09:00:30,943 - INFO - [session_1758109953040] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/recursos-humanos/concursos/
+2025-09-17 09:01:03,717 - INFO - [session_1758109953040] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/responsabilidade-fiscal/
+2025-09-17 09:01:27,477 - INFO - [session_1758109953040] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/gestao-estadual/educacao/percentual-25-da-educacao-lrf/
+2025-09-17 09:02:19,896 - INFO - [session_1758109953040] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/participacao-cidada-pe/acesso-a-informacao/protecao-de-dados-pessoais/
+2025-09-17 09:11:02,341 - INFO - [session_1758109953040] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/receitas/renuncia-de-receita/
+2025-09-17 09:11:51,821 - INFO - [session_1758109953040] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/responsabilidade-fiscal/planejamento-e-orcamento/lei-de-diretrizes-orcamentarias-ldo/
+2025-09-17 09:12:11,297 - INFO - [session_1758109953040] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/responsabilidade-fiscal/prestacao-de-contas/
+2025-09-17 09:12:39,597 - INFO - [session_1758109953040] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/participacao-cidada-pe/acesso-a-informacao/decisoes-vinculantes-do-comite-de-acesso-a-informacao/
+2025-09-17 09:13:06,747 - INFO - [session_1758109953040] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/despesas/transferencia/
+2025-09-17 09:13:35,731 - INFO - [session_1758109953040] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/acesso-a-informacao/
+2025-09-17 09:14:04,884 - INFO - [session_1758109953040] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/despesas/obras/painel-de-obras/
+2025-09-17 09:14:49,913 - ERROR - [session_1758109953040] - Não foi possível carregar a página https://transparencia.pe.gov.br/despesas/obras/painel-de-obras/: Message: timeout: Timed out receiving message from renderer: 40.963
+  (Session info: chrome=140.0.7339.128)
+Stacktrace:
+	GetHandleVerifier [0x0x7ff79f27fc95+79861]
+	GetHandleVerifier [0x0x7ff79f27fcf0+79952]
+	(No symbol) [0x0x7ff79effcada]
+	(No symbol) [0x0x7ff79efea07d]
+	(No symbol) [0x0x7ff79efe9d6b]
+	(No symbol) [0x0x7ff79efe78dc]
+	(No symbol) [0x0x7ff79efe835b]
+	(No symbol) [0x0x7ff79eff725e]
+	(No symbol) [0x0x7ff79f00d5c1]
+	(No symbol) [0x0x7ff79f01485a]
+	(No symbol) [0x0x7ff79efe8b0e]
+	(No symbol) [0x0x7ff79f00d2f6]
+	(No symbol) [0x0x7ff79f0a52f7]
+	(No symbol) [0x0x7ff79f07c8b3]
+	(No symbol) [0x0x7ff79f045272]
+	(No symbol) [0x0x7ff79f046043]
+	GetHandleVerifier [0x0x7ff79f53b9cd+2946349]
+	GetHandleVerifier [0x0x7ff79f535c4a+2922410]
+	GetHandleVerifier [0x0x7ff79f5559d7+3052855]
+	GetHandleVerifier [0x0x7ff79f29aa7e+189918]
+	GetHandleVerifier [0x0x7ff79f2a2a1f+222591]
+	GetHandleVerifier [0x0x7ff79f288ab4+116244]
+	GetHandleVerifier [0x0x7ff79f288c69+116681]
+	GetHandleVerifier [0x0x7ff79f26f048+11176]
+	BaseThreadInitThunk [0x0x7ffdab52e8d7+23]
+	RtlUserThreadStart [0x0x7ffdad068d9c+44]
+
+2025-09-17 09:14:54,054 - INFO - [session_1758109953040] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/despesas/transferencias/acordos-sem-transferencia-de-recursos/
+2025-09-17 09:15:22,032 - INFO - [session_1758109953040] - Processando [Profundidade 1]: https://transparencia.pe.gov.br/acessibilidade/

@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Debug AutomateCode",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/AutomateCode.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}", // Define o diretório de trabalho como a pasta do projeto
+            "env": {},
+            "justMyCode": true
+        }
+    ]
+}

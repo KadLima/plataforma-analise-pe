@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner de Links - Análise PE</title>
+
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+
+    <style>
+      
+        :root {
+            --azul-gov-principal: #002776;
+            --amarelo-gov-detalhe: #FFD700;
+            --vermelho-destaque: #FF0000;
+            --verde-destaque: #006400;
+            --cinza-texto: #333333;
+            --cinza-fundo: #f4f4f4;
+            --branco: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--cinza-fundo);
+            color: var(--cinza-texto);
+            line-height: 1.6;
+        }
+        
+        main {
+            padding: 40px 5%; 
+        }
+
+        .main-header {
+            background-color: var(--branco);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 0 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .main-nav {
+          max-width: 1200px; 
+          margin: 0 auto;    
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          height: 70px;
+        }
+        .logo a {
+          text-decoration: none;
+          display: flex; 
+          align-items: center;
+          gap: 12px; 
+        }
+        .logo img {
+          height: 45px; 
+          filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 1.2));
+        }
+        .logo .site-title {
+          color: var(--azul-gov-principal);
+          font-size: 1.2em;
+          font-weight: bold;
+          line-height: 1.2;
+        }
+        .logo .site-subtitle {
+          color: var(--cinza-texto);
+          font-size: 0.8em;
+          display: block; 
+        }
+        .main-nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 20px;
+        }
+        .main-nav a {
+            text-decoration: none;
+            color: var(--cinza-texto);
+            font-weight: 600;
+            padding: 10px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .main-nav a:hover, .main-nav a.active {
+            color: var(--azul-gov-principal);
+            border-bottom-color: var(--amarelo-gov-detalhe);
+        }
+
+        .container { max-width:1200px; margin:0 auto; background:var(--branco); padding:30px; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.1); }
+        .input-section { display:flex; gap:15px; margin-bottom:30px; align-items:center; flex-wrap:wrap; }
+        .url-input { flex:1; padding:15px; border:2px solid #ddd; border-radius:6px; font-size:16px; min-width:300px; }
+        .btn { position: relative; overflow: visible; padding:15px 25px; background-color:var(--azul-gov-principal); color:white; border:none; border-radius:6px; cursor:pointer; font-size:16px; font-weight:bold; transition: background-color .3s; white-space:nowrap; }
+        .btn:hover { background-color:#001a4d; }
+        .btn-secondary { background-color:var(--verde-destaque); }
+        .btn-secondary:hover { background-color:#004d00; }
+        .btn-danger { background-color:var(--vermelho-destaque); }
+        .btn-danger:hover { background-color:#cc0000; }
+        .btn:disabled { background-color:#ccc; cursor:not-allowed; }
+        .stats-container { background:var(--cinza-fundo); padding:20px; border-radius:6px; margin-bottom:30px; }
+        .stats { display:flex; flex-wrap: wrap; gap:15px; margin-bottom:20px; }
+        .stat-card {flex: 1; min-width: 180px; background: var(--branco);padding: 15px;border-radius: 6px;text-align: center;box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
+        .stat-number { font-size:2em; font-weight:bold; color:var(--azul-gov-principal); }
+        .results { margin-top:30px; }
+        .tab-buttons { display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; }
+        .tab-btn { padding:10px 20px; background-color:#ddd; border:none; border-radius:4px; cursor:pointer; white-space:nowrap; }
+        .tab-btn.active { background-color:var(--azul-gov-principal); color:white; }
+        .tab-content { display:none; }
+        .tab-content.active { display:block; }
+        .link-list { max-height:500px; overflow-y:auto; border:1px solid #ddd; border-radius:6px; padding:10px;}
+        .link-item { padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+        .link-left { flex:1; min-width: 200px; word-break: break-all; }
+        .link-meta { font-size:12px; color:#666; margin-top:6px; }
+        .status-badge { padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold; flex-shrink: 0; }
+        .status-funcionando { background-color:#e6f7e6; color:#006400; }
+        .status-erro, .status-inacessível { background-color:#ffe6e6; color:#ff0000; }
+        .log-item { padding:5px; border-bottom:1px solid #eee; font-family:monospace; font-size:12px; }
+        .log-info { color:#0066cc; } .log-success { color:#006400; } .log-error { color:#cc0000; }
+        .history-container { margin-top: 40px; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background-color: #e9eef5; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; margin-bottom: 0; }
+        .history-header h3 { margin: 0; font-size: 1.1em; }
+        #historyToggleIcon { font-size: 0.8em; transition: transform 0.3s; }
+        .history-header.open #historyToggleIcon { transform: rotate(90deg); }
+        .session-list-container { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; border: 1px solid #ddd; border-top: none; border-radius: 0 0 6px 6px; }
+        .session-list-container.open { max-height: 250px; padding-top: 10px; }
+        .session-list { max-height: 200px; overflow-y: auto; border-radius: 6px; padding: 10px; background: #fafafa; }
+        .session-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; transition: background-color .2s; }
+        .session-item:hover .session-info { color: var(--azul-gov-principal); }
+        .session-info { font-size: 14px; cursor: pointer; flex-grow: 1; }
+        .session-status { font-size: 12px; font-weight: bold; text-transform: capitalize; padding: 4px 8px; border-radius: 4px; }
+        .status-finalizado { background-color: #e6f7e6; color: #006400; }
+        .status-iniciado { background-color: #e6f2ff; color: #0052cc; }
+        .status-erro { background-color: #ffe6e6; color: #ff0000; }
+        .status-interrompido { background-color: #fff0e6; color: #d95300; }
+        .session-delete-btn { padding: 5px 8px; border-radius: 4px; font-size: 1.2em; background-color: transparent; border: none; cursor: pointer; margin-left: 15px; }
+        .session-delete-btn:hover { background-color: #ffdddd; color: var(--vermelho-destaque); }
+        .input-wrapper { position: relative; display: inline-flex; align-items: center; flex-shrink: 0; }
+        .ajuda { margin-left: 8px; cursor: help; background-color: #8a9db8; color: white; width: 18px; height: 18px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; }
+        .export-container { position: relative; display: inline-block; }
+        .export-options { display: none; position: absolute; background-color: #f1f1f1; min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; border-radius: 6px; overflow: hidden; }
+        .export-options.show { display: block; }
+        .export-option { color: black; padding: 12px 16px; text-decoration: none; display: block; cursor: pointer; }
+        .export-option:hover { background-color: #ddd; }
+
+        
+      .main-footer {
+          text-align: center;
+          padding: 20px;
+          margin-top: 40px;
+          background-color: var(--branco);
+          font-size: 0.9em;
+          position: relative; 
+          height: 60px; 
+      }
+      .main-footer .footer-content {
+        display: flex;
+        justify-content: center; 
+        align-items: center;
+        height: 100%;
+      }
+      .main-footer img {
+        height: 110px; 
+        width: auto; 
+        position: absolute; 
+        right: 5%; 
+        top: 50%; 
+        transform: translateY(-50%); 
+      }
+
+     
+      .main-footer p a {
+        color: var(--cinza-texto);
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .main-footer p a:hover {
+        text-decoration: underline;
+        color: var(--azul-gov-principal);
+      }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <nav class="main-nav">
+            <div class="logo">
+                <a href="/">
+                    <img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco">
+                    <div>
+                        <span class="site-title">Análise de Sites</span>
+                        <span class="site-subtitle">Portal da Transparência</span>
+                    </div>
+                </a>
+            </div>
+            <ul>
+                <li><a href="/">Início</a></li>
+                <li><a href="/scanner" class="active">Scanner de Links</a></li>
+                <li><a href="/formulario">Autoavaliação</a></li> </ul>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="input-section">
+                <input type="url" id="urlInput" class="url-input" placeholder="Digite a URL do site (ex: https://exemplo.com)" />
+                <div class="input-wrapper">
+                  <input type="number" id="depthInput" value="5" min="0" title="Profundidade Máxima" style="padding: 15px; width: 80px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px;">
+                  <span class="ajuda" data-tippy-content="Define a profundidade da varredura. Nível 0 é a página inicial, nível 1 são os links nela, e assim por diante.">?</span>
+                </div>
+                <button id="startBtn" class="btn">Iniciar Varredura</button>
+                <div data-tippy-content="Interrompe a varredura atual. O progresso feito até o momento será salvo.">
+                  <button id="stopBtn" class="btn btn-danger" disabled>Parar Varredura</button>
+                </div>
+                <div class="export-container" data-tippy-content="Baixa um arquivo com todos os links da sessão exibida no formato selecionado.">
+                  <button id="exportBtn" class="btn btn-secondary" disabled>Exportar Relatório</button>
+                  <div id="exportOptionsMenu" class="export-options">
+                    <div class="export-option" data-format="xlsx">Excel (.xlsx)</div>
+                    <div class="export-option" data-format="csv">CSV</div>
+                    <div class="export-option" data-format="json">JSON</div>
+                  </div>
+                </div>
+            </div>
+
+            <div class="stats-container">
+                <h3>Status da Verificação</h3>
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalLinks">0</div>
+                        <div>Links Encontrados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="brokenLinks">0</div>
+                        <div>Links com Problemas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="pendingLinks">0</div>
+                        <div>Links a Verificar</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="timeElapsed">0s</div>
+                        <div>Tempo Decorrido</div>
+                    </div>
+                </div>
+                <div id="progressText">Aguardando início...</div>
+            </div>
+
+            <div class="results">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="broken">Links com Problemas <span id="brokenLinksCount"></span></button>
+                    <button class="tab-btn" data-tab="all">Todos os Links <span id="allLinksCount"></span></button>
+                    <button class="tab-btn" data-tab="logs">Logs de Execução</button>
+                </div>
+                <div class="tab-content active" id="brokenTab">
+                    <div class="link-list" id="brokenLinksList"></div>
+                </div>
+                <div class="tab-content" id="allTab">
+                    <div class="link-list" id="allLinksList"></div>
+                </div>
+                <div class="tab-content" id="logsTab">
+                    <div class="link-list" id="logsList"></div>
+                </div>
+            </div>
+            
+            <div class="history-container">
+                <div class="history-header" id="historyHeader">
+                    <h3>Histórico de Varreduras</h3>
+                    <span id="historyToggleIcon">▶</span>
+                </div>
+                <div class="session-list-container" id="sessionListContainer">
+                    <div class="session-list" id="sessionHistoryList"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. | <a href="/admin">Área Administrativa</a></p>
+        </div>
+    </footer>
+
+   <script>
+  
+    const urlInput = document.getElementById('urlInput');
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const exportOptionsMenu = document.getElementById('exportOptionsMenu');
+    const totalLinksSpan = document.getElementById('totalLinks');
+    const brokenLinksSpan = document.getElementById('brokenLinks');
+    const pendingLinksSpan = document.getElementById('pendingLinks');
+    const timeElapsedSpan = document.getElementById('timeElapsed');
+    const progressText = document.getElementById('progressText');
+    const brokenLinksList = document.getElementById('brokenLinksList');
+    const allLinksList = document.getElementById('allLinksList');
+    const logsList = document.getElementById('logsList');
+    const sessionHistoryList = document.getElementById('sessionHistoryList');
+
+  
+    let elapsedInterval;
+    let monitoringInterval;
+    let currentSessionId = null;
+    let isScanActive = false;
+    let displayedSessionId = null;
+    let scanStartTime;
+
+    
+    function formatDuration(seconds) {
+      const s = Math.floor(seconds % 60);
+      const m = Math.floor((seconds / 60) % 60);
+      const h = Math.floor(seconds / 3600);
+      if (h > 0) return `${h}h ${m}m ${s}s`;
+      if (m > 0) return `${m}m ${s}s`;
+      return `${s}s`;
+    }
+
+    function addLog(message, type = 'info') {
+      const logItem = document.createElement('div');
+      logItem.className = `log-item log-${type}`;
+      logItem.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      logsList.prepend(logItem);
+    }
+
+    function resetUI() {
+      totalLinksSpan.textContent = '0';
+      brokenLinksSpan.textContent = '0';
+      pendingLinksSpan.textContent = '0';
+      timeElapsedSpan.textContent = '0s';
+      brokenLinksList.innerHTML = '';
+      allLinksList.innerHTML = '';
+      document.getElementById('brokenLinksCount').textContent = '';
+      document.getElementById('allLinksCount').textContent = '';
+      progressText.textContent = 'Aguardando início...';
+      startBtn.disabled = false;
+      stopBtn.disabled = true;
+      exportBtn.disabled = true;
+      clearInterval(elapsedInterval);
+      clearInterval(monitoringInterval);
+    }
+    
+
+    async function loadSessionHistory() {
+        try {
+            const [activeResponse, dbResponse] = await Promise.all([
+                fetch('http://localhost:3000/active-sessions'),
+                fetch('http://localhost:3000/sessions')
+            ]);
+            if (!dbResponse.ok) throw new Error('Falha ao buscar histórico do banco.');
+            const activeSessions = activeResponse.ok ? await activeResponse.json() : [];
+            const dbSessions = await dbResponse.json();
+
+            const formattedActiveSessions = activeSessions.map(s => ({
+                id: s.sessionId, url_base: s.url, status: 'iniciado', createdAt: s.startTime, is_active: true
+            }));
+
+            const allSessions = [
+                ...formattedActiveSessions,
+                ...dbSessions.filter(dbSession => !formattedActiveSessions.some(active => active.id === dbSession.id))
+            ];
+
+            sessionHistoryList.innerHTML = '';
+            if (allSessions.length === 0) {
+                sessionHistoryList.innerHTML = '<p style="text-align:center; color:#888;">Nenhuma varredura encontrada.</p>';
+                return;
+            }
+
+            allSessions.forEach(session => {
+                const item = document.createElement('div');
+                item.className = 'session-item';
+                item.setAttribute('data-session-id', session.id);
+                item.innerHTML = `
+                    <div class="session-info">
+                      <strong>${session.url_base}</strong><br>
+                      <small>${new Date(session.createdAt).toLocaleString('pt-BR')}</small>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                      <span class="session-status status-${session.status}">${session.is_active ? 'Em Andamento' : session.status}</span>
+                      ${!session.is_active ? '<button class="session-delete-btn" title="Apagar esta sessão">🗑️</button>' : ''}
+                    </div>
+                `;
+                item.querySelector('.session-info').addEventListener('click', () => displaySessionResults(session.id));
+                
+                if (!session.is_active) {
+                    item.querySelector('.session-delete-btn').addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        deleteSession(session.id, session.url_base);
+                    });
+                }
+                sessionHistoryList.appendChild(item);
+            });
+        } catch (error) {
+            console.error('Erro ao carregar histórico:', error);
+            addLog(error.message, 'error');
+        }
+    }
+
+    async function deleteSession(sessionId, urlBase) {
+      if (!confirm(`Tem certeza que deseja apagar permanentemente a varredura para:\n${urlBase}?`)) {
+        return;
+      }
+      
+      try {
+        addLog(`Apagando sessão ${sessionId}...`, 'info');
+        const response = await fetch(`http://localhost:3000/sessions/${sessionId}`, {
+          method: 'DELETE'
+        });
+        if (!response.ok) throw new Error('Falha ao apagar a sessão no servidor.');
+        addLog(`Sessão ${sessionId} apagada com sucesso.`, 'success');
+        await loadSessionHistory();
+        if (displayedSessionId === sessionId) {
+          resetUI();
+          addLog('UI reiniciada pois a sessão exibida foi apagada.', 'info');
+        }
+      } catch (error) {
+        console.error('Erro ao apagar sessão:', error);
+        addLog(error.message, 'error');
+      }
+    }
+
+    async function displaySessionResults(sessionId) {
+      displayedSessionId = sessionId;
+      if (!sessionId) return;
+      
+      
+      if (isScanActive && sessionId === currentSessionId) {
+          resetUI(false); 
+          startMonitoring(sessionId);
+          return;
+      }
+
+      resetUI();
+      progressText.textContent = `Carregando resultados para a sessão ${sessionId.substring(0, 8)}...`;
+      addLog(`Carregando resultados da sessão ${sessionId}`, 'info');
+
+      try {
+          const sessionResponse = await fetch(`http://localhost:3000/scan-sessions/${sessionId}`);
+          if (!sessionResponse.ok) throw new Error('Falha ao buscar detalhes da sessão');
+          const session = await sessionResponse.json();
+
+          
+          if (session.status !== 'iniciado') {
+              const startTime = new Date(session.createdAt);
+              const endTime = new Date(session.updatedAt);
+              const durationInSeconds = Math.floor((endTime - startTime) / 1000);
+              timeElapsedSpan.textContent = formatDuration(durationInSeconds);
+          }
+          depthReachedSpan.textContent = session.depthReached || 0;
+          
+          const linksResponse = await fetch(`http://localhost:3000/links?session_id=${sessionId}`);
+          if (!linksResponse.ok) throw new Error('Falha ao buscar os links da sessão');
+          const links = await linksResponse.json();
+          
+          const brokenLinks = links.filter(link => link.status && (link.status.toLowerCase().includes('erro') || link.status.toLowerCase().includes('inacessível')));
+          allLinksList.innerHTML = links.map(link => renderLinkItem(link)).join('');
+          brokenLinksList.innerHTML = brokenLinks.map(link => renderLinkItem(link)).join('');
+          totalLinksSpan.textContent = links.length;
+          brokenLinksSpan.textContent = brokenLinks.length;
+          pendingLinksSpan.textContent = links.filter(l => l.status === 'Na fila').length;
+          document.getElementById('allLinksCount').textContent = `(${links.length})`;
+          document.getElementById('brokenLinksCount').textContent = `(${brokenLinks.length})`;
+          progressText.textContent = `Exibindo ${links.length} links da sessão selecionada.`;
+          exportBtn.disabled = links.length === 0;
+
+      } catch (error) {
+          console.error('Erro ao exibir resultados da sessão:', error);
+          addLog(error.message, 'error');
+          progressText.textContent = 'Erro ao carregar resultados.';
+      }
+    }
+
+    function renderLinkItem(link) {
+      const isBroken = link.status && (link.status.toLowerCase().includes('erro') || link.status.toLowerCase().includes('inacessível'));
+      const statusClass = isBroken ? 'status-erro' : 'status-funcionando';
+      
+      let finalStatus = link.status || 'Não verificado';
+      if (link.httpCode && !finalStatus.toLowerCase().includes('erro')) {
+        finalStatus += ` [${link.httpCode}]`;
+      }
+      return `
+        <div class="link-item">
+          <div class="link-left">
+            <a href="${link.url}" target="_blank">${link.url}</a>
+            <div class="link-meta"><strong>Origem:</strong> ${link.origem}</div>
+            ${link.finalUrl && link.finalUrl !== link.url ? `<div class="link-meta"><strong>Redirecionado para:</strong> ${link.finalUrl}</div>` : ''}
+          </div>
+          <span class="status-badge ${statusClass}">${finalStatus}</span>
+        </div>`;
+    }
+
+    function startMonitoring(sessionId) {
+      addLog(`Monitoramento da sessão ${sessionId} ativado.`, 'info');
+      
+      
+      clearInterval(monitoringInterval);
+      
+      monitoringInterval = setInterval(async () => {
+          if (!currentSessionId) {
+              clearInterval(monitoringInterval);
+              return;
+          }
+          try {
+              const linksResponse = await fetch(`http://localhost:3000/links?session_id=${sessionId}`);
+              const links = await linksResponse.json();
+              
+              const broken = links.filter(link => link.status && (link.status.toLowerCase().includes('erro') || link.status.toLowerCase().includes('inacessível')));
+              allLinksList.innerHTML = links.map(link => renderLinkItem(link)).join('');
+              brokenLinksList.innerHTML = broken.map(link => renderLinkItem(link)).join('');
+
+              totalLinksSpan.textContent = links.length;
+              brokenLinksSpan.textContent = broken.length;
+              pendingLinksSpan.textContent = links.filter(l => l.status === 'Na fila').length;
+              document.getElementById('allLinksCount').textContent = `(${links.length})`;
+              document.getElementById('brokenLinksCount').textContent = `(${broken.length})`;
+              
+              const sessionResponse = await fetch(`http://localhost:3000/scan-sessions/${sessionId}`);
+              const session = await sessionResponse.json();
+              
+              progressText.textContent = `Analisando... ${links.length} links encontrados. Status: ${session.status}`;
+              depthReachedSpan.textContent = session.depthReached || 0;
+
+              if (session.status === 'finalizado' || session.status === 'erro' || session.status === 'interrompido') {
+                  clearInterval(monitoringInterval);
+                  clearInterval(elapsedInterval);
+                  isScanActive = false;
+                  progressText.textContent = `Varredura concluída! Status: ${session.status}.`;
+                  addLog(`Varredura finalizada com status: ${session.status}`, session.status === 'finalizado' ? 'success' : 'error');
+                  if (session.depthReached !== null) {
+                      addLog(`Profundidade máxima atingida: ${session.depthReached}`, 'info');
+                  }
+                  if (session.status === 'erro' && session.errorMessage) {
+                      addLog(`ERRO CRÍTICO: ${session.errorMessage}`, 'error');
+                  }
+                  stopBtn.disabled = true;
+                  startBtn.disabled = false;
+                  exportBtn.disabled = links.length === 0;
+                  currentSessionId = null;
+                  await loadSessionHistory();
+              }
+
+          } catch (error) {
+              addLog(`Erro no monitoramento: ${error.message}`, 'error');
+          }
+      }, 3000);
+    }
+
+    async function startVerification() {
+      const url = urlInput.value.trim();
+      const depth = document.getElementById('depthInput').value;
+      if (!url) { alert('Por favor, digite uma URL válida!'); return; }
+      
+      resetUI();
+      isScanActive = true;
+      scanStartTime = Date.now();
+      elapsedInterval = setInterval(() => {
+          const seconds = Math.floor((Date.now() - scanStartTime) / 1000);
+          timeElapsedSpan.textContent = formatDuration(seconds);
+      }, 1000);
+
+      addLog(`Iniciando varredura em ${url}`, 'info');
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+      
+      try {
+          const crawlResponse = await fetch('http://localhost:3000/start-crawl', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ url, depth })
+          });
+          if (!crawlResponse.ok) throw new Error('Erro ao iniciar a varredura no servidor');
+          
+          const result = await crawlResponse.json();
+          currentSessionId = result.sessionId;
+          displayedSessionId = currentSessionId;
+          
+          await loadSessionHistory(); 
+          startMonitoring(currentSessionId); 
+
+      } catch (error) {
+          addLog(`Erro crítico ao iniciar: ${error.message}`, 'error');
+          resetUI();
+          isScanActive = false;
+      }
+    }
+    
+     async function stopVerification() {
+        if (!currentSessionId) return;
+        addLog('Enviando solicitação para parar...', 'info');
+        try {
+          const response = await fetch(`http://localhost:3000/stop-crawl/${currentSessionId}`, { method: 'POST' });
+          if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.message || 'Erro desconhecido');
+          }
+          
+          addLog('Varredura interrompida pelo usuário.', 'success');
+          isScanActive = false;
+          clearInterval(elapsedInterval); 
+          progressText.textContent = 'Varredura interrompida!';
+          stopBtn.disabled = true;
+          startBtn.disabled = false;
+          await loadSessionHistory(); 
+          
+
+        } catch (error) {
+          addLog(`Falha ao parar a varredura: ${error.message}`, 'error');
+        }
+      }
+
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      resetUI();
+      loadSessionHistory();
+      addLog('Dashboard pronto.', 'success');
+    });
+
+    
+    startBtn.addEventListener('click', startVerification);
+    stopBtn.addEventListener('click', stopVerification);
+    document.querySelectorAll('.tab-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelector('.tab-btn.active').classList.remove('active');
+        document.querySelector('.tab-content.active').classList.remove('active');
+        button.classList.add('active');
+        document.getElementById(button.dataset.tab + 'Tab').classList.add('active');
+      });
+    });
+
+
+exportBtn.addEventListener('click', (event) => {
+  event.stopPropagation(); 
+  exportOptionsMenu.classList.toggle('show');
+});
+    
+    const historyHeader = document.getElementById('historyHeader');
+    const sessionListContainer = document.getElementById('sessionListContainer');
+    historyHeader.addEventListener('click', () => {
+      historyHeader.classList.toggle('open');
+      sessionListContainer.classList.toggle('open');
+    });
+
+
+document.querySelectorAll('.export-option').forEach(option => {
+  option.addEventListener('click', () => {
+    if (!displayedSessionId) {
+      alert('Nenhuma sessão selecionada para exportar!');
+      return;
+    }
+    const format = option.getAttribute('data-format');
+    addLog(`Gerando relatório no formato ${format.toUpperCase()}...`, 'info');
+    window.open(`http://localhost:3000/export/${format}/${displayedSessionId}`, '_blank');
+    exportOptionsMenu.classList.remove('show'); 
+  });
+});
+
+
+window.addEventListener('click', (event) => {
+  if (exportOptionsMenu.classList.contains('show') && !exportOptionsMenu.contains(event.target)) {
+      if(!exportBtn.contains(event.target)) {
+          exportOptionsMenu.classList.remove('show');
+      }
+  }
+});
+
+tippy('[data-tippy-content]', {
+  delay: [500, 0], 
+  placement: 'top', 
+});
+
+
+window.addEventListener('beforeunload', (event) => {
+  if (isScanActive) {
+    event.preventDefault();
+    event.returnValue = '';
+  }
+});
+
+</script>
+</body>
+</html>

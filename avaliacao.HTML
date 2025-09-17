@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Avaliação - Análise PE</title>
+    <style>
+        :root {
+            --azul-gov-principal: #002776;
+            --amarelo-gov-detalhe: #FFD700;
+            --cinza-texto: #333333;
+            --cinza-fundo: #f4f4f4;
+            --branco: #ffffff;
+            --verde-sucesso: #28a745;
+            --vermelho-erro: #dc3545;
+            --cinza-borda: #ddd;
+        }
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--cinza-fundo); color: var(--cinza-texto); line-height: 1.6; }
+        .main-header { background-color: var(--branco); box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 0 5%; position: sticky; top: 0; z-index: 1000; }
+        .main-nav { display: flex; justify-content: space-between; align-items: center; height: 70px; max-width: 1200px; margin: 0 auto; }
+        .logo a { text-decoration: none; display: flex; align-items: center; gap: 12px; }
+        .logo img { height: 45px; filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 1.2));}
+        .logo .site-title { color: var(--azul-gov-principal); font-size: 1.2em; font-weight: bold; line-height: 1.2; }
+        .logo .site-subtitle { color: var(--cinza-texto); font-size: 0.8em; display: block; }
+        .main-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; }
+        .main-nav a { text-decoration: none; color: var(--cinza-texto); font-weight: 600; padding: 10px; border-bottom: 2px solid transparent; transition: all 0.3s ease; }
+        .main-nav a:hover, .main-nav a.active { color: var(--azul-gov-principal); border-bottom-color: var(--amarelo-gov-detalhe); }
+        .main-footer { text-align: center; padding: 20px; margin-top: 40px; background-color: var(--branco); font-size: 0.9em; position: relative; height: 60px; }
+        .main-footer .footer-content { display: flex; justify-content: center; align-items: center; height: 100%; }
+        .main-footer img { height: 110px; width: auto; position: absolute; right: 5%; top: 50%; transform: translateY(-50%); }
+
+        main { padding: 40px 5%; }
+        .report-container { max-width: 900px; margin: 0 auto; }
+        .report-header { background: var(--branco); padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .report-header h1 { margin: 0 0 10px 0; color: var(--azul-gov-principal); }
+        .report-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9em; color: #555; }
+        
+        .score-container { text-align: center; background-color: var(--azul-gov-principal); color: var(--branco); padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+        .score-container h2 { margin: 0 0 5px 0; text-transform: uppercase; font-size: 1.2em; }
+        .score-container .score-value { font-size: 2.5em; font-weight: bold; }
+
+        .resposta-card { background-color: var(--branco); border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .resposta-header { padding: 15px; border-bottom: 1px solid #eee; }
+        .resposta-body { padding: 15px; }
+        .resposta-status { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .resposta-status .atende { font-weight: bold; padding: 5px 10px; border-radius: 20px; color: var(--branco); }
+        .resposta-status .atende-sim { background-color: var(--verde-sucesso); }
+        .resposta-status .atende-nao { background-color: var(--vermelho-erro); }
+        .resposta-status .automatico { font-size: 0.8em; font-style: italic; color: #777; }
+        .link-comprovante { font-size: 0.9em; }
+        .link-comprovante a { word-break: break-all; }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <nav class="main-nav">
+            <div class="logo">
+                <a href="/">
+                    <img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco">
+                    <div>
+                        <span class="site-title">Análise de Sites</span>
+                        <span class="site-subtitle">Portal da Transparência</span>
+                    </div>
+                </a>
+            </div>
+            <ul>
+                <li><a href="/">Início</a></li>
+                <li><a href="/scanner">Scanner de Links</a></li>
+                <li><a href="/formulario">Autoavaliação</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="report-container">
+            <div id="summary-container" class="report-header">
+                <h1>Relatório de Autoavaliação</h1>
+                <p>Carregando dados...</p>
+            </div>
+
+            <div id="score-container" class="score-container">
+                <h2>Pontuação Parcial</h2>
+                <div id="score-value" class="score-value">-- / --</div>
+            </div>
+
+            <div id="respostas-container">
+                </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+             <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+             <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Pega o ID da avaliação diretamente da URL
+            const avaliacaoId = window.location.pathname.split('/').pop();
+            
+            const summaryContainer = document.getElementById('summary-container');
+            const scoreValue = document.getElementById('score-value');
+            const respostasContainer = document.getElementById('respostas-container');
+
+            if (!avaliacaoId) {
+                summaryContainer.innerHTML = '<h1>Erro: ID da Avaliação não encontrado na URL.</h1>';
+                return;
+            }
+
+            try {
+                // 2. Usa o ID para buscar os dados completos na nossa API
+                const response = await fetch(`http://localhost:3000/avaliacoes/${avaliacaoId}`);
+                if (!response.ok) throw new Error('Não foi possível carregar os dados desta avaliação.');
+                const avaliacao = await response.json();
+
+                // 3. Preenche o cabeçalho do relatório
+                const dataFormatada = new Date(avaliacao.createdAt).toLocaleString('pt-BR');
+                summaryContainer.innerHTML = `
+                    <h1>${avaliacao.secretaria.nome} (${avaliacao.secretaria.sigla})</h1>
+                    <div class="report-summary">
+                        <span><strong>URL Avaliada:</strong> ${avaliacao.urlSecretaria}</span>
+                        <span><strong>Enviado em:</strong> ${dataFormatada}</span>
+                        <span><strong>Responsável:</strong> ${avaliacao.nomeResponsavel}</span>
+                        <span><strong>E-mail:</strong> ${avaliacao.emailResponsavel}</span>
+                    </div>
+                `;
+
+                // 4. Calcula a pontuação
+                let pontuacaoAlcancada = 0;
+                let pontuacaoTotal = 0;
+                avaliacao.respostas.forEach(resposta => {
+                    pontuacaoTotal += resposta.requisito.pontuacao;
+                    if (resposta.atende) {
+                        pontuacaoAlcancada += resposta.requisito.pontuacao;
+                    }
+                });
+                scoreValue.textContent = `${pontuacaoAlcancada} / ${pontuacaoTotal}`;
+
+                // 5. Renderiza cada uma das 43 respostas
+                respostasContainer.innerHTML = avaliacao.respostas.map(resposta => {
+                    const atendeClasse = resposta.atende ? 'atende-sim' : 'atende-nao';
+                    const atendeTexto = resposta.atende ? 'Sim' : 'Não';
+                    const automaticoBadge = resposta.foiAutomatico ? '<span class="automatico">✔️ Verificado Automaticamente</span>' : '';
+                    const linkHTML = resposta.linkComprovante 
+                        ? `<div class="link-comprovante"><strong>Link de Comprovação:</strong> <a href="${resposta.linkComprovante}" target="_blank">${resposta.linkComprovante}</a></div>` 
+                        : '';
+
+                    return `
+                        <div class="resposta-card">
+                            <div class="resposta-header">
+                                <strong>${resposta.requisito.texto}</strong>
+                            </div>
+                            <div class="resposta-body">
+                                <div class="resposta-status">
+                                    <span class="atende ${atendeClasse}">${atendeTexto}</span>
+                                    ${automaticoBadge}
+                                </div>
+                                ${linkHTML}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error(error);
+                summaryContainer.innerHTML = `<h1>Erro ao Carregar Relatório</h1><p>${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

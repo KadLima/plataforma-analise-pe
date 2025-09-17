@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model ScanSession {
+  id          String   @id @default(uuid())
+  url_base    String
+  status      String   @default("iniciado")
+  total_links Int      @default(0)
+  depthReached Int?
+  errorMessage String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  links       Link[]   @relation("SessionLinks")
+}
+
+model Link {
+  id           Int      @id @default(autoincrement())
+  url          String
+  finalUrl     String?     // se houve redirecionamento
+  tipo         String
+  origem       String
+  status       String
+  httpCode     Int?        // novo campo
+  responseTime Int?        // novo campo em ms
+  profundidade Int?        // em qual nível estava
+  session_id   String
+  createdAt    DateTime @default(now())
+
+  // relação com ScanSession
+  session ScanSession @relation("SessionLinks", fields: [session_id], references: [id])
+
+  @@unique([url, session_id])
+  @@index([session_id])
+}
+
+// Adicionar estes novos modelos ao final do arquivo schema.prisma
+
+model Requisito {
+  id        Int      @id @default(autoincrement())
+  texto     String   // O texto da pergunta/requisito
+  textoAjuda String? // O texto de ajuda do guia que você mencionou
+  linkFixo  String?  // O link alvo que o pré-validador deve procurar
+  pontuacao Int      // A pontuação para este requisito
+  respostas Resposta[]
+}
+
+
+model Avaliacao {
+  id               Int      @id @default(autoincrement())
+  urlSecretaria    String   
+  nomeResponsavel  String   
+  emailResponsavel String   
+  status           String   @default("enviado")
+  createdAt        DateTime @default(now())
+  secretaria    Secretaria @relation(fields: [secretariaId], references: [id]) 
+  secretariaId  Int
+  
+  respostas        Resposta[]
+}
+
+model Resposta {
+  id              Int      @id @default(autoincrement())
+  atende          Boolean
+  linkComprovante String?
+  foiAutomatico   Boolean  @default(false)
+  requisito   Requisito @relation(fields: [requisitoId], references: [id])
+  requisitoId Int
+  avaliacao   Avaliacao @relation(fields: [avaliacaoId], references: [id])
+  avaliacaoId Int
+}
+
+// NOVO MODELO PARA A LISTA PREDEFINIDA DE SECRETARIAS
+model Secretaria {
+  id          Int         @id @default(autoincrement())
+  nome        String      @unique 
+  sigla       String      @unique 
+  url         String      
+  avaliacoes  Avaliacao[]
+}

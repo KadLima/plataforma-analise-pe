@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise de Sites - Governo de Pernambuco</title>
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script> 
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <style>
+        :root {
+            --azul-gov-principal: #002776;
+            --amarelo-gov-detalhe: #FFD700;
+            --cinza-texto: #333333;
+            --cinza-fundo: #f4f4f4;
+            --branco: #ffffff;
+        }
+
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--cinza-fundo); color: var(--cinza-texto); line-height: 1.6; }
+        
+        .main-header { background-color: var(--branco); box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 0 5%; position: sticky; top: 0; z-index: 1000; }
+        .main-nav { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 70px; }
+        .logo a { text-decoration: none; display: flex; align-items: center; gap: 12px; }
+        .logo img { height: 45px; filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 1.2));}
+        .logo .site-title { color: var(--azul-gov-principal); font-size: 1.2em; font-weight: bold; line-height: 1.2; }
+        .logo .site-subtitle { color: var(--cinza-texto); font-size: 0.8em; display: block; }
+        .main-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; }
+        .main-nav a { text-decoration: none; color: var(--cinza-texto); font-weight: 600; padding: 10px; border-bottom: 2px solid transparent; transition: all 0.3s ease; }
+        .main-nav a:hover, .main-nav a.active { color: var(--azul-gov-principal); border-bottom-color: var(--amarelo-gov-detalhe); }
+
+        .hero-section { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 60vh; padding: 0 20px; background-color: #e9eef5; }
+        .hero-section h1 { font-size: 2.8em; color: var(--azul-gov-principal); margin-bottom: 15px; }
+        .hero-section p { font-size: 1.2em; max-width: 600px; margin-bottom: 30px; }
+        .cta-button { display: inline-block; background-color: var(--azul-gov-principal); color: var(--branco); padding: 15px 30px; font-size: 1em; font-weight: bold; text-decoration: none; border-radius: 5px; transition: transform 0.2s ease, background-color 0.2s ease; }
+        .cta-button:hover { background-color: #001a4d; transform: translateY(-3px); }
+       
+        .features-section { padding: 60px 5%; text-align: center; overflow: hidden; }
+        .features-section h2 { font-size: 2.2em; color: var(--azul-gov-principal); margin-bottom: 40px; }
+        .feature-card { background-color: var(--branco); border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 30px; height: 100%; display: flex; flex-direction: column; }
+        .feature-card .icon {
+            font-size: 1.2em; 
+            font-weight: bold;
+            color: var(--azul-gov-principal);
+            opacity: 0.5; 
+            letter-spacing: 2px; 
+        }
+        .feature-card h3 { font-size: 1.5em; margin: 20px 0 10px 0; }
+        .feature-card p { font-size: 1em; margin-bottom: 25px; flex-grow: 1; }
+
+      
+        .features-section .swiper { padding: 20px 0 95px 0; overflow: visible; }
+        .swiper-slide { width: 320px; height: auto; transition: transform 0.4s ease, opacity 0.4s ease; opacity: 0.7; }
+        .swiper-slide-active { transform: scale(1.1); opacity: 1; z-index: 10; }
+        .swiper-slide:hover { transform: scale(1.15); opacity: 1; }
+        .swiper-button-next, .swiper-button-prev { color: var(--azul-gov-principal); }
+      
+        .swiper-pagination-bullet {
+            background: var(--azul-gov-principal);
+            opacity: 0.2;
+        }
+        
+        .swiper-pagination-bullet.pagination-bullet-destaque {
+            opacity: 1;
+        }
+        
+        .swiper-pagination-bullet:nth-child(n+5) {
+            display: none;
+        }
+        
+        .main-footer { text-align: center; padding: 20px; margin-top: 40px; background-color: var(--branco); font-size: 0.9em; position: relative; height: 60px; }
+        .main-footer .footer-content { display: flex; justify-content: center; align-items: center; height: 100%; }
+        .main-footer img { height: 110px; width: auto; position: absolute; right: 5%; top: 50%; transform: translateY(-50%); }
+
+        .main-footer p a {
+        color: var(--cinza-texto);
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.2s;
+        }
+        .main-footer p a:hover {
+        text-decoration: underline;
+        color: var(--azul-gov-principal);
+        }
+
+        .presentation-section {
+            background-color: var(--branco);
+            padding: 60px 5%;
+        }
+        .presentation-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .presentation-content h2 {
+            font-size: 2.2em;
+            color: var(--azul-gov-principal);
+            margin-bottom: 20px;
+        }
+        .presentation-content p {
+            font-size: 1.1em;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+        .presentation-content img {
+            max-height: 80px; 
+        }
+        
+    
+        .pillars-section {
+            background-color: var(--branco); 
+            padding: 60px 5%;
+        }
+        .pillars-section h2 {
+            text-align: center;
+            font-size: 2.2em;
+            color: var(--azul-gov-principal);
+            margin-bottom: 40px;
+        }
+        .pillars-grid {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .pillar-card {
+            width: 300px;
+            min-width: 280px; 
+            text-align: center;
+        }
+        .pillar-card .icon {
+            font-size: 3.5em;
+        }
+        .pillar-card h3 {
+            font-size: 1.5em;
+            margin: 15px 0 10px 0;
+            color: var(--cinza-texto);
+        }
+        .pillar-card p {
+            font-size: 1em;
+            line-height: 1.6;
+        }   
+
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <nav class="main-nav">
+            <div class="logo">
+                <a href="/">
+                    <img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco">
+                    <div>
+                        <span class="site-title">Análise de Sites</span>
+                        <span class="site-subtitle">Portal da Transparência</span>
+                    </div>
+                </a>
+            </div>
+            <ul>
+                <li><a href="/" class="active">Início</a></li>
+                <li><a href="/scanner">Scanner de Links</a></li>
+                <li><a href="/formulario">Autoavaliação</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <h1>Plataforma de Análise de Sites</h1>
+            <p>Ferramentas digitais para otimização e verificação de integridade para portais do Governo de Pernambuco.</p>
+            <a href="/scanner" class="cta-button">Acessar o Scanner de Links</a>
+        </section>
+
+        <section class="presentation-section" data-aos="fade-up">
+            <div class="presentation-content">
+                <h2>Uma Iniciativa para a Transparência</h2>
+                <p>Esta plataforma é uma ferramenta desenvolvida pela Secretaria da Controladoria-Geral do Estado (SCGE) para auxiliar os órgãos e entidades do Poder Executivo Estadual a aprimorar a transparência de seus portais, em conformidade com a legislação e as boas práticas de acesso à informação.</p>
+                <img src="https://www.gov.br/ouvidorias/pt-br/ouvidorias/eventos/seminario-regional-de-ouvidoria-nordeste/LogoCGEPE.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+            </div>
+        </section>
+
+        <section class="features-section">
+
+        <section class="features-section">
+            <h2 data-aos="fade-up">Nossas Ferramentas</h2>
+            <div class="swiper" data-aos="fade-up" data-aos-delay="200">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide"><div class="feature-card"><div class="icon">SCAN</div><h3>Scanner de Links</h3><p>Uma ferramenta completa para verificar todos os links de um site...</p><a href="/scanner" class="cta-button">Utilizar Ferramenta</a></div></div>
+                    <div class="swiper-slide"><div class="feature-card"><div class="icon">FORM</div><h3>Autoavaliação de Transparência</h3><p>Preencha o checklist de transparência ativa de forma inteligente...</p><a href="/formulario" class="cta-button">Iniciar Avaliação</a></div></div>
+                    <div class="swiper-slide"><div class="feature-card"><div class="icon">SPEED</div><h3>Análise de Desempenho (Em Breve)</h3><p>Meça a velocidade de carregamento e o desempenho do seu site...</p><a href="#" class="cta-button" style="background-color: grey; cursor: not-allowed;">Indisponível</a></div></div>
+                    <div class="swiper-slide"><div class="feature-card"><div class="icon">ACESS</div><h3>Auditoria de Acessibilidade (Em Breve)</h3><p>Verifique se o seu site atende às diretrizes de acessibilidade...</p><a href="#" class="cta-button" style="background-color: grey; cursor: not-allowed;">Indisponível</a></div></div>
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+            </div>
+        </section>
+
+        <section class="pillars-section">
+            <div data-aos="fade-up">
+                <h2>Compromisso com a Transparência Pública</h2>
+                <div class="pillars-grid">
+                    <div class="pillar-card">
+                        <div class="icon">✔️</div>
+                        <h3>Integridade</h3>
+                        <p>Garanta que todos os links do seu portal estejam funcionando perfeitamente, evitando páginas de erro e melhorando a experiência do cidadão.</p>
+                    </div>
+                    <div class="pillar-card">
+                        <div class="icon">⚙️</div>
+                        <h3>Automação</h3>
+                        <p>Economize horas de trabalho manual com a pré-validação automática de requisitos do Guia de Transparência Ativa.</p>
+                    </div>
+                    <div class="pillar-card">
+                        <div class="icon">📊</div>
+                        <h3>Dados Estruturados</h3>
+                        <p>Tenha uma visão clara e detalhada do status de conformidade do seu site através de relatórios e de uma área de gestão centralizada.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+             <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+             <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. | <a href="/admin">Área Administrativa</a></p>
+        </div>
+    </footer>
+
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true, 
+        });
+        
+        const swiper = new Swiper('.swiper', {
+            effect: 'slide',
+            slidesPerView: 'auto',
+            spaceBetween: 30,
+            loop: true,
+            centeredSlides: true,
+            grabCursor: true,
+
+            autoplay: {
+            delay: 4000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+            },
+            
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+
+            on: {
+                init: function () {
+                    
+                    const realIndex = this.realIndex; 
+                    const bullets = this.pagination.el.querySelectorAll('.swiper-pagination-bullet');
+                    
+                    
+                    if (bullets.length > 0 && bullets[realIndex]) {
+                        bullets[realIndex].classList.add('pagination-bullet-destaque');
+                    }
+                },
+                
+                slideChangeTransitionEnd: function () {
+                    const realIndex = this.realIndex;
+                    const bullets = this.pagination.el.querySelectorAll('.swiper-pagination-bullet');
+                    
+                    bullets.forEach(bullet => {
+                        bullet.classList.remove('pagination-bullet-destaque');
+                    });
+                    
+                    if (realIndex < bullets.length && bullets[realIndex]) {
+                        bullets[realIndex].classList.add('pagination-bullet-destaque');
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

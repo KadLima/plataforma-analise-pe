@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área Administrativa - Análise PE</title>
+    <style>
+        /* Estilos Padrão (copiados de outras páginas para consistência) */
+        :root {
+            --azul-gov-principal: #002776;
+            --amarelo-gov-detalhe: #FFD700;
+            --cinza-texto: #333333;
+            --cinza-fundo: #f4f4f4;
+            --branco: #ffffff;
+        }
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--cinza-fundo); color: var(--cinza-texto); line-height: 1.6; }
+        .main-header { background-color: var(--branco); box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 0 5%; position: sticky; top: 0; z-index: 1000; }
+        .main-nav { display: flex; justify-content: space-between; align-items: center; height: 70px; max-width: 1200px; margin: 0 auto; }
+        .logo a { text-decoration: none; display: flex; align-items: center; gap: 12px; }
+        .logo img { height: 45px; filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 1.2)); }
+        .logo .site-title { color: var(--azul-gov-principal); font-size: 1.2em; font-weight: bold; line-height: 1.2; }
+        .logo .site-subtitle { color: var(--cinza-texto); font-size: 0.8em; display: block; }
+        .main-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; }
+        .main-nav a { text-decoration: none; color: var(--cinza-texto); font-weight: 600; padding: 10px; border-bottom: 2px solid transparent; transition: all 0.3s ease; }
+        .main-nav a:hover, .main-nav a.active { color: var(--azul-gov-principal); border-bottom-color: var(--amarelo-gov-detalhe); }
+        .main-footer { text-align: center; padding: 20px; margin-top: 40px; background-color: var(--branco); font-size: 0.9em; position: relative; height: 60px; }
+        .main-footer .footer-content { display: flex; justify-content: center; align-items: center; height: 100%; }
+        .main-footer img { height: 110px; width: auto; position: absolute; right: 5%; top: 50%; transform: translateY(-50%); }
+
+        main { padding: 40px 5%; }
+        .admin-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .admin-container h1 {
+            color: var(--azul-gov-principal);
+            border-bottom: 2px solid var(--amarelo-gov-detalhe);
+            padding-bottom: 10px;
+        }
+        #avaliacoes-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .avaliacao-card {
+            background-color: var(--branco);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border-left: 5px solid var(--azul-gov-principal);
+        }
+
+        .avaliacao-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .avaliacao-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+        }
+        .avaliacao-card p {
+            margin: 4px 0;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .avaliacao-card.erro {
+            border-left: 5px solid var(--vermelho-destaque);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <nav class="main-nav">
+            <div class="logo">
+                <a href="/">
+                    <img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco">
+                    <div>
+                        <span class="site-title">Análise de Sites</span>
+                        <span class="site-subtitle">Portal da Transparência</span>
+                    </div>
+                </a>
+            </div>
+            <ul>
+                <li><a href="/">Início</a></li>
+                <li><a href="/scanner">Scanner de Links</a></li>
+                <li><a href="/formulario">Autoavaliação</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="admin-container">
+            <h1>Administração de Avaliações</h1>
+            <p>Clique em uma avaliação para ver os detalhes completos.</p>
+            <div id="avaliacoes-list">
+                </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+             <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+             <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const avaliacoesList = document.getElementById('avaliacoes-list');
+
+            async function loadAvaliacoes() { 
+                try {
+                    avaliacoesList.innerHTML = '<p>Carregando avaliações...</p>';
+                    const response = await fetch('http://localhost:3000/avaliacoes');
+                    if (!response.ok) throw new Error('Falha ao carregar avaliações.');
+                    const avaliacoes = await response.json();
+
+                    if (avaliacoes.length === 0) {
+                        avaliacoesList.innerHTML = '<p>Nenhuma avaliação foi enviada ainda.</p>';
+                        return;
+                    }
+
+                    avaliacoesList.innerHTML = avaliacoes.map(avaliacao => {
+                        const dataFormatada = new Date(avaliacao.createdAt).toLocaleString('pt-BR');
+                        
+                        return `
+                            <div class="avaliacao-card ${avaliacao.status}" data-avaliacao-id="${avaliacao.id}">
+                                <h3>${avaliacao.secretaria.nome} (${avaliacao.secretaria.sigla})</h3>
+                                <p><strong>URL Avaliada:</strong> ${avaliacao.urlSecretaria}</p>
+                                <p><strong>Responsável:</strong> ${avaliacao.nomeResponsavel}</p>
+                                <p><strong>Enviado em:</strong> ${dataFormatada}</p>
+                                <button class="btn-toggle-error" style="margin-top:10px; padding: 5px 10px; cursor: pointer;">Marcar Erro (Teste)</button>
+                            </div>
+                        `;
+                    }).join('');
+
+                    addEventListenersToCards();
+
+                } catch (error) {
+                    console.error(error);
+                    avaliacoesList.innerHTML = '<p style="color: red;">Ocorreu um erro ao carregar as avaliações.</p>';
+                }
+            }
+            
+            function addEventListenersToCards() {
+                document.querySelectorAll('.avaliacao-card').forEach(card => {
+                    card.addEventListener('click', (event) => {
+                        if (event.target.matches('.btn-toggle-error')) return; 
+                        const avaliacaoId = card.getAttribute('data-avaliacao-id');
+                        window.location.href = `/avaliacao/${avaliacaoId}`;
+                    });
+
+                    const errorButton = card.querySelector('.btn-toggle-error');
+                    errorButton.addEventListener('click', async (event) => {
+                        event.stopPropagation(); 
+                        const avaliacaoId = card.getAttribute('data-avaliacao-id');
+                        await fetch(`/avaliacoes/${avaliacaoId}/toggle-error`, { method: 'POST' });
+                        await loadAvaliacoes(); 
+                    });
+                });
+            }
+
+            await loadAvaliacoes(); 
+        });
+    </script>
+
+</body>
+</html>
