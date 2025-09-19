@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Análise de Sites - Governo de Pernambuco</title>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script> 
 
@@ -42,34 +43,22 @@
         .features-section h2 { font-size: 2.2em; color: var(--azul-gov-principal); margin-bottom: 40px; }
         .feature-card { background-color: var(--branco); border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 30px; height: 100%; display: flex; flex-direction: column; }
         .feature-card .icon {
-            font-size: 1.2em; 
-            font-weight: bold;
+            font-size: 3em; 
             color: var(--azul-gov-principal);
-            opacity: 0.5; 
-            letter-spacing: 2px; 
+            margin-bottom: 10px; 
         }
         .feature-card h3 { font-size: 1.5em; margin: 20px 0 10px 0; }
         .feature-card p { font-size: 1em; margin-bottom: 25px; flex-grow: 1; }
 
       
-        .features-section .swiper { padding: 20px 0 95px 0; overflow: visible; }
+        .features-section .swiper { padding: 20px 40px 80px 40px;; overflow: visible; }
         .swiper-slide { width: 320px; height: auto; transition: transform 0.4s ease, opacity 0.4s ease; opacity: 0.7; }
         .swiper-slide-active { transform: scale(1.1); opacity: 1; z-index: 10; }
         .swiper-slide:hover { transform: scale(1.15); opacity: 1; }
         .swiper-button-next, .swiper-button-prev { color: var(--azul-gov-principal); }
+        .swiper-pagination-bullet {background: var(--azul-gov-principal); opacity: 0.3; }
+        .swiper-pagination-bullet-active {opacity: 1; background: var(--azul-gov-principal); }
       
-        .swiper-pagination-bullet {
-            background: var(--azul-gov-principal);
-            opacity: 0.2;
-        }
-        
-        .swiper-pagination-bullet.pagination-bullet-destaque {
-            opacity: 1;
-        }
-        
-        .swiper-pagination-bullet:nth-child(n+5) {
-            display: none;
-        }
         
         .main-footer { text-align: center; padding: 20px; margin-top: 40px; background-color: var(--branco); font-size: 0.9em; position: relative; height: 60px; }
         .main-footer .footer-content { display: flex; justify-content: center; align-items: center; height: 100%; }
@@ -146,6 +135,10 @@
             line-height: 1.6;
         }   
 
+        .disabled-link {
+            cursor: not-allowed; 
+        }
+
     </style>
 </head>
 <body>
@@ -164,7 +157,7 @@
             <ul>
                 <li><a href="/" class="active">Início</a></li>
                 <li><a href="/scanner">Scanner de Links</a></li>
-                <li><a href="/formulario">Autoavaliação</a></li>
+                <li><a href="#" class="disabled-link">Autoavaliação</a></li>
             </ul>
         </nav>
     </header>
@@ -184,20 +177,70 @@
             </div>
         </section>
 
-        <section class="features-section">
+        <section class="features-section" style="
+            background-image: url('/assets/bandeira-pe.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            position: relative;
+        ">
+            <div class="section-overlay" style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(255, 255, 255, 0.8); 
+                z-index: 1;
+            "></div>
 
-        <section class="features-section">
-            <h2 data-aos="fade-up">Nossas Ferramentas</h2>
-            <div class="swiper" data-aos="fade-up" data-aos-delay="200">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide"><div class="feature-card"><div class="icon">SCAN</div><h3>Scanner de Links</h3><p>Uma ferramenta completa para verificar todos os links de um site...</p><a href="/scanner" class="cta-button">Utilizar Ferramenta</a></div></div>
-                    <div class="swiper-slide"><div class="feature-card"><div class="icon">FORM</div><h3>Autoavaliação de Transparência</h3><p>Preencha o checklist de transparência ativa de forma inteligente...</p><a href="/formulario" class="cta-button">Iniciar Avaliação</a></div></div>
-                    <div class="swiper-slide"><div class="feature-card"><div class="icon">SPEED</div><h3>Análise de Desempenho (Em Breve)</h3><p>Meça a velocidade de carregamento e o desempenho do seu site...</p><a href="#" class="cta-button" style="background-color: grey; cursor: not-allowed;">Indisponível</a></div></div>
-                    <div class="swiper-slide"><div class="feature-card"><div class="icon">ACESS</div><h3>Auditoria de Acessibilidade (Em Breve)</h3><p>Verifique se o seu site atende às diretrizes de acessibilidade...</p><a href="#" class="cta-button" style="background-color: grey; cursor: not-allowed;">Indisponível</a></div></div>
+            <div class="container" style="position: relative; z-index: 2;">
+                
+                <h2 data-aos="fade-up">Nossas Ferramentas</h2>
+                
+                <div class="swiper" data-aos="fade-up" data-aos-delay="200">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <div class="feature-card">
+                                <div class="icon"><i class="fas fa-search"></i></div>
+                                <h3>Scanner de Links</h3>
+                                <p>Uma ferramenta completa para verificar todos os links de um site, identificar links quebrados e garantir a integridade do seu portal.</p>
+                                <a href="/scanner" class="cta-button">Utilizar Ferramenta</a>
+                            </div>
+                        </div>
+                        
+                        <div class="swiper-slide">
+                            <div class="feature-card">
+                                <div class="icon"><i class="fas fa-file-alt"></i></div>
+                                <h3>Autoavaliação de Transparência</h3>
+                                <p>Preencha o checklist de transparência ativa de forma inteligente, com pré-validação automática de requisitos.</p>
+                                <a href="#" class="cta-button disabled-link">Iniciar Avaliação</a>
+                            </div>
+                        </div>
+                        
+                        <div class="swiper-slide">
+                            <div class="feature-card">
+                                <div class="icon"><i class="fas fa-tachometer-alt"></i></div>
+                                <h3>Análise de Desempenho (Em Breve)</h3>
+                                <p>Meça a velocidade de carregamento e o desempenho do seu site em diferentes dispositivos para otimizar a experiência do usuário.</p>
+                                <a href="#" class="cta-button" style="background-color: grey; cursor: not-allowed;">Indisponível</a>
+                            </div>
+                        </div>
+                        
+                        <div class="swiper-slide">
+                            <div class="feature-card">
+                                <div class="icon"><i class="fas fa-universal-access"></i></div>
+                                <h3>Auditoria de Acessibilidade (Em Breve)</h3>
+                                <p>Verifique se o seu site atende às diretrizes de acessibilidade, garantindo que todos os cidadãos possam navegar com facilidade.</p>
+                                <a href="#" class="cta-button" style="background-color: grey; cursor: not-allowed;">Indisponível</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
                 </div>
-                <div class="swiper-pagination"></div>
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-button-next"></div>
+                
             </div>
         </section>
 
@@ -206,17 +249,17 @@
                 <h2>Compromisso com a Transparência Pública</h2>
                 <div class="pillars-grid">
                     <div class="pillar-card">
-                        <div class="icon">✔️</div>
+                        <div class="icon"><i class="fas fa-shield-alt"></i></div>
                         <h3>Integridade</h3>
                         <p>Garanta que todos os links do seu portal estejam funcionando perfeitamente, evitando páginas de erro e melhorando a experiência do cidadão.</p>
                     </div>
                     <div class="pillar-card">
-                        <div class="icon">⚙️</div>
+                        <div class="icon"><i class="fas fa-robot"></i></div>
                         <h3>Automação</h3>
                         <p>Economize horas de trabalho manual com a pré-validação automática de requisitos do Guia de Transparência Ativa.</p>
                     </div>
                     <div class="pillar-card">
-                        <div class="icon">📊</div>
+                        <div class="icon"><i class="fas fa-table"></i></div>
                         <h3>Dados Estruturados</h3>
                         <p>Tenha uma visão clara e detalhada do status de conformidade do seu site através de relatórios e de uma área de gestão centralizada.</p>
                     </div>
@@ -228,11 +271,20 @@
     <footer class="main-footer">
         <div class="footer-content">
              <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
-             <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. | <a href="/admin">Área Administrativa</a></p>
+             <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. | <a href="#" class="disabled-link">Área Administrativa</a></p>
         </div>
     </footer>
 
     <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        document.querySelectorAll('.disabled-link').forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault(); 
+                alert('Indisponível no momento');
+            });
+        });
+        
         AOS.init({
             duration: 800,
             once: true, 
@@ -240,54 +292,37 @@
         
         const swiper = new Swiper('.swiper', {
             effect: 'slide',
-            slidesPerView: 'auto',
-            spaceBetween: 30,
-            loop: true,
+            slidesPerView: 1, 
+            spaceBetween: 10,
+            loop: false,
             centeredSlides: true,
             grabCursor: true,
-
             autoplay: {
-            delay: 4000,
-            disableOnInteraction: false,
-            pauseOnMouseEnter: true,
+              delay: 4000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
             },
-            
+            breakpoints: {
+                768: {
+                    slidesPerView: 2,
+                    spaceBetween: 20
+                },
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 30
+                }
+            },
             pagination: {
                 el: '.swiper-pagination',
                 clickable: true,
             },
-
             navigation: {
                 nextEl: '.swiper-button-next',
                 prevEl: '.swiper-button-prev',
             },
-
-            on: {
-                init: function () {
-                    
-                    const realIndex = this.realIndex; 
-                    const bullets = this.pagination.el.querySelectorAll('.swiper-pagination-bullet');
-                    
-                    
-                    if (bullets.length > 0 && bullets[realIndex]) {
-                        bullets[realIndex].classList.add('pagination-bullet-destaque');
-                    }
-                },
-                
-                slideChangeTransitionEnd: function () {
-                    const realIndex = this.realIndex;
-                    const bullets = this.pagination.el.querySelectorAll('.swiper-pagination-bullet');
-                    
-                    bullets.forEach(bullet => {
-                        bullet.classList.remove('pagination-bullet-destaque');
-                    });
-                    
-                    if (realIndex < bullets.length && bullets[realIndex]) {
-                        bullets[realIndex].classList.add('pagination-bullet-destaque');
-                    }
-                }
-            }
         });
-    </script>
+        
+    }); 
+</script>
 </body>
 </html>

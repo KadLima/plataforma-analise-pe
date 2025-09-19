@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Área Administrativa - Análise PE</title>
     <style>
-        /* Estilos Padrão (copiados de outras páginas para consistência) */
+        
         :root {
             --azul-gov-principal: #002776;
             --amarelo-gov-detalhe: #FFD700;
@@ -71,6 +71,11 @@
         .avaliacao-card.erro {
             border-left: 5px solid var(--vermelho-destaque);
         }
+
+        .disabled-link {
+            cursor: not-allowed; 
+        }
+
     </style>
 </head>
 <body>
@@ -89,7 +94,7 @@
             <ul>
                 <li><a href="/">Início</a></li>
                 <li><a href="/scanner">Scanner de Links</a></li>
-                <li><a href="/formulario">Autoavaliação</a></li>
+                <li><a href="#" class="disabled-link">Autoavaliação</a></li>
             </ul>
         </nav>
     </header>
@@ -106,12 +111,19 @@
     <footer class="main-footer">
         <div class="footer-content">
              <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
-             <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados.</p>
+             <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. | <a href="#" class="disabled-link">Área Administrativa</a></p>
         </div>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
+            document.querySelectorAll('.disabled-link').forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault(); // Impede o link de navegar
+                    alert('Indisponível no momento');
+                });
+            });
+
             const avaliacoesList = document.getElementById('avaliacoes-list');
 
             async function loadAvaliacoes() { 

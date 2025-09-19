@@ -4,13 +4,11 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Iniciando a semeadura do banco de dados...');
 
-  // --- APAGA DADOS ANTIGOS PARA EVITAR DUPLICATAS ---
   await prisma.Resposta.deleteMany({});
   await prisma.Avaliacao.deleteMany({});
   await prisma.Requisito.deleteMany({});
   console.log('Dados antigos de Requisitos, Avaliações e Respostas apagados.');
 
-  // --- REQUISITOS ---
   await prisma.requisito.createMany({
     data: [
       { texto: "REQUISITO 01 - O órgão/entidade possui o mapeamento do processo de disponibilização e publicação das informações no sítio institucional?", textoAjuda: "O órgão/entidade deve realizar o mapeamento do processo de atualização das informações na seção Transparência do seu sítio institucional.", pontuacao: 2, linkFixo: null },
@@ -59,7 +57,7 @@ async function main() {
   });
   console.log('Novos requisitos criados com sucesso.');
 
-// --- SECRETARIAS (LISTA COMPLETA) ---
+
   await prisma.secretaria.deleteMany({});
   console.log('Secretarias antigas apagadas.');
   await prisma.secretaria.createMany({

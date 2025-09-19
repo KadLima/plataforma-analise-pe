@@ -49,6 +49,11 @@
         .resposta-status .automatico { font-size: 0.8em; font-style: italic; color: #777; }
         .link-comprovante { font-size: 0.9em; }
         .link-comprovante a { word-break: break-all; }
+
+        .disabled-link {
+            cursor: not-allowed; 
+        }
+
     </style>
 </head>
 <body>
@@ -67,7 +72,7 @@
             <ul>
                 <li><a href="/">Início</a></li>
                 <li><a href="/scanner">Scanner de Links</a></li>
-                <li><a href="/formulario">Autoavaliação</a></li>
+                <li><a href="#" class="disabled-link">Autoavaliação</a></li>
             </ul>
         </nav>
     </header>
@@ -92,13 +97,18 @@
     <footer class="main-footer">
         <div class="footer-content">
              <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
-             <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados.</p>
+             <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. | <a href="#" class="disabled-link">Área Administrativa</a></p>
         </div>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            // 1. Pega o ID da avaliação diretamente da URL
+            document.querySelectorAll('.disabled-link').forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault(); // Impede o link de navegar
+                    alert('Indisponível no momento');
+                });
+            });
             const avaliacaoId = window.location.pathname.split('/').pop();
             
             const summaryContainer = document.getElementById('summary-container');
@@ -111,12 +121,10 @@
             }
 
             try {
-                // 2. Usa o ID para buscar os dados completos na nossa API
                 const response = await fetch(`http://localhost:3000/avaliacoes/${avaliacaoId}`);
                 if (!response.ok) throw new Error('Não foi possível carregar os dados desta avaliação.');
                 const avaliacao = await response.json();
 
-                // 3. Preenche o cabeçalho do relatório
                 const dataFormatada = new Date(avaliacao.createdAt).toLocaleString('pt-BR');
                 summaryContainer.innerHTML = `
                     <h1>${avaliacao.secretaria.nome} (${avaliacao.secretaria.sigla})</h1>
@@ -128,7 +136,6 @@
                     </div>
                 `;
 
-                // 4. Calcula a pontuação
                 let pontuacaoAlcancada = 0;
                 let pontuacaoTotal = 0;
                 avaliacao.respostas.forEach(resposta => {
@@ -139,7 +146,6 @@
                 });
                 scoreValue.textContent = `${pontuacaoAlcancada} / ${pontuacaoTotal}`;
 
-                // 5. Renderiza cada uma das 43 respostas
                 respostasContainer.innerHTML = avaliacao.respostas.map(resposta => {
                     const atendeClasse = resposta.atende ? 'atende-sim' : 'atende-nao';
                     const atendeTexto = resposta.atende ? 'Sim' : 'Não';

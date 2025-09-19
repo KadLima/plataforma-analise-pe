@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scanner de Links - Análise PE</title>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
 
     <style>
-      
+
         :root {
             --azul-gov-principal: #002776;
             --amarelo-gov-detalhe: #FFD700;
@@ -134,8 +136,8 @@
         .status-iniciado { background-color: #e6f2ff; color: #0052cc; }
         .status-erro { background-color: #ffe6e6; color: #ff0000; }
         .status-interrompido { background-color: #fff0e6; color: #d95300; }
-        .session-delete-btn { padding: 5px 8px; border-radius: 4px; font-size: 1.2em; background-color: transparent; border: none; cursor: pointer; margin-left: 15px; }
-        .session-delete-btn:hover { background-color: #ffdddd; color: var(--vermelho-destaque); }
+        .session-delete-btn {padding: 5px 10px; border-radius: 4px; font-size: 1em; background-color: transparent; border: none; cursor: pointer; margin-left: 15px; color: #999; transition: color 0.2s, background-color 0.2s; }
+        .session-delete-btn:hover {background-color: #ffe6e6; color: var(--vermelho-destaque); }
         .input-wrapper { position: relative; display: inline-flex; align-items: center; flex-shrink: 0; }
         .ajuda { margin-left: 8px; cursor: help; background-color: #8a9db8; color: white; width: 18px; height: 18px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; }
         .export-container { position: relative; display: inline-block; }
@@ -180,6 +182,73 @@
         text-decoration: underline;
         color: var(--azul-gov-principal);
       }
+
+
+      .scan-indicator {
+          display: none; 
+          width: 10px;
+          height: 10px;
+          background-color: var(--verde-destaque);
+          border-radius: 50%;
+          margin-left: 10px;
+          animation: pulse 1.5s infinite;
+          vertical-align: middle; 
+      }
+
+      
+      .stats-container.scanning .scan-indicator {
+          display: inline-block;
+      }
+
+      
+      @keyframes pulse {
+          0% {
+              box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+          }
+          70% {
+              box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+          }
+          100% {
+              box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+          }
+      }
+
+      .alert-box {
+          display: flex;
+          align-items: center;
+          padding: 15px;
+          margin-bottom: 30px;
+          border-radius: 6px;
+          border: 1px solid;
+      }
+      .alert-box.warning {
+          background-color: #fff8e1; 
+          border-color: #ffc107; 
+          color: #856404; 
+      }
+      .alert-box .icon {
+          font-size: 1.5em;
+          margin-right: 15px;
+      }
+
+      .alert-box.hidden {
+          display: none; 
+      }
+
+      .alert-box.flash {
+          animation: flash-warning 0.75s 3;
+      }
+
+      @keyframes flash-warning {
+          0% { background-color: #fff8e1; } 
+          50% { background-color: #ffecb3; } 
+          100% { background-color: #fff8e1; } 
+      }
+
+      .disabled-link {
+            cursor: not-allowed; 
+      }
+
     </style>
 </head>
 <body>
@@ -198,13 +267,21 @@
             <ul>
                 <li><a href="/">Início</a></li>
                 <li><a href="/scanner" class="active">Scanner de Links</a></li>
-                <li><a href="/formulario">Autoavaliação</a></li> </ul>
+                <li><a href="#" class="disabled-link">Autoavaliação</a></li> </ul>
             </ul>
         </nav>
     </header>
 
     <main>
         <div class="container">
+
+          <div class="alert-box warning hidden">
+              <div class="icon"><i class="fas fa-exclamation-triangle"></i></div>
+              <div>
+                  <strong>Atenção:</strong> Varreduras completas em sites grandes podem levar várias horas. Recomendamos iniciar o processo e deixar a aba aberta em segundo plano, garantindo que o computador não será desligado ou suspenso.
+              </div>
+          </div>
+
             <div class="input-section">
                 <input type="url" id="urlInput" class="url-input" placeholder="Digite a URL do site (ex: https://exemplo.com)" />
                 <div class="input-wrapper">
@@ -226,7 +303,7 @@
             </div>
 
             <div class="stats-container">
-                <h3>Status da Verificação</h3>
+                <h3>Status da Verificação<span id="scan-indicator" class="scan-indicator"></span></h3>
                 <div class="stats">
                     <div class="stat-card">
                         <div class="stat-number" id="totalLinks">0</div>
@@ -280,405 +357,424 @@
     <footer class="main-footer">
         <div class="footer-content">
             <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
-            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. | <a href="/admin">Área Administrativa</a></p>
+            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. | <a href="#" class="disabled-link">Área Administrativa</a></p>
         </div>
     </footer>
 
-   <script>
-  
-    const urlInput = document.getElementById('urlInput');
-    const startBtn = document.getElementById('startBtn');
-    const stopBtn = document.getElementById('stopBtn');
-    const exportBtn = document.getElementById('exportBtn');
-    const exportOptionsMenu = document.getElementById('exportOptionsMenu');
-    const totalLinksSpan = document.getElementById('totalLinks');
-    const brokenLinksSpan = document.getElementById('brokenLinks');
-    const pendingLinksSpan = document.getElementById('pendingLinks');
-    const timeElapsedSpan = document.getElementById('timeElapsed');
-    const progressText = document.getElementById('progressText');
-    const brokenLinksList = document.getElementById('brokenLinksList');
-    const allLinksList = document.getElementById('allLinksList');
-    const logsList = document.getElementById('logsList');
-    const sessionHistoryList = document.getElementById('sessionHistoryList');
-
-  
-    let elapsedInterval;
-    let monitoringInterval;
-    let currentSessionId = null;
-    let isScanActive = false;
-    let displayedSessionId = null;
-    let scanStartTime;
+  <script>
+    
+      const urlInput = document.getElementById('urlInput');
+      const startBtn = document.getElementById('startBtn');
+      const stopBtn = document.getElementById('stopBtn');
+      const exportBtn = document.getElementById('exportBtn');
+      const exportOptionsMenu = document.getElementById('exportOptionsMenu');
+      const totalLinksSpan = document.getElementById('totalLinks');
+      const brokenLinksSpan = document.getElementById('brokenLinks');
+      const pendingLinksSpan = document.getElementById('pendingLinks');
+      const timeElapsedSpan = document.getElementById('timeElapsed');
+      const progressText = document.getElementById('progressText');
+      const brokenLinksList = document.getElementById('brokenLinksList');
+      const allLinksList = document.getElementById('allLinksList');
+      const logsList = document.getElementById('logsList');
+      const sessionHistoryList = document.getElementById('sessionHistoryList');
 
     
-    function formatDuration(seconds) {
-      const s = Math.floor(seconds % 60);
-      const m = Math.floor((seconds / 60) % 60);
-      const h = Math.floor(seconds / 3600);
-      if (h > 0) return `${h}h ${m}m ${s}s`;
-      if (m > 0) return `${m}m ${s}s`;
-      return `${s}s`;
-    }
+      let elapsedInterval;
+      let monitoringInterval;
+      let currentSessionId = null;
+      let isScanActive = false;
+      let displayedSessionId = null;
+      let scanStartTime;
 
-    function addLog(message, type = 'info') {
-      const logItem = document.createElement('div');
-      logItem.className = `log-item log-${type}`;
-      logItem.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-      logsList.prepend(logItem);
-    }
+      
+      function formatDuration(seconds) {
+        const s = Math.floor(seconds % 60);
+        const m = Math.floor((seconds / 60) % 60);
+        const h = Math.floor(seconds / 3600);
+        if (h > 0) return `${h}h ${m}m ${s}s`;
+        if (m > 0) return `${m}m ${s}s`;
+        return `${s}s`;
+      }
 
-    function resetUI() {
-      totalLinksSpan.textContent = '0';
-      brokenLinksSpan.textContent = '0';
-      pendingLinksSpan.textContent = '0';
-      timeElapsedSpan.textContent = '0s';
-      brokenLinksList.innerHTML = '';
-      allLinksList.innerHTML = '';
-      document.getElementById('brokenLinksCount').textContent = '';
-      document.getElementById('allLinksCount').textContent = '';
-      progressText.textContent = 'Aguardando início...';
-      startBtn.disabled = false;
-      stopBtn.disabled = true;
-      exportBtn.disabled = true;
-      clearInterval(elapsedInterval);
-      clearInterval(monitoringInterval);
-    }
-    
+      function addLog(message, type = 'info') {
+        const logItem = document.createElement('div');
+        logItem.className = `log-item log-${type}`;
+        logItem.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+        logsList.prepend(logItem);
+      }
 
-    async function loadSessionHistory() {
+      function resetUI() {
+        totalLinksSpan.textContent = '0';
+        brokenLinksSpan.textContent = '0';
+        pendingLinksSpan.textContent = '0';
+        timeElapsedSpan.textContent = '0s';
+        brokenLinksList.innerHTML = '';
+        allLinksList.innerHTML = '';
+        document.getElementById('brokenLinksCount').textContent = '';
+        document.getElementById('allLinksCount').textContent = '';
+        progressText.textContent = 'Aguardando início...';
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        exportBtn.disabled = true;
+        clearInterval(elapsedInterval);
+        clearInterval(monitoringInterval);
+      }
+      
+
+      async function loadSessionHistory() {
+          try {
+              const [activeResponse, dbResponse] = await Promise.all([
+                  fetch('http://localhost:3000/active-sessions'),
+                  fetch('http://localhost:3000/sessions')
+              ]);
+              if (!dbResponse.ok) throw new Error('Falha ao buscar histórico do banco.');
+              const activeSessions = activeResponse.ok ? await activeResponse.json() : [];
+              const dbSessions = await dbResponse.json();
+
+              const formattedActiveSessions = activeSessions.map(s => ({
+                  id: s.sessionId, url_base: s.url, status: 'iniciado', createdAt: s.startTime, is_active: true
+              }));
+
+              const allSessions = [
+                  ...formattedActiveSessions,
+                  ...dbSessions.filter(dbSession => !formattedActiveSessions.some(active => active.id === dbSession.id))
+              ];
+
+              sessionHistoryList.innerHTML = '';
+              if (allSessions.length === 0) {
+                  sessionHistoryList.innerHTML = '<p style="text-align:center; color:#888;">Nenhuma varredura encontrada.</p>';
+                  return;
+              }
+
+              allSessions.forEach(session => {
+                  const item = document.createElement('div');
+                  item.className = 'session-item';
+                  item.setAttribute('data-session-id', session.id);
+                  item.innerHTML = `
+                      <div class="session-info">
+                        <strong>${session.url_base}</strong><br>
+                        <small>${new Date(session.createdAt).toLocaleString('pt-BR')}</small>
+                      </div>
+                      <div style="display: flex; align-items: center;">
+                        <span class="session-status status-${session.status}">${session.is_active ? 'Em Andamento' : session.status}</span>
+                        ${!session.is_active ? '<button class="session-delete-btn" title="Apagar esta sessão"><i class="fas fa-trash-alt"></i></button>' : ''}
+                      </div>
+                  `;
+                  item.querySelector('.session-info').addEventListener('click', () => displaySessionResults(session.id));
+                  
+                  if (!session.is_active) {
+                      item.querySelector('.session-delete-btn').addEventListener('click', (event) => {
+                          event.stopPropagation();
+                          deleteSession(session.id, session.url_base);
+                      });
+                  }
+                  sessionHistoryList.appendChild(item);
+              });
+          } catch (error) {
+              console.error('Erro ao carregar histórico:', error);
+              addLog(error.message, 'error');
+          }
+      }
+
+      async function deleteSession(sessionId, urlBase) {
+        if (!confirm(`Tem certeza que deseja apagar permanentemente a varredura para:\n${urlBase}?`)) {
+          return;
+        }
+        
         try {
-            const [activeResponse, dbResponse] = await Promise.all([
-                fetch('http://localhost:3000/active-sessions'),
-                fetch('http://localhost:3000/sessions')
-            ]);
-            if (!dbResponse.ok) throw new Error('Falha ao buscar histórico do banco.');
-            const activeSessions = activeResponse.ok ? await activeResponse.json() : [];
-            const dbSessions = await dbResponse.json();
+          addLog(`Apagando sessão ${sessionId}...`, 'info');
+          const response = await fetch(`http://localhost:3000/sessions/${sessionId}`, {
+            method: 'DELETE'
+          });
+          if (!response.ok) throw new Error('Falha ao apagar a sessão no servidor.');
+          addLog(`Sessão ${sessionId} apagada com sucesso.`, 'success');
+          await loadSessionHistory();
+          if (displayedSessionId === sessionId) {
+            resetUI();
+            addLog('UI reiniciada pois a sessão exibida foi apagada.', 'info');
+          }
+        } catch (error) {
+          console.error('Erro ao apagar sessão:', error);
+          addLog(error.message, 'error');
+        }
+      }
 
-            const formattedActiveSessions = activeSessions.map(s => ({
-                id: s.sessionId, url_base: s.url, status: 'iniciado', createdAt: s.startTime, is_active: true
-            }));
+      async function displaySessionResults(sessionId) {
+        displayedSessionId = sessionId;
+        if (!sessionId) return;
+        
+        
+        if (isScanActive && sessionId === currentSessionId) {
+            resetUI(false); 
+            startMonitoring(sessionId);
+            return;
+        }
 
-            const allSessions = [
-                ...formattedActiveSessions,
-                ...dbSessions.filter(dbSession => !formattedActiveSessions.some(active => active.id === dbSession.id))
-            ];
+        resetUI();
+        progressText.textContent = `Carregando resultados para a sessão ${sessionId.substring(0, 8)}...`;
+        addLog(`Carregando resultados da sessão ${sessionId}`, 'info');
 
-            sessionHistoryList.innerHTML = '';
-            if (allSessions.length === 0) {
-                sessionHistoryList.innerHTML = '<p style="text-align:center; color:#888;">Nenhuma varredura encontrada.</p>';
+        try {
+            const sessionResponse = await fetch(`http://localhost:3000/scan-sessions/${sessionId}`);
+            if (!sessionResponse.ok) throw new Error('Falha ao buscar detalhes da sessão');
+            const session = await sessionResponse.json();
+
+            
+            if (session.status !== 'iniciado') {
+                const startTime = new Date(session.createdAt);
+                const endTime = new Date(session.updatedAt);
+                const durationInSeconds = Math.floor((endTime - startTime) / 1000);
+                timeElapsedSpan.textContent = formatDuration(durationInSeconds);
+            }
+            
+            const linksResponse = await fetch(`http://localhost:3000/links?session_id=${sessionId}`);
+            if (!linksResponse.ok) throw new Error('Falha ao buscar os links da sessão');
+            const links = await linksResponse.json();
+            
+            const brokenLinks = links.filter(link => link.status && (link.status.toLowerCase().includes('erro') || link.status.toLowerCase().includes('inacessível')));
+            allLinksList.innerHTML = links.map(link => renderLinkItem(link)).join('');
+            brokenLinksList.innerHTML = brokenLinks.map(link => renderLinkItem(link)).join('');
+            totalLinksSpan.textContent = links.length;
+            brokenLinksSpan.textContent = brokenLinks.length;
+            pendingLinksSpan.textContent = links.filter(l => l.status === 'Na fila').length;
+            document.getElementById('allLinksCount').textContent = `(${links.length})`;
+            document.getElementById('brokenLinksCount').textContent = `(${brokenLinks.length})`;
+            progressText.textContent = `Exibindo ${links.length} links da sessão selecionada.`;
+            exportBtn.disabled = links.length === 0;
+
+        } catch (error) {
+            console.error('Erro ao exibir resultados da sessão:', error);
+            addLog(error.message, 'error');
+            progressText.textContent = 'Erro ao carregar resultados.';
+        }
+      }
+
+      function renderLinkItem(link) {
+        const isBroken = link.status && (link.status.toLowerCase().includes('erro') || link.status.toLowerCase().includes('inacessível'));
+        const statusClass = isBroken ? 'status-erro' : 'status-funcionando';
+        
+        let finalStatus = link.status || 'Não verificado';
+        if (link.httpCode && !finalStatus.toLowerCase().includes('erro')) {
+          finalStatus += ` [${link.httpCode}]`;
+        }
+        return `
+          <div class="link-item">
+            <div class="link-left">
+              <a href="${link.url}" target="_blank">${link.url}</a>
+              <div class="link-meta"><strong>Origem:</strong> ${link.origem}</div>
+              ${link.finalUrl && link.finalUrl !== link.url ? `<div class="link-meta"><strong>Redirecionado para:</strong> ${link.finalUrl}</div>` : ''}
+            </div>
+            <span class="status-badge ${statusClass}">${finalStatus}</span>
+          </div>`;
+      }
+
+      function startMonitoring(sessionId) {
+        addLog(`Monitoramento da sessão ${sessionId} ativado.`, 'info');
+        
+        clearInterval(monitoringInterval);
+        
+        monitoringInterval = setInterval(async () => {
+            if (!currentSessionId) {
+                clearInterval(monitoringInterval);
                 return;
             }
-
-            allSessions.forEach(session => {
-                const item = document.createElement('div');
-                item.className = 'session-item';
-                item.setAttribute('data-session-id', session.id);
-                item.innerHTML = `
-                    <div class="session-info">
-                      <strong>${session.url_base}</strong><br>
-                      <small>${new Date(session.createdAt).toLocaleString('pt-BR')}</small>
-                    </div>
-                    <div style="display: flex; align-items: center;">
-                      <span class="session-status status-${session.status}">${session.is_active ? 'Em Andamento' : session.status}</span>
-                      ${!session.is_active ? '<button class="session-delete-btn" title="Apagar esta sessão">🗑️</button>' : ''}
-                    </div>
-                `;
-                item.querySelector('.session-info').addEventListener('click', () => displaySessionResults(session.id));
+            try {
+                const linksResponse = await fetch(`http://localhost:3000/links?session_id=${sessionId}`);
+                const links = await linksResponse.json();
                 
-                if (!session.is_active) {
-                    item.querySelector('.session-delete-btn').addEventListener('click', (event) => {
-                        event.stopPropagation();
-                        deleteSession(session.id, session.url_base);
-                    });
-                }
-                sessionHistoryList.appendChild(item);
-            });
-        } catch (error) {
-            console.error('Erro ao carregar histórico:', error);
-            addLog(error.message, 'error');
-        }
-    }
+                const broken = links.filter(link => link.status && (link.status.toLowerCase().includes('erro') || link.status.toLowerCase().includes('inacessível')));
+                allLinksList.innerHTML = links.map(link => renderLinkItem(link)).join('');
+                brokenLinksList.innerHTML = broken.map(link => renderLinkItem(link)).join('');
 
-    async function deleteSession(sessionId, urlBase) {
-      if (!confirm(`Tem certeza que deseja apagar permanentemente a varredura para:\n${urlBase}?`)) {
-        return;
-      }
-      
-      try {
-        addLog(`Apagando sessão ${sessionId}...`, 'info');
-        const response = await fetch(`http://localhost:3000/sessions/${sessionId}`, {
-          method: 'DELETE'
-        });
-        if (!response.ok) throw new Error('Falha ao apagar a sessão no servidor.');
-        addLog(`Sessão ${sessionId} apagada com sucesso.`, 'success');
-        await loadSessionHistory();
-        if (displayedSessionId === sessionId) {
-          resetUI();
-          addLog('UI reiniciada pois a sessão exibida foi apagada.', 'info');
-        }
-      } catch (error) {
-        console.error('Erro ao apagar sessão:', error);
-        addLog(error.message, 'error');
-      }
-    }
+                totalLinksSpan.textContent = links.length;
+                brokenLinksSpan.textContent = broken.length;
+                pendingLinksSpan.textContent = links.filter(l => l.status === 'Na fila').length;
+                document.getElementById('allLinksCount').textContent = `(${links.length})`;
+                document.getElementById('brokenLinksCount').textContent = `(${broken.length})`;
+                
+                const sessionResponse = await fetch(`http://localhost:3000/scan-sessions/${sessionId}`);
+                const session = await sessionResponse.json();
+                
+                progressText.textContent = `Analisando... ${links.length} links encontrados. Status: ${session.status}`;
 
-    async function displaySessionResults(sessionId) {
-      displayedSessionId = sessionId;
-      if (!sessionId) return;
-      
-      
-      if (isScanActive && sessionId === currentSessionId) {
-          resetUI(false); 
-          startMonitoring(sessionId);
-          return;
-      }
-
-      resetUI();
-      progressText.textContent = `Carregando resultados para a sessão ${sessionId.substring(0, 8)}...`;
-      addLog(`Carregando resultados da sessão ${sessionId}`, 'info');
-
-      try {
-          const sessionResponse = await fetch(`http://localhost:3000/scan-sessions/${sessionId}`);
-          if (!sessionResponse.ok) throw new Error('Falha ao buscar detalhes da sessão');
-          const session = await sessionResponse.json();
-
-          
-          if (session.status !== 'iniciado') {
-              const startTime = new Date(session.createdAt);
-              const endTime = new Date(session.updatedAt);
-              const durationInSeconds = Math.floor((endTime - startTime) / 1000);
-              timeElapsedSpan.textContent = formatDuration(durationInSeconds);
-          }
-          depthReachedSpan.textContent = session.depthReached || 0;
-          
-          const linksResponse = await fetch(`http://localhost:3000/links?session_id=${sessionId}`);
-          if (!linksResponse.ok) throw new Error('Falha ao buscar os links da sessão');
-          const links = await linksResponse.json();
-          
-          const brokenLinks = links.filter(link => link.status && (link.status.toLowerCase().includes('erro') || link.status.toLowerCase().includes('inacessível')));
-          allLinksList.innerHTML = links.map(link => renderLinkItem(link)).join('');
-          brokenLinksList.innerHTML = brokenLinks.map(link => renderLinkItem(link)).join('');
-          totalLinksSpan.textContent = links.length;
-          brokenLinksSpan.textContent = brokenLinks.length;
-          pendingLinksSpan.textContent = links.filter(l => l.status === 'Na fila').length;
-          document.getElementById('allLinksCount').textContent = `(${links.length})`;
-          document.getElementById('brokenLinksCount').textContent = `(${brokenLinks.length})`;
-          progressText.textContent = `Exibindo ${links.length} links da sessão selecionada.`;
-          exportBtn.disabled = links.length === 0;
-
-      } catch (error) {
-          console.error('Erro ao exibir resultados da sessão:', error);
-          addLog(error.message, 'error');
-          progressText.textContent = 'Erro ao carregar resultados.';
-      }
-    }
-
-    function renderLinkItem(link) {
-      const isBroken = link.status && (link.status.toLowerCase().includes('erro') || link.status.toLowerCase().includes('inacessível'));
-      const statusClass = isBroken ? 'status-erro' : 'status-funcionando';
-      
-      let finalStatus = link.status || 'Não verificado';
-      if (link.httpCode && !finalStatus.toLowerCase().includes('erro')) {
-        finalStatus += ` [${link.httpCode}]`;
-      }
-      return `
-        <div class="link-item">
-          <div class="link-left">
-            <a href="${link.url}" target="_blank">${link.url}</a>
-            <div class="link-meta"><strong>Origem:</strong> ${link.origem}</div>
-            ${link.finalUrl && link.finalUrl !== link.url ? `<div class="link-meta"><strong>Redirecionado para:</strong> ${link.finalUrl}</div>` : ''}
-          </div>
-          <span class="status-badge ${statusClass}">${finalStatus}</span>
-        </div>`;
-    }
-
-    function startMonitoring(sessionId) {
-      addLog(`Monitoramento da sessão ${sessionId} ativado.`, 'info');
-      
-      
-      clearInterval(monitoringInterval);
-      
-      monitoringInterval = setInterval(async () => {
-          if (!currentSessionId) {
-              clearInterval(monitoringInterval);
-              return;
-          }
-          try {
-              const linksResponse = await fetch(`http://localhost:3000/links?session_id=${sessionId}`);
-              const links = await linksResponse.json();
-              
-              const broken = links.filter(link => link.status && (link.status.toLowerCase().includes('erro') || link.status.toLowerCase().includes('inacessível')));
-              allLinksList.innerHTML = links.map(link => renderLinkItem(link)).join('');
-              brokenLinksList.innerHTML = broken.map(link => renderLinkItem(link)).join('');
-
-              totalLinksSpan.textContent = links.length;
-              brokenLinksSpan.textContent = broken.length;
-              pendingLinksSpan.textContent = links.filter(l => l.status === 'Na fila').length;
-              document.getElementById('allLinksCount').textContent = `(${links.length})`;
-              document.getElementById('brokenLinksCount').textContent = `(${broken.length})`;
-              
-              const sessionResponse = await fetch(`http://localhost:3000/scan-sessions/${sessionId}`);
-              const session = await sessionResponse.json();
-              
-              progressText.textContent = `Analisando... ${links.length} links encontrados. Status: ${session.status}`;
-              depthReachedSpan.textContent = session.depthReached || 0;
-
-              if (session.status === 'finalizado' || session.status === 'erro' || session.status === 'interrompido') {
+                if (session.status === 'finalizado' || session.status === 'erro' || session.status === 'interrompido') {
                   clearInterval(monitoringInterval);
                   clearInterval(elapsedInterval);
                   isScanActive = false;
+                  document.querySelector('.stats-container').classList.remove('scanning');
                   progressText.textContent = `Varredura concluída! Status: ${session.status}.`;
                   addLog(`Varredura finalizada com status: ${session.status}`, session.status === 'finalizado' ? 'success' : 'error');
-                  if (session.depthReached !== null) {
+                  
+                  if (session.depthReached !== null && session.depthReached !== undefined) {
                       addLog(`Profundidade máxima atingida: ${session.depthReached}`, 'info');
                   }
+                  
                   if (session.status === 'erro' && session.errorMessage) {
                       addLog(`ERRO CRÍTICO: ${session.errorMessage}`, 'error');
                   }
+                  
                   stopBtn.disabled = true;
                   startBtn.disabled = false;
                   exportBtn.disabled = links.length === 0;
                   currentSessionId = null;
                   await loadSessionHistory();
               }
-
-          } catch (error) {
-              addLog(`Erro no monitoramento: ${error.message}`, 'error');
-          }
-      }, 3000);
-    }
-
-    async function startVerification() {
-      const url = urlInput.value.trim();
-      const depth = document.getElementById('depthInput').value;
-      if (!url) { alert('Por favor, digite uma URL válida!'); return; }
-      
-      resetUI();
-      isScanActive = true;
-      scanStartTime = Date.now();
-      elapsedInterval = setInterval(() => {
-          const seconds = Math.floor((Date.now() - scanStartTime) / 1000);
-          timeElapsedSpan.textContent = formatDuration(seconds);
-      }, 1000);
-
-      addLog(`Iniciando varredura em ${url}`, 'info');
-      startBtn.disabled = true;
-      stopBtn.disabled = false;
-      
-      try {
-          const crawlResponse = await fetch('http://localhost:3000/start-crawl', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ url, depth })
-          });
-          if (!crawlResponse.ok) throw new Error('Erro ao iniciar a varredura no servidor');
-          
-          const result = await crawlResponse.json();
-          currentSessionId = result.sessionId;
-          displayedSessionId = currentSessionId;
-          
-          await loadSessionHistory(); 
-          startMonitoring(currentSessionId); 
-
-      } catch (error) {
-          addLog(`Erro crítico ao iniciar: ${error.message}`, 'error');
-          resetUI();
-          isScanActive = false;
+            } catch (error) {
+                addLog(`Erro no monitoramento: ${error.message}`, 'error');
+            }
+        }, 3000);
       }
-    }
-    
-     async function stopVerification() {
-        if (!currentSessionId) return;
-        addLog('Enviando solicitação para parar...', 'info');
+
+      async function startVerification() {
+        const alertBox = document.querySelector('.alert-box');
+        if (alertBox) {
+            alertBox.classList.remove('hidden'); 
+            alertBox.classList.add('flash');     
+
+            setTimeout(() => {
+                alertBox.classList.remove('flash');
+            }, 1500);
+        }
+        const url = urlInput.value.trim();
+        const depth = document.getElementById('depthInput').value;
+        if (!url) { alert('Por favor, digite uma URL válida!'); return; }
+        
+        resetUI();
+        isScanActive = true;
+        scanStartTime = Date.now();
+        elapsedInterval = setInterval(() => {
+            const seconds = Math.floor((Date.now() - scanStartTime) / 1000);
+            timeElapsedSpan.textContent = formatDuration(seconds);
+        }, 1000);
+
+        addLog(`Iniciando varredura em ${url}`, 'info');
+        document.querySelector('.stats-container').classList.add('scanning');
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        
         try {
-          const response = await fetch(`http://localhost:3000/stop-crawl/${currentSessionId}`, { method: 'POST' });
-          if (!response.ok) {
-            const err = await response.json();
-            throw new Error(err.message || 'Erro desconhecido');
-          }
-          
-          addLog('Varredura interrompida pelo usuário.', 'success');
-          isScanActive = false;
-          clearInterval(elapsedInterval); 
-          progressText.textContent = 'Varredura interrompida!';
-          stopBtn.disabled = true;
-          startBtn.disabled = false;
-          await loadSessionHistory(); 
-          
+            const crawlResponse = await fetch('http://localhost:3000/start-crawl', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url, depth })
+            });
+            if (!crawlResponse.ok) throw new Error('Erro ao iniciar a varredura no servidor');
+            
+            const result = await crawlResponse.json();
+            currentSessionId = result.sessionId;
+            displayedSessionId = currentSessionId;
+            
+            await loadSessionHistory(); 
+            startMonitoring(currentSessionId); 
 
         } catch (error) {
-          addLog(`Falha ao parar a varredura: ${error.message}`, 'error');
+            addLog(`Erro crítico ao iniciar: ${error.message}`, 'error');
+            resetUI();
+            isScanActive = false;
         }
       }
+      
+      async function stopVerification() {
+          if (!currentSessionId) return;
+          addLog('Enviando solicitação para parar...', 'info');
+          try {
+            const response = await fetch(`http://localhost:3000/stop-crawl/${currentSessionId}`, { method: 'POST' });
+            if (!response.ok) {
+              const err = await response.json();
+              throw new Error(err.message || 'Erro desconhecido');
+            }
+            
+            addLog('Varredura interrompida pelo usuário.', 'success');
+            isScanActive = false;
+            document.querySelector('.stats-container').classList.remove('scanning');
+            clearInterval(elapsedInterval); 
+            progressText.textContent = 'Varredura interrompida!';
+            stopBtn.disabled = true;
+            startBtn.disabled = false;
+            await loadSessionHistory(); 
+            
 
-    
-    document.addEventListener('DOMContentLoaded', () => {
-      resetUI();
-      loadSessionHistory();
-      addLog('Dashboard pronto.', 'success');
-    });
+          } catch (error) {
+            addLog(`Falha ao parar a varredura: ${error.message}`, 'error');
+          }
+        }
 
-    
-    startBtn.addEventListener('click', startVerification);
-    stopBtn.addEventListener('click', stopVerification);
-    document.querySelectorAll('.tab-btn').forEach(button => {
-      button.addEventListener('click', () => {
-        document.querySelector('.tab-btn.active').classList.remove('active');
-        document.querySelector('.tab-content.active').classList.remove('active');
-        button.classList.add('active');
-        document.getElementById(button.dataset.tab + 'Tab').classList.add('active');
+      
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.disabled-link').forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault(); // Impede o link de navegar
+                alert('Indisponível no momento');
+            });
+        });
+
+        resetUI();
+        loadSessionHistory();
+        addLog('Dashboard pronto.', 'success');
       });
-    });
+
+      
+      
+      startBtn.addEventListener('click', startVerification);
+      stopBtn.addEventListener('click', stopVerification);
+      document.querySelectorAll('.tab-btn').forEach(button => {
+        button.addEventListener('click', () => {
+          document.querySelector('.tab-btn.active').classList.remove('active');
+          document.querySelector('.tab-content.active').classList.remove('active');
+          button.classList.add('active');
+          document.getElementById(button.dataset.tab + 'Tab').classList.add('active');
+        });
+      });
 
 
-exportBtn.addEventListener('click', (event) => {
-  event.stopPropagation(); 
-  exportOptionsMenu.classList.toggle('show');
-});
-    
-    const historyHeader = document.getElementById('historyHeader');
-    const sessionListContainer = document.getElementById('sessionListContainer');
-    historyHeader.addEventListener('click', () => {
-      historyHeader.classList.toggle('open');
-      sessionListContainer.classList.toggle('open');
-    });
+      exportBtn.addEventListener('click', (event) => {
+        event.stopPropagation(); 
+        exportOptionsMenu.classList.toggle('show');
+      });
+      
+      const historyHeader = document.getElementById('historyHeader');
+      const sessionListContainer = document.getElementById('sessionListContainer');
+      historyHeader.addEventListener('click', () => {
+        historyHeader.classList.toggle('open');
+        sessionListContainer.classList.toggle('open');
+      });
 
 
-document.querySelectorAll('.export-option').forEach(option => {
-  option.addEventListener('click', () => {
-    if (!displayedSessionId) {
-      alert('Nenhuma sessão selecionada para exportar!');
-      return;
-    }
-    const format = option.getAttribute('data-format');
-    addLog(`Gerando relatório no formato ${format.toUpperCase()}...`, 'info');
-    window.open(`http://localhost:3000/export/${format}/${displayedSessionId}`, '_blank');
-    exportOptionsMenu.classList.remove('show'); 
-  });
-});
+      document.querySelectorAll('.export-option').forEach(option => {
+        option.addEventListener('click', () => {
+          if (!displayedSessionId) {
+            alert('Nenhuma sessão selecionada para exportar!');
+            return;
+          }
+          const format = option.getAttribute('data-format');
+          addLog(`Gerando relatório no formato ${format.toUpperCase()}...`, 'info');
+          window.open(`http://localhost:3000/export/${format}/${displayedSessionId}`, '_blank');
+          exportOptionsMenu.classList.remove('show'); 
+        });
+      });
 
 
-window.addEventListener('click', (event) => {
-  if (exportOptionsMenu.classList.contains('show') && !exportOptionsMenu.contains(event.target)) {
-      if(!exportBtn.contains(event.target)) {
-          exportOptionsMenu.classList.remove('show');
-      }
-  }
-});
+      window.addEventListener('click', (event) => {
+        if (exportOptionsMenu.classList.contains('show') && !exportOptionsMenu.contains(event.target)) {
+            if(!exportBtn.contains(event.target)) {
+                exportOptionsMenu.classList.remove('show');
+            }
+        }
+      });
 
-tippy('[data-tippy-content]', {
-  delay: [500, 0], 
-  placement: 'top', 
-});
+      tippy('[data-tippy-content]', {
+        delay: [500, 0], 
+        placement: 'top', 
+      });
 
 
-window.addEventListener('beforeunload', (event) => {
-  if (isScanActive) {
-    event.preventDefault();
-    event.returnValue = '';
-  }
-});
+      window.addEventListener('beforeunload', (event) => {
+        if (isScanActive) {
+          event.preventDefault();
+          event.returnValue = '';
+        }
+      });
 
-</script>
+  </script>
 </body>
 </html>

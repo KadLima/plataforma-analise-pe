@@ -23,39 +23,98 @@ app.get('/avaliacao/:id', (req, res) => { res.sendFile(path.join(__dirname, 'ava
 
 // --- ROTAS DA API ---
 
-// ROTA PRINCIPAL: Iniciar uma nova varredura do Scanner de Links
+// ROTA PARA O PRÉ-VALIDADOR
+app.post('/pre-validate', async (req, res) => {
+  const { urlSecretaria } = req.body;
+  if (!urlSecretaria) {
+    return res.status(400).json({ error: 'urlSecretaria é obrigatória' });
+  }
+
+  try {
+    const requisitosParaVerificar = await prisma.requisito.findMany({
+      where: { linkFixo: { not: null } }
+    });
+    
+    if (requisitosParaVerificar.length === 0) {
+      return res.json([]);
+    }
+
+    const linksParaProcurar = requisitosParaVerificar.map(r => r.linkFixo).filter(link => link && !link.startsWith('KEYWORD:'));
+    
+    if (linksParaProcurar.length === 0) {
+      return res.json([]);
+    }
+
+    const scriptPath = path.join(__dirname, 'pre_validador.py');
+    const scriptArgs = [
+      scriptPath,
+      urlSecretaria,
+      '--find-links', 
+      linksParaProcurar.join(',')
+    ];
+
+    const pythonProcess = spawn('python', scriptArgs, { cwd: __dirname });
+
+    let resultadoJson = '';
+    let erroOutput = '';
+
+    pythonProcess.stdout.on('data', (data) => {
+      resultadoJson += data.toString();
+    });
+
+    pythonProcess.stderr.on('data', (data) => {
+      erroOutput += data.toString();
+    });
+
+    pythonProcess.on('close', (code) => {
+      if (code !== 0) {
+        console.error(`Erro no script pre_validador.py: ${erroOutput}`);
+        return res.status(500).json({ error: 'Falha na verificação automática.', details: erroOutput });
+      }
+      try {
+        const linksEncontrados = JSON.parse(resultadoJson || '[]');
+        res.json(linksEncontrados);
+      } catch (parseError) {
+        res.status(500).json({ error: 'Falha ao interpretar resultado da verificação.', details: resultadoJson });
+      }
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: 'Erro interno no servidor ao tentar pré-validar.' });
+  }
+});
+
+// ROTA PARA A VARREDURA COMPLETA
 app.post('/start-crawl', async (req, res) => {
   const { url, depth } = req.body;
   if (!url) { return res.status(400).json({ error: 'URL é obrigatória' }); }
   try {
     const sessionId = `session_${Date.now()}`;
-    await prisma.scanSession.create({
-      data: { id: sessionId, url_base: url, status: 'iniciado' }
-    });
-    console.log(`[${sessionId}] Sessão criada no banco de dados.`);
+    await prisma.scanSession.create({ data: { id: sessionId, url_base: url, status: 'iniciado' } });
+    
     const scriptPath = path.join(__dirname, 'ScannerUnificado.py');
     const scriptArgs = [scriptPath, url, '--session-id', sessionId, '--depth', String(depth || 5)];
     const pythonProcess = spawn('python', scriptArgs, { cwd: __dirname });
+
     activeProcesses.set(sessionId, { process: pythonProcess, url: url, startTime: new Date() });
     pythonProcess.stdout.on('data', (data) => { console.log(`[${sessionId}]:`, data.toString().trim()); });
     pythonProcess.stderr.on('data', (data) => { console.error(`[${sessionId} Error]:`, data.toString().trim()); });
     pythonProcess.on('close', (code) => {
-      console.log(`[${sessionId}] Processo finalizado. Código: ${code}`);
+      console.log(`[${sessionId}] Processo finalizado com código: ${code}`);
       activeProcesses.delete(sessionId);
     });
     res.json({ success: true, message: 'Varredura iniciada!', sessionId: sessionId });
   } catch (error) {
-    console.error("ERRO CRÍTICO em /start-crawl:", error);
-    res.status(500).json({ error: 'Erro interno ao iniciar a varredura: ' + error.message });
+    res.status(500).json({ error: 'Erro interno ao iniciar varredura: ' + error.message });
   }
 });
 
-// ROTA PRINCIPAL: Criar um novo registro de link (usado pelo script Python)
+// ROTA PARA CRIAR LINKS (usada pelo scanner_completo.py)
 app.post("/links", async (req, res) => {
   try {
     const { url, tipo, origem, status, httpCode, finalUrl, profundidade, session_id } = req.body;
     if (!session_id) {
-      return res.status(400).json({ error: 'session_id é obrigatório no corpo da requisição.' });
+      return res.status(400).json({ error: 'session_id é obrigatório.' });
     }
     const newLink = await prisma.link.create({
       data: {
@@ -67,39 +126,9 @@ app.post("/links", async (req, res) => {
   } catch (error) {
     console.error("[ERRO CRÍTICO] Falha ao criar link:", error);
     if (error.code === 'P2025') {
-       return res.status(400).json({ error: `Falha ao criar link: A ScanSession com id '${req.body.session_id}' não existe.` });
+       return res.status(400).json({ error: `Falha: ScanSession com id '${req.body.session_id}' não existe.` });
     }
     res.status(500).json({ error: "Erro ao criar link" });
-  }
-});
-
-// Rota do Pré-Validador
-app.post('/pre-validate', async (req, res) => {
-  const { urlSecretaria } = req.body;
-  if (!urlSecretaria) { return res.status(400).json({ error: 'urlSecretaria é obrigatória' }); }
-  try {
-    const requisitosParaVerificar = await prisma.requisito.findMany({ where: { linkFixo: { not: null } } });
-    if (requisitosParaVerificar.length === 0) { return res.json([]); }
-    const linksParaProcurar = requisitosParaVerificar.map(r => r.linkFixo).filter(link => link && !link.startsWith('KEYWORD:'));
-    if (linksParaProcurar.length === 0) { return res.json([]); }
-    const scriptPath = path.join(__dirname, 'ScannerUnificado.py');
-    const scriptArgs = [scriptPath, urlSecretaria, '--find-links', linksParaProcurar.join(',')];
-    const pythonProcess = spawn('python', scriptArgs, { cwd: __dirname });
-    let resultadoJson = '';
-    let erroOutput = '';
-    pythonProcess.stdout.on('data', (data) => { resultadoJson += data.toString(); });
-    pythonProcess.stderr.on('data', (data) => { erroOutput += data.toString(); });
-    pythonProcess.on('close', (code) => {
-      if (code !== 0) { return res.status(500).json({ error: 'Falha na verificação automática.', details: erroOutput }); }
-      try {
-        const linksEncontrados = JSON.parse(resultadoJson);
-        res.json(linksEncontrados);
-      } catch (parseError) {
-        res.status(500).json({ error: 'Falha ao interpretar resultado da verificação.', details: resultadoJson });
-      }
-    });
-  } catch (error) {
-    res.status(500).json({ error: 'Erro interno ao tentar pré-validar.' });
   }
 });
 
@@ -260,12 +289,30 @@ app.patch("/scan-session/:id", async (req, res) => {
 });
 
 app.get("/links", async (req, res) => {
-  const { session_id } = req.query;
   try {
-    if (!session_id) { return res.status(400).json({error: "session_id é obrigatório"}); }
-    const links = await prisma.link.findMany({ where: { session_id }, orderBy: { createdAt: 'asc' } });
+    const { session_id } = req.query;
+    console.log(`--- [LOG] Rota GET /links chamada para a session_id: ${session_id}`);
+
+    if (!session_id) {
+      console.log("[AVISO] session_id não foi fornecido na requisição.");
+      return res.status(400).json({error: "session_id é obrigatório"});
+    }
+
+    console.log(`[LOG] Buscando links no banco de dados onde a session_id é exatamente: '${session_id}'`);
+    const links = await prisma.link.findMany({
+      where: {
+        session_id: session_id
+      },
+      orderBy: {
+        createdAt: 'asc'
+      }
+    });
+    
+    console.log(`[LOG] A consulta do Prisma encontrou ${links.length} links para esta sessão.`);
     res.json(links);
+
   } catch (error) {
+    console.error("[ERRO CRÍTICO] Falha na rota GET /links:", error);
     res.status(500).json({ error: "Erro ao buscar links" });
   }
 });
@@ -349,5 +396,5 @@ async function initialCleanup() {
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Servidor rodando na porta ${PORT}`);
-    initialCleanup();
+    // initialCleanup(); 
 });
