@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>Formulário de Autoavaliação - Análise PE</title>
     <style>
-        
         :root {
             --azul-gov-principal: #002776;
             --amarelo-gov-detalhe: #FFD700;
@@ -13,13 +13,14 @@
             --cinza-fundo: #f4f4f4;
             --branco: #ffffff;
             --verde-sucesso: #28a745;
+            --vermelho-destaque: #dc3545;
             --cinza-borda: #ddd;
         }
         body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--cinza-fundo); color: var(--cinza-texto); line-height: 1.6; }
         .main-header { background-color: var(--branco); box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 0 5%; position: sticky; top: 0; z-index: 1000; }
         .main-nav { display: flex; justify-content: space-between; align-items: center; height: 70px; max-width: 1200px; margin: 0 auto; }
         .logo a { text-decoration: none; display: flex; align-items: center; gap: 12px; }
-        .logo img { height: 45px; filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 1.2));}
+        .logo img { height: 45px; filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));}
         .logo .site-title { color: var(--azul-gov-principal); font-size: 1.2em; font-weight: bold; line-height: 1.2; }
         .logo .site-subtitle { color: var(--cinza-texto); font-size: 0.8em; display: block; }
         .main-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; }
@@ -31,13 +32,11 @@
         main { padding: 40px 5%; }
         .container { max-width: 900px; margin: 0 auto; background: var(--branco); padding: 30px 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .form-section { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
+        .form-section:last-of-type { border-bottom: none; }
         .form-section h2 { color: var(--azul-gov-principal); border-bottom: 2px solid var(--amarelo-gov-detalhe); padding-bottom: 10px; margin-bottom: 20px; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 8px; }
-        .form-group input[type="text"],
-        .form-group input[type="email"],
-        .form-group input[type="url"],
-        .form-group select { width: 100%; box-sizing: border-box; padding: 12px; border: 1px solid var(--cinza-borda); border-radius: 6px; font-size: 1em; }
+        .form-group input, .form-group select { width: 100%; box-sizing: border-box; padding: 12px; border: 1px solid var(--cinza-borda); border-radius: 6px; font-size: 1em; }
         .btn { padding: 12px 25px; background-color: var(--azul-gov-principal); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1em; font-weight: bold; transition: background-color .3s; }
         .btn:hover { background-color: #001a4d; }
         .btn:disabled { background-color: #ccc; cursor: not-allowed; }
@@ -46,71 +45,110 @@
         .requisito-header { background-color: #e9eef5; padding: 15px; font-weight: bold; }
         .requisito-body { padding: 15px; background-color: var(--branco); }
         .requisito-ajuda { font-size: 0.9em; color: #555; background-color: #fafafa; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
-        .requisito-actions { display: flex; gap: 10px; align-items: center; }
+        .requisito-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
         .btn-toggle { padding: 8px 16px; border: 1px solid var(--cinza-borda); background-color: var(--branco); border-radius: 20px; cursor: pointer; font-weight: 600; }
         .btn-toggle.active { background-color: var(--verde-sucesso); color: var(--branco); border-color: var(--verde-sucesso); }
-        .link-comprovante-wrapper { display: none; flex-grow: 1; }
+        .btn-toggle[data-action*="nao"].active { background-color: var(--vermelho-destaque); border-color: var(--vermelho-destaque); color: var(--branco); }
+        .link-comprovante-wrapper { display: none; width: 100%; }
         .link-comprovante-wrapper.show { display: block; }
+        .link-comprovante-wrapper .link-input { width: 100%; box-sizing: border-box; padding: 8px; }
         .download-guide { background-color: #e9eef5; padding: 15px; border-radius: 6px; margin-bottom: 30px; text-align: center; }
         .download-guide a { font-weight: bold; color: var(--azul-gov-principal); text-decoration: none; }
         .download-guide a:hover { text-decoration: underline; }
+        .progress-bar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 50px; position: relative; }
+        .progress-bar::before { content: ''; position: absolute; top: 15px; left: 15%; right: 15%; height: 2px; background-color: var(--cinza-borda); z-index: 0; }
+        .step { text-align: center; position: relative; z-index: 1; width: 120px; }
+        .step-number { width: 30px; height: 30px; border-radius: 50%; background-color: var(--cinza-fundo); color: var(--cinza-texto); display: inline-flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid var(--cinza-borda); transition: all 0.4s; }
+        .step-label { margin-top: 8px; font-size: 0.9em; color: #999; transition: color 0.4s; }
+        .step.active .step-number { background-color: var(--azul-gov-principal); border-color: var(--azul-gov-principal); color: var(--branco); }
+        .step.active .step-label { color: var(--azul-gov-principal); font-weight: bold; }
 
-        .progress-bar {
+        .evidence-container {
+            padding-top: 10px;
+            border-top: 1px solid #f0f0f0;
+            margin-top: 10px;
+        }
+        .evidence-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 10px 0;
+        }
+        .evidence-item {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 50px;
-            position: relative;
-        }
-        
-        .progress-bar::before {
-            content: '';
-            position: absolute;
-            top: 15px; 
-            left: 15%;
-            right: 15%;
-            height: 2px;
-            background-color: var(--cinza-borda);
-            z-index: 0;
-        }
-        .step {
-            text-align: center;
-            position: relative;
-            z-index: 1; 
-            width: 120px;
-        }
-        .step-number {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background-color: var(--cinza-fundo);
-            color: var(--cinza-texto);
-            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            border: 2px solid var(--cinza-borda);
-            transition: background-color 0.4s, border-color 0.4s, color 0.4s;
-        }
-        .step-label {
-            margin-top: 8px;
+            background-color: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 5px;
             font-size: 0.9em;
-            color: #999;
-            transition: color 0.4s;
         }
-       
-        .step.active .step-number {
-            background-color: var(--azul-gov-principal);
-            border-color: var(--azul-gov-principal);
-            color: var(--branco);
+        .evidence-item a {
+            color: var(--azul-gov-principal);
+            word-break: break-all;
+            flex-grow: 1;
         }
-        .step.active .step-label {
+        .remove-evidence-btn {
+            background: none;
+            border: none;
+            color: var(--vermelho-destaque);
+            cursor: pointer;
+            font-size: 1.5em;
+            padding: 0 5px;
+            margin-left: 10px;
+            line-height: 1;
+        }
+        .add-evidence-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-add-evidence {
+            padding: 6px 12px;
+            font-size: 0.8em;
+            border-radius: 6px;
+            border: 1px solid var(--azul-gov-principal);
+            background-color: var(--branco);
             color: var(--azul-gov-principal);
             font-weight: bold;
+            cursor: pointer;
         }
-
-        .disabled-link {
-            cursor: not-allowed; 
+        .btn-add-evidence:hover {
+            background-color: #e9eef5;
+        }
+        
+        .comment-container {
+            margin-top: 15px;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 15px;
+        }
+        .secretaria-comment {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            border: 1px solid var(--cinza-borda);
+            border-radius: 6px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-size: 0.9em;
+            min-height: 70px;
+            resize: vertical;
+        }
+        /* --- ESTILOS PARA REQUISITOS SUBDIVIDIDOS --- */
+        .sub-requisito-container {
+            margin-top: 15px;
+        }
+        .sub-requisito {
+            margin-bottom: 20px;
+            padding-left: 15px;
+            border-left: 3px solid #e9eef5;
+        }
+        .sub-requisito-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+        /* NOVA REGRA: Esconde a seção que tiver a classe 'hidden' */
+        .sub-requisito.hidden {
+            display: none;
         }
 
     </style>
@@ -118,290 +156,519 @@
 <body>
     <header class="main-header">
         <nav class="main-nav">
-            <div class="logo"><a href="/"><img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco"><div><span class="site-title">Análise de Sites</span><span class="site-subtitle">Portal da Transparência</span></div></a></div>
-            <ul>
-                <li><a href="/">Início</a></li>
-                <li><a href="/scanner">Scanner de Links</a></li>
-                <li><a href="#" class="disabled-link">Autoavaliação</a></li>
-            </ul>
+            <div class="logo">
+                <a href="/"><img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco"><div><span class="site-title">Análise de Sites</span><span class="site-subtitle">Portal da Transparência</span></div></a>
+            </div>
+            <ul id="nav-links"></ul>
         </nav>
     </header>
-
     <main>
         <div class="container">
             <div class="progress-bar">
-                <div class="step active" id="progress-step-1">
-                    <div class="step-number">1</div>
-                    <div class="step-label">Identificação</div>
-                </div>
-                <div class="step" id="progress-step-2">
-                    <div class="step-number">2</div>
-                    <div class="step-label">Pré-Validação</div>
-                </div>
-                <div class="step" id="progress-step-3">
-                    <div class="step-number">3</div>
-                    <div class="step-label">Preenchimento</div>
-                </div>
+                <div class="step active" id="progress-step-1"><div class="step-number">1</div><div class="step-label">Identificação</div></div>
+                <div class="step" id="progress-step-2"><div class="step-number">2</div><div class="step-label">Pré-Validação</div></div>
+                <div class="step" id="progress-step-3"><div class="step-number">3</div><div class="step-label">Preenchimento</div></div>
             </div>          
             <div class="download-guide">
                 <p style="margin:0;">📄 Precisa de ajuda? <a href="/assets/guia-transparencia.pdf" download>Clique aqui para baixar o Guia de Transparência Ativa.</a></p>
             </div>
             <div class="form-section">
                 <h2>Passo 1: Identificação</h2>
-                <div class="form-group">
-                    <label for="secretaria-select">Selecione o Órgão/Entidade</label>
-                    <select id="secretaria-select"><option value="">Carregando...</option></select>
-                </div>
-                <div class="form-group">
-                    <label for="url-manual">URL do Site a ser Avaliado</label>
-                    <input type="url" id="url-manual" placeholder="https://www.sitedasecretaria.pe.gov.br">
-                </div>
-                <div class="form-group">
-                    <label for="responsavel-nome">Nome do Responsável pelo preenchimento</label>
-                    <input type="text" id="responsavel-nome" placeholder="Digite seu nome completo">
-                </div>
-                <div class="form-group">
-                    <label for="responsavel-email">E-mail do Responsável</label>
-                    <input type="email" id="responsavel-email" placeholder="Digite seu e-mail para contato">
-                </div>
+                <div class="form-group"><label for="secretaria-select">Selecione o Órgão/Entidade</label><select id="secretaria-select"><option value="">Carregando...</option></select></div>
+                <div class="form-group"><label for="url-manual">URL do Site a ser Avaliado</label><input type="url" id="url-manual" placeholder="https://www.sitedasecretaria.pe.gov.br"></div>
+                <div class="form-group"><label for="responsavel-nome">Nome do Responsável pelo preenchimento</label><input type="text" id="responsavel-nome" placeholder="Digite seu nome completo"></div>
+                <div class="form-group"><label for="responsavel-email">E-mail do Responsável</label><input type="email" id="responsavel-email" placeholder="Digite seu e-mail para contato"></div>
             </div>
-
-
-
             <div class="form-section">
                 <h2>Passo 2: Pré-Validação Automática</h2>
                 <p>Antes de começar, nossa ferramenta pode verificar automaticamente alguns requisitos para você. Clique no botão abaixo para iniciar a verificação no site da secretaria selecionada.</p>
                 <button id="pre-validar-btn" class="btn">Iniciar Pré-Validação</button>
                 <div id="pre-validacao-resultado" style="margin-top: 15px;"></div>
             </div>
-
             <div class="form-section">
                 <h2>Passo 3: Preenchimento dos Requisitos</h2>
                 <div id="requisitos-container"><p>Aguardando a pré-validação para carregar os requisitos...</p></div>
             </div>
-            
-            <div style="text-align: right;">
-                <button id="enviar-avaliacao-btn" class="btn" disabled>Enviar Avaliação</button>
-            </div>
+            <div style="text-align: right;"><button id="enviar-avaliacao-btn" class="btn" disabled>Enviar Avaliação</button></div>
         </div>
     </main>
-
     <footer class="main-footer">
         <div class="footer-content">
-             <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
-             <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. | <a href="#" class="disabled-link">Área Administrativa</a></p>
+            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a href="/admin" id="admin-footer-link">Área Administrativa</a></p>
+            <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
         </div>
     </footer>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.disabled-link').forEach(link => {
-            link.addEventListener('click', (event) => {
-                event.preventDefault(); 
-                alert('Indisponível no momento');
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const secretariaSelect = document.getElementById('secretaria-select');
+            const urlManualInput = document.getElementById('url-manual');
+            const nomeResponsavelInput = document.getElementById('responsavel-nome');
+            const emailResponsavelInput = document.getElementById('responsavel-email');
+            const preValidarBtn = document.getElementById('pre-validar-btn');
+            const preValidacaoResultado = document.getElementById('pre-validacao-resultado');
+            const requisitosContainer = document.getElementById('requisitos-container');
+            const enviarAvaliacaoBtn = document.getElementById('enviar-avaliacao-btn');
+            const step1 = document.getElementById('progress-step-1');
+            const step2 = document.getElementById('progress-step-2');
+            const step3 = document.getElementById('progress-step-3');
+            
+            let todosOsRequisitos = [];
+            let linksEncontradosAutomaticamente = [];
+
+            async function populateSecretarias() {
+                try {
+                    const response = await fetch('http://localhost:3000/secretarias');
+                    if (!response.ok) throw new Error('Não foi possível carregar a lista de secretarias.');
+                    const secretarias = await response.json();
+                    secretariaSelect.innerHTML = '<option value="">-- Selecione uma opção --</option>';
+                    secretarias.forEach(secretaria => {
+                        const option = document.createElement('option');
+                        option.value = secretaria.id;
+                        option.textContent = `${secretaria.nome} (${secretaria.sigla})`;
+                        option.dataset.url = secretaria.url;
+                        secretariaSelect.appendChild(option);
+                    });
+                } catch (error) {
+                    secretariaSelect.innerHTML = '<option value="">Erro ao carregar a lista</option>';
+                }
+            }
+
+            secretariaSelect.addEventListener('change', () => {
+                const selectedOption = secretariaSelect.options[secretariaSelect.selectedIndex];
+                if (selectedOption && selectedOption.dataset.url) {
+                    urlManualInput.value = selectedOption.dataset.url;
+                }
             });
-        });
 
-        const secretariaSelect = document.getElementById('secretaria-select');
-        const urlManualInput = document.getElementById('url-manual');
-        const nomeResponsavelInput = document.getElementById('responsavel-nome');
-        const emailResponsavelInput = document.getElementById('responsavel-email');
-        const preValidarBtn = document.getElementById('pre-validar-btn');
-        const preValidacaoResultado = document.getElementById('pre-validacao-resultado');
-        const requisitosContainer = document.getElementById('requisitos-container');
-        const enviarAvaliacaoBtn = document.getElementById('enviar-avaliacao-btn');
-        
-        let todosOsRequisitos = [];
-        let linksEncontradosAutomaticamente = [];
+            // --- NOVAS FUNÇÕES PARA O SISTEMA DE RASCUNHO ---
 
-        async function populateSecretarias() {
-            try {
-                const response = await fetch('http://localhost:3000/secretarias');
-                if (!response.ok) throw new Error('Não foi possível carregar a lista de secretarias.');
-                const secretarias = await response.json();
-                secretariaSelect.innerHTML = '<option value="">-- Selecione uma opção --</option>';
-                secretarias.forEach(secretaria => {
-                    const option = document.createElement('option');
-                    option.value = secretaria.id;
-                    option.textContent = `${secretaria.nome} (${secretaria.sigla})`;
-                    secretariaSelect.appendChild(option);
-                });
-            } catch (error) {
-                console.error(error);
-                secretariaSelect.innerHTML = '<option value="">Erro ao carregar a lista</option>';
-            }
-        }
-
-        async function renderRequisitos(linksEncontrados) {
-            try {
-                requisitosContainer.innerHTML = '<p>Carregando requisitos...</p>';
-                const response = await fetch('http://localhost:3000/requisitos');
-                if (!response.ok) throw new Error('Falha ao buscar os requisitos.');
-                todosOsRequisitos = await response.json();
-                requisitosContainer.innerHTML = '';
-
-                todosOsRequisitos.forEach(req => {
-                    const resultadoEncontrado = linksEncontrados.find(res => res.alvo === req.linkFixo);
-                    const isAutoValidated = !!resultadoEncontrado;
-                    const requisitoCard = document.createElement('div');
-                    requisitoCard.className = 'requisito-card';
-                    requisitoCard.dataset.requisitoId = req.id;
-                    
-                    let actionsHTML = '';
-                    if (isAutoValidated) {
-                        requisitoCard.dataset.foiAutomatico = 'true';
-                        actionsHTML = `
-                            <div class="requisito-actions">
-                                <button class="btn-toggle active" data-atende="true">Sim</button>
-                                <button class="btn-toggle" data-atende="false">Não</button>
-                                <div class="link-comprovante-wrapper show">
-                                    <input type="url" class="link-input" value="${req.linkFixo}" readonly style="width: 100%; padding: 8px; background-color: #e9e9e9;">
-                                </div>
-                            </div>
-                            <div style="font-size: 0.9em; margin-top: 10px;">
-                                <span style="color: var(--verde-sucesso); font-weight: bold;">✔️ Verificado Automaticamente</span><br>
-                                <span class="link-meta"><strong>Encontrado em:</strong> <a href="${resultadoEncontrado.origem}" target="_blank">${resultadoEncontrado.origem}</a></span>
-                            </div>
-                        `;
-                    } else {
-                        requisitoCard.dataset.foiAutomatico = 'false';
-                        actionsHTML = `
-                            <div class="requisito-actions">
-                                <span>Atende ao requisito?</span>
-                                <button class="btn-toggle" data-action="sim" data-atende="true">Sim</button>
-                                <button class="btn-toggle" data-action="nao" data-atende="false">Não</button>
-                                <div class="link-comprovante-wrapper">
-                                    <input type="url" class="link-input" placeholder="Cole o link de comprovação aqui" style="width: 100%; padding: 8px;">
-                                </div>
-                            </div>
-                        `;
-                    }
-                    requisitoCard.innerHTML = `
-                        <div class="requisito-header">
-                            <span>${req.texto} (Pontuação: ${req.pontuacao})</span>
-                        </div>
-                        <div class="requisito-body">
-                            <div class="requisito-ajuda">
-                                <strong>Guia:</strong> ${req.textoAjuda}
-                            </div>
-                            ${actionsHTML}
-                        </div>
-                    `;
-                    requisitosContainer.appendChild(requisitoCard);
-                });
-                enviarAvaliacaoBtn.disabled = false;
-            } catch (error) {
-                console.error(error);
-                requisitosContainer.innerHTML = '<p style="color: red;">Erro ao carregar os requisitos.</p>';
-            }
-        }
-
-        preValidarBtn.addEventListener('click', async () => {
-            const urlParaVerificar = document.getElementById('url-manual').value.trim();
-            if (!urlParaVerificar) {
-                alert('Por favor, digite a URL do site a ser avaliado.');
-                return;
-            }
-            preValidarBtn.disabled = true;
-            preValidarBtn.textContent = 'Verificando...';
-            preValidacaoResultado.innerHTML = '<p>Iniciando varredura no site... Isso pode levar alguns minutos.</p>';
-            try {
-                const response = await fetch('http://localhost:3000/pre-validate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ urlSecretaria: urlParaVerificar }),
-                });
-                if (!response.ok) throw new Error('O servidor retornou um erro durante a pré-validação.');
-                const resultado = await response.json();
-                linksEncontradosAutomaticamente = resultado;
-                preValidacaoResultado.innerHTML = `<h4>Verificação Automática Concluída!</h4><p>Foram encontrados <strong>${linksEncontradosAutomaticamente.length}</strong> links obrigatórios.</p>`;
-                await renderRequisitos(linksEncontradosAutomaticamente);
-            } catch (error) {
-                console.error('Erro na pré-validação:', error);
-                preValidacaoResultado.innerHTML = `<p style="color: red;">Ocorreu um erro: ${error.message}</p>`;
-            } finally {
-                preValidarBtn.disabled = false;
-                preValidarBtn.textContent = 'Iniciar Pré-Validação';
-            }
-        });
-
-        requisitosContainer.addEventListener('click', (event) => {
-            const target = event.target;
-            if (target.matches('.btn-toggle[data-action]')) {
-                const parentActions = target.closest('.requisito-actions');
-                const linkWrapper = parentActions.querySelector('.link-comprovante-wrapper');
-                const simBtn = parentActions.querySelector('[data-action="sim"]');
-                const naoBtn = parentActions.querySelector('[data-action="nao"]');
-
-                if (target.dataset.action === 'sim') {
-                    simBtn.classList.add('active');
-                    naoBtn.classList.remove('active');
-                    linkWrapper.classList.add('show');
-                } else if (target.dataset.action === 'nao') {
-                    naoBtn.classList.add('active');
-                    simBtn.classList.remove('active');
-                    linkWrapper.classList.remove('show');
-                }
-            }
-        });
-    
-        enviarAvaliacaoBtn.addEventListener('click', async () => {
-            enviarAvaliacaoBtn.disabled = true;
-            enviarAvaliacaoBtn.textContent = 'Enviando...';
-            try {
+            function salvarRascunho() {
                 const secretariaId = secretariaSelect.value;
-                const urlSecretaria = urlManualInput.value.trim();
-                const nomeResponsavel = nomeResponsavelInput.value.trim();
-                const emailResponsavel = emailResponsavelInput.value.trim();
+                if (!secretariaId) return; // Não salva se nenhuma secretaria estiver selecionada
 
-                if (!secretariaId || !nomeResponsavel || !emailResponsavel) {
-                    alert('Por favor, preencha todos os campos de identificação.');
-                    throw new Error('Campos de identificação incompletos.');
-                }
-
-                const respostas = [];
-                const requisitoCards = document.querySelectorAll('.requisito-card');
-                
-                requisitoCards.forEach(card => {
-                    const requisitoId = parseInt(card.dataset.requisitoId);
-                    const foiAutomatico = card.dataset.foiAutomatico === 'true';
-                    const simBtn = card.querySelector('[data-atende="true"]');
-                    const linkInput = card.querySelector('.link-input');
-                    const atende = simBtn.classList.contains('active');
-                    const linkComprovante = atende ? (linkInput ? linkInput.value.trim() : null) : null;
-
-                    respostas.push({ requisitoId, atende, linkComprovante, foiAutomatico });
-                });
-                
-                const payload = {
-                    secretariaId, urlSecretaria, nomeResponsavel, emailResponsavel, respostas
+                const rascunho = {
+                    nomeResponsavel: nomeResponsavelInput.value,
+                    emailResponsavel: emailResponsavelInput.value,
+                    respostas: {}
                 };
 
-                const response = await fetch('http://localhost:3000/avaliacoes', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                document.querySelectorAll('.requisito-card').forEach(card => {
+                    const id = card.dataset.requisitoId;
+                    const comentario = card.querySelector('.secretaria-comment')?.value;
+                    const evidencias = [];
+                    card.querySelectorAll('.evidence-item').forEach(item => {
+                        evidencias.push(item.dataset.link);
+                    });
+
+                    rascunho.respostas[id] = {
+                        sim: card.querySelector('[data-atende="true"]')?.classList.contains('active'),
+                        nao: card.querySelector('[data-atende="false"]')?.classList.contains('active'),
+                        comentario: comentario,
+                        evidencias: evidencias
+                    };
                 });
 
-                if (!response.ok) {
-                    throw new Error('Ocorreu um erro no servidor ao tentar salvar a avaliação.');
-                }
-                document.querySelector('.container').innerHTML = `
-                    <div style="text-align: center; padding: 40px;">
-                        <h2 style="color: var(--verde-sucesso);">Avaliação Enviada com Sucesso!</h2>
-                        <p>Obrigado por preencher o formulário. A equipe da SCGE foi notificada e irá analisar suas respostas.</p>
-                        <a href="/" class="btn">Voltar para o Início</a>
-                    </div>
-                `;
-            } catch (error) {
-                alert(`Erro ao enviar: ${error.message}`);
-                enviarAvaliacaoBtn.disabled = false;
-                enviarAvaliacaoBtn.textContent = 'Enviar Avaliação';
+                localStorage.setItem(`rascunho_avaliacao_${secretariaId}`, JSON.stringify(rascunho));
+                console.log(`Rascunho para secretaria ${secretariaId} salvo.`);
             }
-        });
 
-        populateSecretarias();
-    });
-</script>
+            function carregarRascunho() {
+                const secretariaId = secretariaSelect.value;
+                if (!secretariaId) return;
+
+                const rascunhoSalvo = localStorage.getItem(`rascunho_avaliacao_${secretariaId}`);
+                if (rascunhoSalvo) {
+                    if (!confirm("Encontramos um rascunho salvo para este órgão. Deseja carregá-lo?")) {
+                        return;
+                    }
+                    const rascunho = JSON.parse(rascunhoSalvo);
+                    nomeResponsavelInput.value = rascunho.nomeResponsavel || '';
+                    emailResponsavelInput.value = rascunho.emailResponsavel || '';
+
+                    document.querySelectorAll('.requisito-card').forEach(card => {
+                        const id = card.dataset.requisitoId;
+                        const resposta = rascunho.respostas[id];
+                        if (resposta) {
+                            if (resposta.sim) card.querySelector('[data-atende="true"]')?.click();
+                            if (resposta.nao) card.querySelector('[data-atende="false"]')?.click();
+                            
+                            const commentEl = card.querySelector('.secretaria-comment');
+                            if (commentEl && resposta.comentario) {
+                                commentEl.value = resposta.comentario;
+                            }
+
+                            const evidenceList = card.querySelector('.evidence-list');
+                            if (evidenceList && resposta.evidencias) {
+                                resposta.evidencias.forEach(url => {
+                                    const newItem = document.createElement('li');
+                                    newItem.className = 'evidence-item';
+                                    newItem.dataset.link = url;
+                                    newItem.innerHTML = `<a href="${url}" target="_blank" title="${url}">${url}</a><button class="remove-evidence-btn" title="Remover Evidência">&times;</button>`;
+                                    evidenceList.appendChild(newItem);
+                                });
+                            }
+                        }
+                    });
+                    console.log(`Rascunho para secretaria ${secretariaId} carregado.`);
+                }
+            }
+
+            function limparRascunho() {
+                const secretariaId = secretariaSelect.value;
+                if (secretariaId) {
+                    localStorage.removeItem(`rascunho_avaliacao_${secretariaId}`);
+                    console.log(`Rascunho para secretaria ${secretariaId} limpo.`);
+                }
+            }
+
+            async function renderRequisitos(linksEncontrados) {
+                const urlPrincipal = document.getElementById('url-manual').value.trim();
+                try {
+                    requisitosContainer.innerHTML = '<p>Carregando requisitos...</p>';
+                    step2.classList.remove('active');
+                    step3.classList.add('active');
+                    
+                    if (todosOsRequisitos.length === 0) {
+                        const response = await fetch('http://localhost:3000/requisitos');
+                        if (!response.ok) throw new Error('Falha ao buscar os requisitos.');
+                        todosOsRequisitos = await response.json();
+                    }
+
+                    const req6JaEncontrado = linksEncontrados.some(l => l.alvo === 'KEYWORD:site-exists');
+                    if (!req6JaEncontrado && urlPrincipal) {
+                        linksEncontrados.push({
+                            alvo: 'KEYWORD:site-exists',
+                            origem: urlPrincipal
+                        });
+                        preValidacaoResultado.innerHTML = `<h4>Verificação Automática Concluída!</h4><p>Foram encontrados <strong>${linksEncontrados.length}</strong> links obrigatórios.</p>`;
+                    }
+
+                    requisitosContainer.innerHTML = '';
+                    todosOsRequisitos.forEach(req => {
+                        const resultadoEncontrado = linksEncontrados.find(res => res.alvo === req.linkFixo);
+                        const isAutoValidated = !!resultadoEncontrado;
+                        
+                        const requisitoCard = document.createElement('div');
+                        requisitoCard.className = 'requisito-card';
+                        requisitoCard.dataset.requisitoId = req.id;
+                        
+                        let actionsHTML = '';
+                        const splitRequisitosCodigos = ["REQUISITO 37", "REQUISITO 38", "REQUISITO 42"];
+
+                        if (splitRequisitosCodigos.some(codigo => req.texto.startsWith(codigo))) {
+                            requisitoCard.dataset.foiAutomatico = 'false';
+                            requisitoCard.dataset.isSplit = 'true';
+                            
+                            actionsHTML = `
+                                <div class="sub-requisito-container">
+                                    <div class="sub-requisito">
+                                        <label class="sub-requisito-label">O órgão possui seção do mapa solicitado?</label>
+                                        <div class="requisito-actions">
+                                            <button class="btn-toggle" data-action="sim-disponibilidade">Sim</button>
+                                            <button class="btn-toggle active" data-action="nao-disponibilidade">Não</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="sub-requisito hidden" id="serie-historica-${req.id}">
+                                        <label class="sub-requisito-label">A série histórica está completa (ano atual e 3 anteriores)?</label>
+                                        <div class="requisito-actions">
+                                            <button class="btn-toggle" data-action="sim-serie">Sim</button>
+                                            <button class="btn-toggle active" data-action="nao-serie">Não</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="link-comprovante-wrapper" id="evidence-wrapper-${req.id}">
+                                        <div class="evidence-container">
+                                            <ul class="evidence-list"></ul>
+                                            <div class="add-evidence-buttons">
+                                                <button class="btn-add-evidence add-link-btn">+ Adicionar Link</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        } else if (isAutoValidated) {
+                            requisitoCard.dataset.foiAutomatico = 'true';
+                            const linkCorreto = resultadoEncontrado.origem;
+                            actionsHTML = `
+                                <div class="requisito-actions">
+                                    <button class="btn-toggle active" data-atende="true">Sim</button>
+                                    <button class="btn-toggle" data-atende="false">Não</button>
+                                </div>
+                                <div class="link-comprovante-wrapper show">
+                                    <input type="url" class="link-input" value="${linkCorreto}" readonly style="background-color: #e9e9e9;">
+                                </div>
+                                <div style="font-size: 0.9em; margin-top: 10px;">
+                                    <span style="color: var(--verde-sucesso); font-weight: bold;">✔️ Verificado Automaticamente</span><br>
+                                    <span class="link-meta"><strong>Encontrado em:</strong> <a href="${linkCorreto}" target="_blank">${linkCorreto}</a></span>
+                                </div>`;
+                        } else {
+                            requisitoCard.dataset.foiAutomatico = 'false';
+                            actionsHTML = `
+                                <div class="requisito-actions">
+                                    <span>Atende ao requisito?</span>
+                                    <button class="btn-toggle" data-action="sim" data-atende="true">Sim</button>
+                                    <button class="btn-toggle" data-action="nao" data-atende="false">Não</button>
+                                </div>
+                                <div class="link-comprovante-wrapper">
+                                    <div class="evidence-container">
+                                        <ul class="evidence-list"></ul>
+                                        <div class="add-evidence-buttons">
+                                            <button class="btn-add-evidence add-link-btn">+ Adicionar Link</button>
+                                            <button class="btn-add-evidence add-image-btn" disabled title="Funcionalidade em desenvolvimento">Adicionar Imagem (Em Breve)</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="comment-container">
+                                    <textarea class="secretaria-comment" placeholder="Adicionar comentário ou justificativa (opcional)..."></textarea>
+                                </div>`;
+                        }
+                        requisitoCard.innerHTML = `
+                            <div class="requisito-header"><span>${req.texto} (Pontuação: ${req.pontuacao})</span></div>
+                            <div class="requisito-body">
+                                <div class="requisito-ajuda"><strong>Guia:</strong> ${req.textoAjuda}</div>
+                                ${actionsHTML}
+                            </div>`;
+                        requisitosContainer.appendChild(requisitoCard);
+                    });
+                    enviarAvaliacaoBtn.disabled = false;
+                } catch (error) {
+                    console.error(error);
+                    requisitosContainer.innerHTML = '<p style="color: red;">Erro ao carregar os requisitos.</p>';
+                }
+            }
+
+            preValidarBtn.addEventListener('click', async () => {
+                const urlParaVerificar = urlManualInput.value.trim();
+                if (!urlParaVerificar) {
+                    alert('Por favor, digite a URL do site a ser avaliado.');
+                    return;
+                }
+                preValidarBtn.disabled = true;
+                preValidarBtn.textContent = 'Verificando...';
+                preValidacaoResultado.innerHTML = '<p>Iniciando varredura no site... Isso pode levar alguns minutos.</p>';
+                step1.classList.remove('active');
+                step2.classList.add('active');
+                try {
+                    const response = await fetch('http://localhost:3000/pre-validate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ urlSecretaria: urlParaVerificar }),
+                    });
+                    if (!response.ok) throw new Error('O servidor retornou um erro durante a pré-validação.');
+                    const resultado = await response.json();
+                    linksEncontradosAutomaticamente = resultado;
+                    preValidacaoResultado.innerHTML = `<h4>Verificação Automática Concluída!</h4><p>Foram encontrados <strong>${linksEncontradosAutomaticamente.length}</strong> links obrigatórios.</p>`;
+                    await renderRequisitos(linksEncontradosAutomaticamente);
+                    carregarRascunho();
+                    preValidarBtn.textContent = 'Pré-Validação Concluída';
+                    preValidarBtn.style.backgroundColor = 'var(--verde-sucesso)';
+                    preValidarBtn.style.cursor = 'default';
+                    urlManualInput.disabled = true;
+                } catch (error) {
+                    preValidacaoResultado.innerHTML = `<p style="color: red;">Ocorreu um erro: ${error.message}</p>`;
+                    preValidarBtn.disabled = false;
+                    preValidarBtn.textContent = 'Tentar Pré-Validação Novamente';
+                } 
+            });
+
+            requisitosContainer.addEventListener('click', (event) => {
+                const target = event.target;
+                const action = target.dataset.action;
+                const requisitoBody = target.closest('.requisito-body');
+
+                // Lógica para botões SIM/NÃO de requisitos NORMAIS
+                if (action === 'sim' || action === 'nao') {
+                    const linkWrapper = requisitoBody.querySelector('.link-comprovante-wrapper');
+                    const simBtn = requisitoBody.querySelector('[data-action="sim"]');
+                    const naoBtn = requisitoBody.querySelector('[data-action="nao"]');
+
+                    if (action === 'sim') {
+                        simBtn.classList.add('active');
+                        naoBtn.classList.remove('active');
+                        if (linkWrapper) linkWrapper.classList.add('show');
+                    } else { // action === 'nao'
+                        naoBtn.classList.add('active');
+                        simBtn.classList.remove('active');
+                        if (linkWrapper) linkWrapper.classList.remove('show');
+                    }
+                }
+
+                // Lógica para botões de requisitos SUBDIVIDIDOS
+                if (action && (action.includes('-disponibilidade'))) {
+                    const requisitoCard = target.closest('.requisito-card');
+                    const serieHistoricaBlock = requisitoCard.querySelector(`#serie-historica-${requisitoCard.dataset.requisitoId}`);
+                    const evidenceWrapper = requisitoCard.querySelector(`#evidence-wrapper-${requisitoCard.dataset.requisitoId}`);
+                    const simBtn = target.parentElement.querySelector('[data-action="sim-disponibilidade"]');
+                    const naoBtn = target.parentElement.querySelector('[data-action="nao-disponibilidade"]');
+
+                    if (action === 'sim-disponibilidade') {
+                        simBtn.classList.add('active');
+                        naoBtn.classList.remove('active');
+                        if (serieHistoricaBlock) serieHistoricaBlock.classList.remove('hidden');
+                        if (evidenceWrapper) evidenceWrapper.classList.add('show');
+                    } else { // nao-disponibilidade
+                        naoBtn.classList.add('active');
+                        simBtn.classList.remove('active');
+                        if (serieHistoricaBlock) serieHistoricaBlock.classList.add('hidden');
+                        if (evidenceWrapper) evidenceWrapper.classList.remove('show');
+                    }
+                }
+                
+                if (action && action.includes('-serie')) {
+                    const simBtn = target.parentElement.querySelector('[data-action="sim-serie"]');
+                    const naoBtn = target.parentElement.querySelector('[data-action="nao-serie"]');
+                    if (action.startsWith('sim')) {
+                        simBtn.classList.add('active');
+                        naoBtn.classList.remove('active');
+                    } else {
+                        naoBtn.classList.add('active');
+                        simBtn.classList.remove('active');
+                    }
+                }
+
+                // Lógica para ADICIONAR e REMOVER EVIDÊNCIAS
+                if (target.matches('.add-link-btn')) {
+                    const url = prompt("Por favor, insira a URL da evidência:");
+                    if (url && url.trim() !== '') {
+                        const evidenceList = target.closest('.evidence-container').querySelector('.evidence-list');
+                        const newItem = document.createElement('li');
+                        newItem.className = 'evidence-item';
+                        newItem.dataset.link = url;
+                        newItem.innerHTML = `<a href="${url}" target="_blank" title="${url}">${url}</a><button class="remove-evidence-btn" title="Remover Evidência">&times;</button>`;
+                        evidenceList.appendChild(newItem);
+                    }
+                }
+                if (target.matches('.remove-evidence-btn')) {
+                    target.closest('.evidence-item').remove();
+                }
+
+                salvarRascunho();
+            });
+
+            nomeResponsavelInput.addEventListener('input', salvarRascunho);
+            emailResponsavelInput.addEventListener('input', salvarRascunho);
+            requisitosContainer.addEventListener('input', (event) => {
+                if (event.target.matches('.secretaria-comment')) {
+                    salvarRascunho();
+                }
+            });
+        
+            enviarAvaliacaoBtn.addEventListener('click', async () => {
+                enviarAvaliacaoBtn.disabled = true;
+                enviarAvaliacaoBtn.textContent = 'Enviando...';
+                try {
+                    const secretariaId = secretariaSelect.value;
+                    const urlSecretaria = urlManualInput.value.trim();
+                    const nomeResponsavel = nomeResponsavelInput.value.trim();
+                    const emailResponsavel = emailResponsavelInput.value.trim();
+                    if (!secretariaId || !nomeResponsavel || !emailResponsavel) {
+                        throw new Error('Por favor, preencha todos os campos de identificação no Passo 1.');
+                    }
+                    
+                    let formValido = true;
+                    const respostas = [];
+                    const requisitoCards = document.querySelectorAll('.requisito-card');
+                    
+                    requisitoCards.forEach(card => {
+                        const requisitoId = parseInt(card.dataset.requisitoId);
+                        const foiAutomatico = card.dataset.foiAutomatico === 'true';
+                        const isSplit = card.dataset.isSplit === 'true';
+                        
+                        let respostaData = { 
+                            requisitoId, 
+                            foiAutomatico,
+                            atende: false,
+                            comentarioSecretaria: null,
+                            evidencias: [],
+                            atendeDisponibilidade: null,
+                            atendeSerieHistorica: null
+                        };
+
+                        if (isSplit) {
+                            const simDisponibilidadeBtn = card.querySelector('[data-action="sim-disponibilidade"]');
+                            const simSerieBtn = card.querySelector('[data-action="sim-serie"]');
+
+                            respostaData.atendeDisponibilidade = simDisponibilidadeBtn.classList.contains('active');
+                            respostaData.atendeSerieHistorica = simSerieBtn.classList.contains('active');
+                            respostaData.atende = respostaData.atendeDisponibilidade || respostaData.atendeSerieHistorica;
+
+                            const evidenciasDisponibilidade = [];
+                            card.querySelectorAll('.evidence-list-disponibilidade .evidence-item').forEach(item => {
+                            evidenciasDisponibilidade.push({ tipo: 'link', url: item.dataset.link });
+                            });
+                            
+                            const evidenciasSerie = [];
+                            card.querySelectorAll('.evidence-list-serie .evidence-item').forEach(item => {
+                            evidenciasSerie.push({ tipo: 'link', url: item.dataset.link });
+                            });
+
+                            respostaData.evidencias = [...evidenciasDisponibilidade, ...evidenciasSerie];
+
+                        } else { // Requisitos normais (automáticos ou manuais)
+                            const simBtn = card.querySelector('[data-atende="true"]');
+                            respostaData.atende = simBtn.classList.contains('active');
+                            
+                            if (foiAutomatico) {
+                                respostaData.linkComprovante = card.querySelector('.link-input')?.value.trim();
+                            } else {
+                                respostaData.comentarioSecretaria = card.querySelector('.secretaria-comment')?.value.trim();
+                                card.querySelectorAll('.evidence-item').forEach(item => {
+                                    respostaData.evidencias.push({ tipo: 'link', url: item.dataset.link });
+                                });
+
+                                if (respostaData.atende && respostaData.evidencias.length === 0) {
+                                    alert(`O requisito "${card.querySelector('.requisito-header span').textContent}" foi marcado como 'Sim', mas nenhuma evidência foi adicionada.`);
+                                    formValido = false;
+                                }
+                            }
+                        }
+                        respostas.push(respostaData);
+                    });
+
+                    if (!formValido) { throw new Error('Formulário inválido. Verifique os campos de evidência obrigatórios.'); }
+                    
+                    const payload = {
+                        secretariaId: parseInt(secretariaId),
+                        urlSecretaria, 
+                        nomeResponsavel, 
+                        emailResponsavel, 
+                        respostas
+                    };
+
+                    const response = await fetch('http://localhost:3000/avaliacoes', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        const errData = await response.json();
+                        throw new Error(errData.error || 'Ocorreu um erro no servidor.');
+                    }  
+                    
+                    limparRascunho();
+                    
+                    document.querySelector('.container').innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <h2 style="color: var(--verde-sucesso);">Avaliação Enviada com Sucesso!</h2>
+                            <p>Obrigado por preencher o formulário. A equipe da SCGE será notificada.</p>
+                            <a href="/" class="btn">Voltar para o Início</a>
+                        </div>`;
+
+                } catch (error) {
+                    Swal.fire('Erro!', `Erro ao enviar: ${error.message}`, 'error');
+                    enviarAvaliacaoBtn.disabled = false;
+                    enviarAvaliacaoBtn.textContent = 'Enviar Avaliação';
+                }
+            });
+            populateSecretarias();
+        });
+    </script>
+    <script src="/global.js"></script>
 </body>
 </html>

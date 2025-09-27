@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale-1.0">
+    <title>Minha Área - Análise PE</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --azul-gov-principal: #002776;
+            --amarelo-gov-detalhe: #FFD700;
+            --cinza-texto: #333333;
+            --cinza-fundo: #f4f4f4;
+            --branco: #ffffff;
+            --verde-sucesso: #28a745;
+            --vermelho-destaque: #dc3545;
+            --cinza-borda: #ddd;
+        }
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--cinza-fundo); color: var(--cinza-texto); line-height: 1.6; }
+        .main-header { background-color: var(--branco); box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 0 5%; position: sticky; top: 0; z-index: 1000; }
+        .main-nav { display: flex; justify-content: space-between; align-items: center; height: 70px; max-width: 1200px; margin: 0 auto; }
+        .logo a { text-decoration: none; display: flex; align-items: center; gap: 12px; }
+        .logo img { height: 45px; filter: drop-shadow(1px 1px 1.2px rgba(0, 0, 0, 0.5)); }
+        .logo .site-title { color: var(--azul-gov-principal); font-size: 1.2em; font-weight: bold; line-height: 1.2; }
+        .logo .site-subtitle { color: var(--cinza-texto); font-size: 0.8em; display: block; }
+        .main-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; }
+        .main-nav a { text-decoration: none; color: var(--cinza-texto); font-weight: 600; padding: 10px; border-bottom: 2px solid transparent; transition: all 0.3s ease; }
+        .main-nav a:hover, .main-nav a.active { color: var(--azul-gov-principal); border-bottom-color: var(--amarelo-gov-detalhe); }
+        .main-footer { text-align: center; padding: 20px; margin-top: auto; background-color: var(--branco); font-size: 0.9em; position: relative; height: 60px; }
+        .main-footer .footer-content { display: flex; justify-content: center; align-items: center; height: 100%; }
+        .main-footer img { height: 110px; width: auto; position: absolute; right: 5%; top: 50%; transform: translateY(-50%); }
+        .main-footer p a { color: var(--cinza-texto); font-weight: 600; text-decoration: none; }
+        main { padding: 40px 5%; min-height: calc(100vh - 190px); box-sizing: border-box; }
+        .container { max-width: 1000px; margin: 0 auto; background: var(--branco); padding: 30px 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: var(--azul-gov-principal); border-bottom: 2px solid var(--amarelo-gov-detalhe); padding-bottom: 10px; margin-bottom: 20px; }
+        .btn { padding: 10px 20px; background-color: var(--azul-gov-principal); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9em; font-weight: bold; text-decoration: none; transition: background-color 0.2s; }
+        .btn:disabled { background-color: #ccc; cursor: not-allowed; }
+        
+        /* Estilos do Dashboard */
+        .avaliacao-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border: 1px solid var(--cinza-borda);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background-color: #fdfdfd;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .avaliacao-info h3 {
+            margin: 0 0 5px 0;
+            color: var(--cinza-texto);
+        }
+        .avaliacao-info p {
+            margin: 0;
+            font-size: 0.9em;
+            color: #666;
+        }
+        .avaliacao-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .avaliacao-status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--branco);
+            text-align: center;
+            min-width: 160px;
+        }
+        /* Cores baseadas nos status do nosso ENUM no schema.prisma */
+        .status-PENDENTE_SECRETARIA { background-color: #6c757d; }
+        .status-EM_ANALISE_SCGE { background-color: #007bff; }
+        .status-AGUARDANDO_RECURSO { background-color: #ffc107; color: #333; }
+        .status-FINALIZADA { background-color: var(--verde-sucesso); }
+
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <nav class="main-nav">
+            <div class="logo"><a href="/"><img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco"><div><span class="site-title">Análise de Sites</span><span class="site-subtitle">Portal da Transparência</span></div></a></div>
+            <ul id="nav-links"></ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1>Minha Área</h1>
+            <p>Acompanhe aqui o andamento das suas autoavaliações.</p>
+            <div id="avaliacoes-container">
+                </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a href="/admin" id="admin-footer-link" style="display: none;">Área Administrativa</a></p>
+            <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const avaliacoesContainer = document.getElementById('avaliacoes-container');
+            const authToken = localStorage.getItem('authToken');
+
+            // Mapeia os status do backend para textos amigáveis
+            const statusMap = {
+                'PENDENTE_SECRETARIA': 'Rascunho (Pendente de Envio)',
+                'EM_ANALISE_SCGE': 'Em Análise (SCGE)',
+                'AGUARDANDO_RECURSO': 'Análise Concluída',
+                'FINALIZADA': 'Finalizada'
+            };
+
+            async function loadMinhasAvaliacoes() {
+                try {
+                    avaliacoesContainer.innerHTML = '<p>Carregando suas avaliações...</p>';
+
+                    const response = await fetch('/api/my-avaliacoes', {
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Não foi possível carregar suas avaliações.');
+                    }
+
+                    const avaliacoes = await response.json();
+                    console.log("Dados recebidos do servidor:", avaliacoes); 
+
+                    if (avaliacoes.length === 0) {
+                        avaliacoesContainer.innerHTML = '<p>Nenhuma avaliação foi iniciada ou enviada ainda. <a href="/formulario">Clique aqui para começar</a>.</p>';
+                        return;
+                    }
+
+                    avaliacoesContainer.innerHTML = avaliacoes.map(avaliacao => {
+                        const dataFormatada = new Date(avaliacao.createdAt).toLocaleDateString('pt-BR');
+                        const statusText = statusMap[avaliacao.status] || avaliacao.status;
+
+                        return `
+                            <div class="avaliacao-item">
+                                <div class="avaliacao-info">
+                                    <h3>Autoavaliação - Ciclo ${avaliacao.ciclo}</h3>
+                                    <p>Órgão: ${avaliacao.secretaria.sigla} | Enviado em: ${dataFormatada}</p>
+                                </div>
+                                <div class="avaliacao-actions">
+                                    <span class="avaliacao-status-badge status-${avaliacao.status}">${statusText}</span>
+                                    <a href="/avaliacao-usuario/${avaliacao.id}" class="btn">Ver Detalhes</a>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                } catch (error) {
+                    console.error('Erro:', error);
+                    avaliacoesContainer.innerHTML = `<p style="color: red;">${error.message}</p>`;
+                }
+            }
+
+            loadMinhasAvaliacoes();
+        });
+    </script>
+    <script src="/global.js"></script>
+</body>
+</html>

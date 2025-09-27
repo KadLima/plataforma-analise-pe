@@ -3,6 +3,7 @@ import random
 import logging
 import requests
 import argparse
+import json
 from urllib.parse import urlparse, urljoin
 from collections import deque
 from selenium import webdriver
@@ -11,7 +12,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import WebDriverException, TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-# --- FERRAMENTAS PARA A FORÇA-TAREFA ---
 from queue import Queue
 from threading import Thread
 
@@ -35,22 +35,20 @@ def enviar_link_api(link_data, session_id):
 def atualizar_sessao_api(session_id, status, total_links, depthReached=None, error_message=None):
     try:
         payload = {"status": status, "total_links": total_links}
-        if depthReached is not None:
-            payload['depthReached'] = depthReached
-        if error_message is not None:
-            payload['errorMessage'] = error_message
+        if depthReached is not None: payload['depthReached'] = depthReached
+        if error_message is not None: payload['errorMessage'] = error_message
         requests.patch(f"{API_BASE_URL}/scan-session/{session_id}", json=payload, timeout=20, proxies=PROXIES)
     except requests.exceptions.RequestException as e:
         logging.error(f"API Exception (atualizar_sessao): {e}")
 
 
-def atualizar_status_link_api(url, session_id, status, http_code=None, final_url=None, profundidade=None):
+def atualizar_status_link_api(url, session_id, status, http_code=None, final_url=None):
     try:
-        payload = {"url": url, "session_id": session_id, "status": status}
+        payload = {"status": status}
         if http_code is not None: payload['httpCode'] = http_code
         if final_url is not None: payload['finalUrl'] = final_url
-        if profundidade is not None: payload['profundidade'] = profundidade
-        requests.patch(f"{API_BASE_URL}/links/by-url", json=payload, timeout=20, proxies=PROXIES)
+        requests.patch(f"{API_BASE_URL}/links/by-url?url={requests.utils.quote(url)}&session_id={session_id}",
+                       json=payload, timeout=20, proxies=PROXIES)
     except requests.exceptions.RequestException as e:
         logging.error(f"API Exception (atualizar_status_link): {e}")
 
@@ -67,23 +65,29 @@ def verificar_link_status(url):
 
 
 class Scanner:
-    def __init__(self, base_url, session_id, max_depth):
+    def __init__(self, base_url, session_id, max_depth, headless=True):
         self.base_url = base_url
         self.base_domain = urlparse(base_url).netloc
         self.session_id = session_id
         self.max_depth = max_depth
-        self.queue = deque([(base_url, 'INICIAL', 0)])
-        self.links_na_fila = {base_url}
-        self.total_links_found = 0
+        self.links_visitados = {base_url}
+        self.total_links_encontrados = 0
         self.profundidade_maxima_atingida = 0
+        self.pages_visited_since_restart = 0
+        self.headless = headless
         self.logger = logging.LoggerAdapter(logging.getLogger(), {'session_id': self.session_id})
+        self._start_driver()
+
+    def _start_driver(self):
         try:
             chrome_options = Options()
-            # chrome_options.add_argument("--headless")
+            if self.headless:
+                chrome_options.add_argument("--headless")
             chrome_options.add_argument("--start-maximized")
             chrome_options.add_argument("--disable-gpu")
             chrome_options.add_argument("--no-sandbox")
-            chrome_options.add_experimental_option("prefs", {"profile.default_content_setting_values.popups": 1})
+            prefs = {"profile.managed_default_content_settings.images": 2}
+            chrome_options.add_experimental_option("prefs", prefs)
             self.driver = webdriver.Chrome(options=chrome_options)
             self.driver.set_page_load_timeout(45)
             self.wait = WebDriverWait(self.driver, 10)
@@ -91,50 +95,75 @@ class Scanner:
             self.logger.critical(f"ERRO CRÍTICO AO INICIAR O WEBDRIVER: {e}", exc_info=True)
             raise
 
+    def _restart_driver(self):
+        self.logger.info("Reiniciando o driver do Selenium para limpar recursos...")
+        try:
+            self.driver.quit()
+        except Exception:
+            pass
+        self._start_driver()
+        self.pages_visited_since_restart = 0
+        self.logger.info("Driver reiniciado com sucesso.")
+
     def classificar_link(self, link):
-        if not link: return 'DESCONHECIDO'
-        if link.startswith(('#', 'javascript:', 'mailto:', 'tel:')): return 'IGNORAR'
+        if not link or link.startswith(('#', 'javascript:', 'mailto:', 'tel:')): return 'IGNORAR'
         if any(link.lower().split('?')[0].endswith(ext) for ext in
                ['.pdf', '.xls', '.xlsx', '.doc', '.docx', '.zip', '.rar', '.csv', '.jpg', '.png',
                 '.gif']): return 'DOWNLOAD'
         link_domain = urlparse(link).netloc
-        if self.base_domain in link_domain:
+        if self.base_domain == link_domain:
             return 'INTERNO'
         else:
             return 'EXTERNO'
 
-    # --- FUNÇÃO DO "TRABALHADOR" PARA A FORÇA-TAREFA ---
     def worker_verificador(self, q):
-        while not q.empty():
+        while True:
             link_url = q.get()
+            if link_url is None:
+                break
             self.logger.info(f"Trabalhador verificando: {link_url}")
             verificacao = verificar_link_status(link_url)
-            atualizar_status_link_api(
-                link_url,
-                self.session_id,
-                verificacao["status"],
-                http_code=verificacao["httpCode"],
-                final_url=verificacao["finalUrl"]
-            )
+            atualizar_status_link_api(link_url, self.session_id, verificacao["status"],
+                                      http_code=verificacao["httpCode"], final_url=verificacao["finalUrl"])
             q.task_done()
 
     def iniciar(self):
-        self.logger.info(f"Iniciando varredura com profundidade máxima de {self.max_depth}.")
-        links_para_verificar_no_final = []  # Lista de tarefas para a força-tarefa
+        # 1. Contrata a equipe de verificação no início
+        q = Queue()
+        threads = []
+        num_workers = 15
+        for _ in range(num_workers):
+            worker = Thread(target=self.worker_verificador, args=(q,))
+            worker.daemon = True
+            worker.start()
+            threads.append(worker)
+
+        queue_navegacao = deque([(self.base_url, 'INICIAL', 0)])
+
         try:
-            while self.queue:
-                url_atual, origem, profundidade_atual = self.queue.popleft()
+            # 2. O "Gerente" (Selenium) começa a navegar
+            while queue_navegacao:
+                if self.pages_visited_since_restart >= 200:
+                    self._restart_driver()
+                self.pages_visited_since_restart += 1
+
+                url_atual, origem, profundidade_atual = queue_navegacao.popleft()
                 self.profundidade_maxima_atingida = max(self.profundidade_maxima_atingida, profundidade_atual)
-                atualizar_status_link_api(url_atual, self.session_id, "Verificando...", profundidade=profundidade_atual)
+
                 try:
                     self.driver.get(url_atual)
                     self.wait.until(EC.presence_of_element_located((By.TAG_NAME, "body")))
-                    atualizar_status_link_api(url_atual, self.session_id, "Funcionando",
-                                              final_url=self.driver.current_url)
+                    time.sleep(1.45)
+                    if origem != 'INICIAL':
+                        atualizar_status_link_api(url_atual, self.session_id, "Funcionando",
+                                                  final_url=self.driver.current_url)
                 except (WebDriverException, TimeoutException) as e:
-                    self.logger.error(f"Não foi possível carregar a página {url_atual}: {e}")
-                    atualizar_status_link_api(url_atual, self.session_id, "Timeout")
+                    self.logger.error(f"Não foi possível carregar a página interna {url_atual}: {e}")
+
+                    if origem != 'INICIAL':
+                        atualizar_status_link_api(url_atual, self.session_id, "Timeout")
                     continue
+
                 if profundidade_atual >= self.max_depth:
                     continue
 
@@ -147,7 +176,7 @@ class Scanner:
                             href = elemento.get_attribute('href')
                             if href: links_nesta_pagina.add(href)
                         self.driver.execute_script("window.scrollBy(0, window.innerHeight);")
-                        time.sleep(1.5)
+                        time.sleep(1.45)
                         new_height = self.driver.execute_script("return document.body.scrollHeight")
                         if new_height == last_height: break
                         last_height = new_height
@@ -155,66 +184,41 @@ class Scanner:
                     self.logger.error(f"Erro na coleta em {url_atual}: {e}")
 
                 for link_href in links_nesta_pagina:
-                    if link_href in self.links_na_fila: continue
-                    self.links_na_fila.add(link_href)
-                    self.total_links_found += 1
+                    if link_href in self.links_visitados: continue
+                    self.links_visitados.add(link_href)
+                    self.total_links_encontrados += 1
                     tipo = self.classificar_link(link_href)
                     if tipo == 'IGNORAR': continue
 
                     link_data = {"url": link_href, "tipo": tipo, "origem": url_atual,
                                  "profundidade": profundidade_atual + 1}
 
-                    if tipo == 'DOWNLOAD' or tipo == 'EXTERNO':
-                        links_para_verificar_no_final.append(link_href)
-                        link_data['status'] = "Não verificado"
-                        enviar_link_api(link_data, self.session_id)
-                    elif tipo == 'INTERNO':
-                        self.queue.append((link_href, url_atual, profundidade_atual + 1))
+                    if tipo == 'INTERNO':
+                        queue_navegacao.append((link_href, url_atual, profundidade_atual + 1))
                         link_data['status'] = "Na fila"
                         enviar_link_api(link_data, self.session_id)
+                    else:
+                        link_data['status'] = "Não verificado"
+                        enviar_link_api(link_data, self.session_id)
+                        q.put(link_href)
 
-                # --- CONDIÇÃO DA FORÇA-TAREFA ---
-                if len(links_para_verificar_no_final) >= 10:
-                    self.logger.info(
-                        f"Acionando força-tarefa para verificar {len(links_para_verificar_no_final)} links...")
-                    q = Queue()
-                    for link_url in links_para_verificar_no_final:
-                        q.put(link_url)
+            # 4. Finalização Sincronizada
+            self.logger.info("Navegação concluída. Aguardando a equipe de verificação finalizar...")
+            q.join()
+            for _ in range(num_workers):
+                q.put(None)
+            for t in threads:
+                t.join()
 
-                    num_workers = 10
-                    for _ in range(num_workers):
-                        worker = Thread(target=self.worker_verificador, args=(q,))
-                        worker.daemon = True
-                        worker.start()
-
-                    q.join()
-                    links_para_verificar_no_final = []  # Esvazia a lista de tarefas
-                    self.logger.info("Força-tarefa concluiu a verificação.")
-
-            # --- VERIFICAÇÃO FINAL (para os links restantes que não chegaram a 10) ---
-            if links_para_verificar_no_final:
-                self.logger.info(
-                    f"Verificando {len(links_para_verificar_no_final)} links restantes com a força-tarefa...")
-                q = Queue()
-                for link_url in links_para_verificar_no_final:
-                    q.put(link_url)
-                num_workers = 10
-                for _ in range(num_workers):
-                    worker = Thread(target=self.worker_verificador, args=(q,))
-                    worker.daemon = True
-                    worker.start()
-                q.join()
-
-            self.driver.quit()
-            atualizar_sessao_api(self.session_id, "finalizado", self.total_links_found,
+            self.logger.info("Verificação finalizada.")
+            atualizar_sessao_api(self.session_id, "finalizado", self.total_links_encontrados,
                                  self.profundidade_maxima_atingida)
-            self.logger.info("Varredura finalizada com sucesso.")
 
         except Exception as e:
             self.logger.critical(f"Erro crítico durante a varredura: {e}", exc_info=True)
             error_text = str(e)
-            atualizar_sessao_api(self.session_id, "erro", self.total_links_found, self.profundidade_maxima_atingida,
-                                 error_message=error_text)
+            atualizar_sessao_api(self.session_id, "erro", self.total_links_encontrados,
+                                 self.profundidade_maxima_atingida, error_message=error_text)
 
         finally:
             if hasattr(self, 'driver') and self.driver.session_id:
@@ -231,7 +235,7 @@ if __name__ == "__main__":
     parser.add_argument("--depth", type=int, default=5, help="A profundidade máxima da varredura.")
     args = parser.parse_args()
     try:
-        scanner = Scanner(base_url=args.url, session_id=args.session_id, max_depth=args.depth)
+        scanner = Scanner(base_url=args.url, session_id=args.session_id, max_depth=args.depth, headless=True)
         scanner.iniciar()
     except Exception as e:
         logging.critical(f"Script finalizado por exceção: {e}", extra={'session_id': args.session_id})

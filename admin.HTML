@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>Área Administrativa - Análise PE</title>
     <style>
         
@@ -26,6 +27,14 @@
         .main-footer { text-align: center; padding: 20px; margin-top: 40px; background-color: var(--branco); font-size: 0.9em; position: relative; height: 60px; }
         .main-footer .footer-content { display: flex; justify-content: center; align-items: center; height: 100%; }
         .main-footer img { height: 110px; width: auto; position: absolute; right: 5%; top: 50%; transform: translateY(-50%); }
+
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+        .card-header h3 { margin: 0; }
+        .avaliacao-status-badge { padding: 5px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600; color: var(--branco); white-space: nowrap; }
+        .status-PENDENTE_SECRETARIA { background-color: #6c757d; }
+        .status-EM_ANALISE_SCGE { background-color: #007bff; }
+        .status-AGUARDANDO_RECURSO { background-color: #ffc107; color: #333; }
+        .status-FINALIZADA { background-color: var(--verde-sucesso); }
 
         main { padding: 40px 5%; }
         .admin-container {
@@ -76,6 +85,20 @@
             cursor: not-allowed; 
         }
 
+        .filter-controls {
+            margin-bottom: 20px;
+        }
+        .filter-controls label {
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        #statusFilter {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+        }
+
     </style>
 </head>
 <body>
@@ -91,63 +114,97 @@
                     </div>
                 </a>
             </div>
-            <ul>
-                <li><a href="/">Início</a></li>
-                <li><a href="/scanner">Scanner de Links</a></li>
-                <li><a href="#" class="disabled-link">Autoavaliação</a></li>
-            </ul>
+            <ul id="nav-links">
+                </ul>
         </nav>
     </header>
 
     <main>
         <div class="admin-container">
             <h1>Administração de Avaliações</h1>
-            <p>Clique em uma avaliação para ver os detalhes completos.</p>
-            <div id="avaliacoes-list">
+             <p>Clique em uma avaliação para ver os detalhes completos.</p>
+
+        <div class="filter-controls">
+            <label for="statusFilter">Filtrar por status:</label>
+                <select id="statusFilter">
+                    <option value="">Todas as Avaliações</option>
+                    <option value="PENDENTE_SECRETARIA">Enviado</option>
+                    <option value="EM_ANALISE_SCGE">Em Análise</option>
+                    <option value="AGUARDANDO_RECURSO">Devolvido</option>
+                    <option value="EM_ANALISE_DE_RECURSO">Em Análise de Recurso</option>
+                    <option value="FINALIZADA">Finalizadas</option>
+                </select>
+            </div>
+            <div id="avaliacoes-list"></div>
                 </div>
         </div>
     </main>
 
     <footer class="main-footer">
         <div class="footer-content">
-             <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
-             <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. | <a href="#" class="disabled-link">Área Administrativa</a></p>
+            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. | <a href="/admin" id="admin-footer-link">Área Administrativa</a></p>
+            <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
         </div>
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            document.querySelectorAll('.disabled-link').forEach(link => {
-                link.addEventListener('click', (event) => {
-                    event.preventDefault(); // Impede o link de navegar
-                    alert('Indisponível no momento');
-                });
-            });
-
+        document.addEventListener('DOMContentLoaded', () => {
             const avaliacoesList = document.getElementById('avaliacoes-list');
+            const statusFilter = document.getElementById('statusFilter');
+            const authToken = localStorage.getItem('authToken');
+            const statusMap = {
+                'PENDENTE_SECRETARIA': 'Enviado',
+                'EM_ANALISE_SCGE': 'Em Análise',
+                'AGUARDANDO_RECURSO': 'Devolvido',
+                'EM_ANALISE_DE_RECURSO': 'Em Análise de Recurso',
+                'FINALIZADA': 'Finalizada'
+            };
 
-            async function loadAvaliacoes() { 
+            async function loadAvaliacoes() {
+                const status = statusFilter.value;
                 try {
                     avaliacoesList.innerHTML = '<p>Carregando avaliações...</p>';
-                    const response = await fetch('http://localhost:3000/avaliacoes');
-                    if (!response.ok) throw new Error('Falha ao carregar avaliações.');
+                    
+                    const response = await fetch(`/api/avaliacoes?status=${status}`, {
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    });
+
+                    if (!response.ok) {
+                        // Tenta ler o erro como JSON, mas se falhar, mostra o texto
+                        let errorMessage = 'Falha ao carregar avaliações.';
+                        try {
+                            const errorData = await response.json();
+                            errorMessage = errorData.error || errorMessage;
+                        } catch (e) {
+                            errorMessage = await response.text();
+                        }
+                        throw new Error(errorMessage);
+                    }
                     const avaliacoes = await response.json();
 
                     if (avaliacoes.length === 0) {
-                        avaliacoesList.innerHTML = '<p>Nenhuma avaliação foi enviada ainda.</p>';
+                        avaliacoesList.innerHTML = '<p>Nenhuma avaliação encontrada com este status.</p>';
                         return;
                     }
 
                     avaliacoesList.innerHTML = avaliacoes.map(avaliacao => {
                         const dataFormatada = new Date(avaliacao.createdAt).toLocaleString('pt-BR');
+                        const statusText = statusMap[avaliacao.status] || avaliacao.status;
                         
+                        // --- BLOCO DE SEGURANÇA ADICIONADO ---
+                        // Garante que a lista de respostas exista e seja um array antes de usá-la
+                        const respostas = Array.isArray(avaliacao.respostas) ? avaliacao.respostas : [];
+                        const temErro = respostas.some(r => r.statusValidacao === 'rejeitado');
+                        const statusClass = temErro ? 'erro' : '';
+
                         return `
-                            <div class="avaliacao-card ${avaliacao.status}" data-avaliacao-id="${avaliacao.id}">
-                                <h3>${avaliacao.secretaria.nome} (${avaliacao.secretaria.sigla})</h3>
+                            <div class="avaliacao-card ${statusClass}" data-avaliacao-id="${avaliacao.id}">
+                                <div class="card-header">
+                                    <h3>${avaliacao.secretaria.nome} (${avaliacao.secretaria.sigla})</h3>
+                                    <span class="avaliacao-status-badge status-${avaliacao.status}">${statusText}</span>
+                                </div>
                                 <p><strong>URL Avaliada:</strong> ${avaliacao.urlSecretaria}</p>
-                                <p><strong>Responsável:</strong> ${avaliacao.nomeResponsavel}</p>
                                 <p><strong>Enviado em:</strong> ${dataFormatada}</p>
-                                <button class="btn-toggle-error" style="margin-top:10px; padding: 5px 10px; cursor: pointer;">Marcar Erro (Teste)</button>
                             </div>
                         `;
                     }).join('');
@@ -156,31 +213,24 @@
 
                 } catch (error) {
                     console.error(error);
-                    avaliacoesList.innerHTML = '<p style="color: red;">Ocorreu um erro ao carregar as avaliações.</p>';
+                    avaliacoesList.innerHTML = `<p style="color: red;">Ocorreu um erro ao carregar as avaliações: ${error.message}</p>`;
                 }
             }
             
             function addEventListenersToCards() {
                 document.querySelectorAll('.avaliacao-card').forEach(card => {
-                    card.addEventListener('click', (event) => {
-                        if (event.target.matches('.btn-toggle-error')) return; 
+                    card.addEventListener('click', () => {
                         const avaliacaoId = card.getAttribute('data-avaliacao-id');
                         window.location.href = `/avaliacao/${avaliacaoId}`;
-                    });
-
-                    const errorButton = card.querySelector('.btn-toggle-error');
-                    errorButton.addEventListener('click', async (event) => {
-                        event.stopPropagation(); 
-                        const avaliacaoId = card.getAttribute('data-avaliacao-id');
-                        await fetch(`/avaliacoes/${avaliacaoId}/toggle-error`, { method: 'POST' });
-                        await loadAvaliacoes(); 
                     });
                 });
             }
 
-            await loadAvaliacoes(); 
+            statusFilter.addEventListener('change', loadAvaliacoes);
+            loadAvaliacoes();
         });
     </script>
+    <script src="/global.js"></script>
 
 </body>
 </html>

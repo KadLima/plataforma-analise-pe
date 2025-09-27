@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Login - Análise PE</title>
+    <style>
+        :root {
+            --azul-gov-principal: #002776;
+            --amarelo-gov-detalhe: #FFD700;
+            --cinza-texto: #333333;
+            --cinza-fundo: #f4f4f4;
+            --branco: #ffffff;
+            --vermelho-erro: #dc3545;
+        }
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--cinza-fundo); color: var(--cinza-texto); display: flex; flex-direction: column; min-height: 100vh; }
+        .main-header { background-color: var(--branco); box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 0 5%; }
+        .main-nav { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 70px; }
+        .logo a { text-decoration: none; display: flex; align-items: center; gap: 12px; }
+        .logo img { height: 45px; }
+        .logo .site-title { color: var(--azul-gov-principal); font-size: 1.2em; font-weight: bold; line-height: 1.2; }
+        .logo .site-subtitle { color: var(--cinza-texto); font-size: 0.8em; display: block; }
+        .main-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; }
+        .main-nav a { text-decoration: none; color: var(--cinza-texto); font-weight: 600; padding: 10px; border-bottom: 2px solid transparent; transition: all 0.3s ease; }
+        .main-nav a:hover, .main-nav a.active { color: var(--azul-gov-principal); border-bottom-color: var(--amarelo-gov-detalhe); }
+        .main-footer { text-align: center; padding: 20px; margin-top: auto; background-color: var(--branco); font-size: 0.9em; }
+        .main-footer p a { color: var(--cinza-texto); font-weight: 600; text-decoration: none; }
+        .main-footer p a:hover { text-decoration: underline; color: var(--azul-gov-principal); }
+        
+
+        /* Estilos da página de Login */
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            padding: 40px 5%;
+        }
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            background-color: var(--branco);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .login-container h1 {
+            text-align: center;
+            color: var(--azul-gov-principal);
+            margin-top: 0;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .form-group input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--azul-gov-principal);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: background-color .3s;
+        }
+        .btn:hover { background-color: #001a4d; }
+        .error-message {
+            color: var(--vermelho-erro);
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 20px;
+            text-align: center;
+            display: none; /* Começa escondido */
+        }
+
+        .main-footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+            background-color: var(--branco);
+            font-size: 0.9em;
+            position: relative; /* Essencial para o posicionamento do logo */
+            height: 60px; /* Ajuda a alinhar tudo */
+        }
+        .main-footer .footer-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        .main-footer img {
+            height: 110px;
+            width: auto;
+            position: absolute;
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .main-footer p a {
+            color: var(--cinza-texto);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .main-footer p a:hover {
+            text-decoration: underline;
+            color: var(--azul-gov-principal);
+        }
+
+        /* --- ESTILOS DA CAIXA DE SOLICITAÇÃO DE ACESSO --- */
+        .request-access-box {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: var(--cinza-fundo);
+            border-radius: 6px;
+            text-align: center;
+            border-top: 3px solid var(--amarelo-gov-detalhe);
+        }
+        .request-access-box h4 {
+            margin-top: 0;
+            color: var(--azul-gov-principal);
+        }
+        .request-access-box p {
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        .request-access-box .small-text {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <nav class="main-nav">
+            <div class="logo">
+                <a href="/">
+                    <img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco">
+                    <div>
+                        <span class="site-title">Análise de Sites</span>
+                        <span class="site-subtitle">Portal da Transparência</span>
+                    </div>
+                </a>
+            </div>
+            <ul id="nav-links">
+                </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="login-container">
+            <h1>Acesso Restrito</h1>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn">Entrar</button>
+                <div id="error-message" class="error-message"></div>
+            </form>
+
+            <div class="request-access-box">
+                <h4>É um órgão do Governo de PE e não tem acesso?</h4>
+                <p>
+                    Para solicitar o cadastro na plataforma, por favor, envie um e-mail para:<br>
+                    <strong>transparencia@scge.pe.gov.br</strong>
+                </p>
+                <p class="small-text">
+                    Informe o nome do órgão, o responsável pelo controle interno e um e-mail válido. Sua solicitação será analisada pela nossa equipe.
+                </p>
+            </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. | <a href="/admin" id="admin-footer-link">Área Administrativa</a></p>
+            <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('login-form');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const errorMessageDiv = document.getElementById('error-message');
+
+            loginForm.addEventListener('submit', async (event) => {
+                event.preventDefault(); // Impede o recarregamento padrão da página
+
+                const email = emailInput.value;
+                const password = passwordInput.value;
+                errorMessageDiv.style.display = 'none'; // Esconde mensagens de erro antigas
+
+                try {
+                    const response = await fetch('http://localhost:3000/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ email, password }),
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        // Se o servidor retornou um erro (ex: 401 Credenciais inválidas)
+                        throw new Error(data.error || 'Ocorreu um erro.');
+                    }
+
+                    // Se o login foi bem-sucedido:
+                    // 1. Salva o "passe de acesso" (token) no armazenamento do navegador
+                    localStorage.setItem('authToken', data.token);
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        iconColor: '#28a745',
+                        title: 'Login bem-sucedido!',
+                        text: 'Você será redirecionado em instantes.',
+                        timer: 2000,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        confirmButtonColor: '#002776'
+                    });
+                    setTimeout(() => {
+                        window.location.href = '/'; 
+                    }, 3000);
+
+                } catch (error) {
+                    // Mostra a mensagem de erro na tela
+                    errorMessageDiv.textContent = error.message;
+                    errorMessageDiv.style.display = 'block';
+                }
+            });
+        });
+    </script>
+
+    <script src="/global.js"></script>
+
+</body>
+</html>

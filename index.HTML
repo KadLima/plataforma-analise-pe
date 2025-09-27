@@ -11,6 +11,7 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         :root {
@@ -26,7 +27,7 @@
         .main-header { background-color: var(--branco); box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 0 5%; position: sticky; top: 0; z-index: 1000; }
         .main-nav { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 70px; }
         .logo a { text-decoration: none; display: flex; align-items: center; gap: 12px; }
-        .logo img { height: 45px; filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 1.2));}
+        .logo img { height: 45px; filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0));}
         .logo .site-title { color: var(--azul-gov-principal); font-size: 1.2em; font-weight: bold; line-height: 1.2; }
         .logo .site-subtitle { color: var(--cinza-texto); font-size: 0.8em; display: block; }
         .main-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; }
@@ -58,8 +59,9 @@
         .swiper-button-next, .swiper-button-prev { color: var(--azul-gov-principal); }
         .swiper-pagination-bullet {background: var(--azul-gov-principal); opacity: 0.3; }
         .swiper-pagination-bullet-active {opacity: 1; background: var(--azul-gov-principal); }
+        .features-section .swiper .swiper-pagination { position: absolute; bottom: -40px !important; 
+        }
       
-        
         .main-footer { text-align: center; padding: 20px; margin-top: 40px; background-color: var(--branco); font-size: 0.9em; position: relative; height: 60px; }
         .main-footer .footer-content { display: flex; justify-content: center; align-items: center; height: 100%; }
         .main-footer img { height: 110px; width: auto; position: absolute; right: 5%; top: 50%; transform: translateY(-50%); }
@@ -154,11 +156,8 @@
                     </div>
                 </a>
             </div>
-            <ul>
-                <li><a href="/" class="active">Início</a></li>
-                <li><a href="/scanner">Scanner de Links</a></li>
-                <li><a href="#" class="disabled-link">Autoavaliação</a></li>
-            </ul>
+            <ul id="nav-links">
+                </ul>
         </nav>
     </header>
 
@@ -214,7 +213,7 @@
                                 <div class="icon"><i class="fas fa-file-alt"></i></div>
                                 <h3>Autoavaliação de Transparência</h3>
                                 <p>Preencha o checklist de transparência ativa de forma inteligente, com pré-validação automática de requisitos.</p>
-                                <a href="#" class="cta-button disabled-link">Iniciar Avaliação</a>
+                                <a id="form-card-link" href="#" class="cta-button">Iniciar Avaliação</a>
                             </div>
                         </div>
                         
@@ -270,59 +269,62 @@
 
     <footer class="main-footer">
         <div class="footer-content">
-             <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
-             <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. | <a href="#" class="disabled-link">Área Administrativa</a></p>
+            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a id="admin-footer-link" href="/admin" style="display: none;">Área Administrativa</a>
+            <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
         </div>
     </footer>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
 
-        document.querySelectorAll('.disabled-link').forEach(link => {
-            link.addEventListener('click', (event) => {
-                event.preventDefault(); 
-                alert('Indisponível no momento');
+            document.querySelectorAll('.disabled-link').forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault(); 
+                    alert('Indisponível no momento');
+                });
             });
-        });
-        
-        AOS.init({
-            duration: 800,
-            once: true, 
-        });
-        
-        const swiper = new Swiper('.swiper', {
-            effect: 'slide',
-            slidesPerView: 1, 
-            spaceBetween: 10,
-            loop: false,
-            centeredSlides: true,
-            grabCursor: true,
-            autoplay: {
-              delay: 4000,
-              disableOnInteraction: false,
-              pauseOnMouseEnter: true,
-            },
-            breakpoints: {
-                768: {
-                    slidesPerView: 2,
-                    spaceBetween: 20
+            
+            AOS.init({
+                duration: 800,
+                once: true, 
+            });
+            
+            const swiper = new Swiper('.swiper', {
+                effect: 'slide',
+                slidesPerView: 1, 
+                spaceBetween: 10,
+                loop: false,
+                centeredSlides: true,
+                grabCursor: true,
+                autoplay: {
+                delay: 4000,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
                 },
-                1024: {
-                    slidesPerView: 3,
-                    spaceBetween: 30
-                }
-            },
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-        });
-        
-    }); 
-</script>
+                breakpoints: {
+                    768: {
+                        slidesPerView: 2,
+                        spaceBetween: 20
+                    },
+                    1024: {
+                        slidesPerView: 3,
+                        spaceBetween: 30
+                    }
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+            });
+            
+        }); 
+    </script>
+
+    <script src="/global.js"></script>
+
 </body>
 </html>

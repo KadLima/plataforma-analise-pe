@@ -9,6 +9,7 @@
 
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
 
@@ -58,7 +59,7 @@
         }
         .logo img {
           height: 45px; 
-          filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 1.2));
+          filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0));
         }
         .logo .site-title {
           color: var(--azul-gov-principal);
@@ -117,7 +118,7 @@
         .link-meta { font-size:12px; color:#666; margin-top:6px; }
         .status-badge { padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold; flex-shrink: 0; }
         .status-funcionando { background-color:#e6f7e6; color:#006400; }
-        .status-erro, .status-inacessível { background-color:#ffe6e6; color:#ff0000; }
+        [class*="status-erro"], .status-timeout { background-color: #ffe6e6; color: var(--vermelho-destaque); }
         .log-item { padding:5px; border-bottom:1px solid #eee; font-family:monospace; font-size:12px; }
         .log-info { color:#0066cc; } .log-success { color:#006400; } .log-error { color:#cc0000; }
         .history-container { margin-top: 40px; }
@@ -147,7 +148,7 @@
         .export-option:hover { background-color: #ddd; }
 
         
-      .main-footer {
+        .main-footer {
           text-align: center;
           padding: 20px;
           margin-top: 40px;
@@ -155,36 +156,37 @@
           font-size: 0.9em;
           position: relative; 
           height: 60px; 
-      }
-      .main-footer .footer-content {
-        display: flex;
-        justify-content: center; 
-        align-items: center;
-        height: 100%;
-      }
-      .main-footer img {
-        height: 110px; 
-        width: auto; 
-        position: absolute; 
-        right: 5%; 
-        top: 50%; 
-        transform: translateY(-50%); 
-      }
+        }
+        .main-footer .footer-content {
+            display: flex;
+            justify-content: center; 
+            align-items: center;
+            height: 100%;
+        }
+        .main-footer img {
+            height: 110px; 
+            width: auto; 
+            position: absolute; 
+            right: 5%; 
+            top: 50%; 
+            transform: translateY(-50%); 
+        }
 
      
-      .main-footer p a {
-        color: var(--cinza-texto);
-        font-weight: 600;
-        text-decoration: none;
-        transition: color 0.2s;
-      }
-      .main-footer p a:hover {
-        text-decoration: underline;
-        color: var(--azul-gov-principal);
-      }
+        .main-footer p a {
+            color: var(--cinza-texto);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .main-footer p a:hover {
+            text-decoration: underline;
+            color: var(--azul-gov-principal);
+        }
 
 
-      .scan-indicator {
+        .scan-indicator {
           display: none; 
           width: 10px;
           height: 10px;
@@ -193,15 +195,15 @@
           margin-left: 10px;
           animation: pulse 1.5s infinite;
           vertical-align: middle; 
-      }
+        }
 
       
-      .stats-container.scanning .scan-indicator {
+        .stats-container.scanning .scan-indicator {
           display: inline-block;
-      }
+        }
 
       
-      @keyframes pulse {
+        @keyframes pulse {
           0% {
               box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
           }
@@ -211,43 +213,135 @@
           100% {
               box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
           }
-      }
+        }
 
-      .alert-box {
+        .alert-box {
           display: flex;
           align-items: center;
           padding: 15px;
           margin-bottom: 30px;
           border-radius: 6px;
           border: 1px solid;
-      }
-      .alert-box.warning {
+        }
+        .alert-box.warning {
           background-color: #fff8e1; 
           border-color: #ffc107; 
           color: #856404; 
-      }
-      .alert-box .icon {
+        }
+        .alert-box .icon {
           font-size: 1.5em;
           margin-right: 15px;
-      }
+        }
 
-      .alert-box.hidden {
+        .alert-box.hidden {
           display: none; 
-      }
+        }
 
-      .alert-box.flash {
+        .alert-box.flash {
           animation: flash-warning 0.75s 3;
-      }
+        }
 
-      @keyframes flash-warning {
+        @keyframes flash-warning {
           0% { background-color: #fff8e1; } 
           50% { background-color: #ffecb3; } 
           100% { background-color: #fff8e1; } 
-      }
+        }
 
-      .disabled-link {
+        .disabled-link {
             cursor: not-allowed; 
-      }
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 15px; /* Espaçamento entre os itens */
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Permite que os filtros quebrem a linha em telas menores */
+        }
+
+        /* --- ESTILOS DA NOVA BARRA DE FILTROS V2 --- */
+        .filter-bar-v2 {
+            display: flex;
+            gap: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-wrapper {
+            position: relative;
+            flex-grow: 1;
+            min-width: 300px;
+        }
+
+        .search-icon {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        #filterInput {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.9em;
+            box-sizing: border-box;
+        }
+
+        .filter-toggles {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-toggles span {
+            font-weight: 600;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .toggle-control {
+            position: relative;
+            display: inline-block;
+        }
+
+        .toggle-control input[type="checkbox"] {
+            display: none; /* Esconde o checkbox padrão */
+        }
+
+        .toggle-pill {
+            padding: 6px 12px;
+            border-radius: 20px;
+            background-color: #e9ecef;
+            color: #495057;
+            cursor: pointer;
+            font-size: 0.8em;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-control input[type="checkbox"]:checked + .toggle-pill {
+            background-color: var(--azul-gov-principal);
+            color: var(--branco);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* --- REFINAMENTOS VISUAIS DE IDENTIDADE --- */
+        .history-header {
+            background-color: var(--azul-gov-principal);
+            color: var(--branco);
+        }
+
+        /* --- NOVOS CONTORNOS AZUIS SUTIS (VERSÃO CORRIGIDA) --- */
+        .url-input, #depthInput {
+            border: 1px solid var(--azul-gov-principal);
+        }
 
     </style>
 </head>
@@ -264,11 +358,8 @@
                     </div>
                 </a>
             </div>
-            <ul>
-                <li><a href="/">Início</a></li>
-                <li><a href="/scanner" class="active">Scanner de Links</a></li>
-                <li><a href="#" class="disabled-link">Autoavaliação</a></li> </ul>
-            </ul>
+            <ul id="nav-links">
+                </ul>
         </nav>
     </header>
 
@@ -285,7 +376,7 @@
             <div class="input-section">
                 <input type="url" id="urlInput" class="url-input" placeholder="Digite a URL do site (ex: https://exemplo.com)" />
                 <div class="input-wrapper">
-                  <input type="number" id="depthInput" value="5" min="0" title="Profundidade Máxima" style="padding: 15px; width: 80px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px;">
+                  <input type="number" id="depthInput" value="5" min="0" title="Profundidade Máxima" style="padding: 15px; width: 80px; border-radius: 6px; font-size: 16px;">
                   <span class="ajuda" data-tippy-content="Define a profundidade da varredura. Nível 0 é a página inicial, nível 1 são os links nela, e assim por diante.">?</span>
                 </div>
                 <button id="startBtn" class="btn">Iniciar Varredura</button>
@@ -331,6 +422,29 @@
                     <button class="tab-btn" data-tab="all">Todos os Links <span id="allLinksCount"></span></button>
                     <button class="tab-btn" data-tab="logs">Logs de Execução</button>
                 </div>
+
+                <div class="filter-bar-v2">
+                    <div class="search-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="filterInput" placeholder="Pesquisar por trecho da URL...">
+                    </div>
+                    <div class="filter-toggles">
+                        <span>Filtrar por tipo de erro:</span>
+                        <label class="toggle-control">
+                            <input type="checkbox" class="error-checkbox" value="4xx">
+                            <span class="toggle-pill">4xx</span>
+                        </label>
+                        <label class="toggle-control">
+                            <input type="checkbox" class="error-checkbox" value="5xx">
+                            <span class="toggle-pill">5xx</span>
+                        </label>
+                        <label class="toggle-control">
+                            <input type="checkbox" class="error-checkbox" value="timeout">
+                            <span class="toggle-pill">Timeout</span>
+                        </label>
+                    </div>
+                </div>
+
                 <div class="tab-content active" id="brokenTab">
                     <div class="link-list" id="brokenLinksList"></div>
                 </div>
@@ -356,425 +470,433 @@
 
     <footer class="main-footer">
         <div class="footer-content">
+            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a href="/admin" id="admin-footer-link">Área Administrativa</a></p>
             <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
-            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. | <a href="#" class="disabled-link">Área Administrativa</a></p>
         </div>
     </footer>
 
-  <script>
-    
-      const urlInput = document.getElementById('urlInput');
-      const startBtn = document.getElementById('startBtn');
-      const stopBtn = document.getElementById('stopBtn');
-      const exportBtn = document.getElementById('exportBtn');
-      const exportOptionsMenu = document.getElementById('exportOptionsMenu');
-      const totalLinksSpan = document.getElementById('totalLinks');
-      const brokenLinksSpan = document.getElementById('brokenLinks');
-      const pendingLinksSpan = document.getElementById('pendingLinks');
-      const timeElapsedSpan = document.getElementById('timeElapsed');
-      const progressText = document.getElementById('progressText');
-      const brokenLinksList = document.getElementById('brokenLinksList');
-      const allLinksList = document.getElementById('allLinksList');
-      const logsList = document.getElementById('logsList');
-      const sessionHistoryList = document.getElementById('sessionHistoryList');
-
-    
-      let elapsedInterval;
-      let monitoringInterval;
-      let currentSessionId = null;
-      let isScanActive = false;
-      let displayedSessionId = null;
-      let scanStartTime;
-
-      
-      function formatDuration(seconds) {
-        const s = Math.floor(seconds % 60);
-        const m = Math.floor((seconds / 60) % 60);
-        const h = Math.floor(seconds / 3600);
-        if (h > 0) return `${h}h ${m}m ${s}s`;
-        if (m > 0) return `${m}m ${s}s`;
-        return `${s}s`;
-      }
-
-      function addLog(message, type = 'info') {
-        const logItem = document.createElement('div');
-        logItem.className = `log-item log-${type}`;
-        logItem.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-        logsList.prepend(logItem);
-      }
-
-      function resetUI() {
-        totalLinksSpan.textContent = '0';
-        brokenLinksSpan.textContent = '0';
-        pendingLinksSpan.textContent = '0';
-        timeElapsedSpan.textContent = '0s';
-        brokenLinksList.innerHTML = '';
-        allLinksList.innerHTML = '';
-        document.getElementById('brokenLinksCount').textContent = '';
-        document.getElementById('allLinksCount').textContent = '';
-        progressText.textContent = 'Aguardando início...';
-        startBtn.disabled = false;
-        stopBtn.disabled = true;
-        exportBtn.disabled = true;
-        clearInterval(elapsedInterval);
-        clearInterval(monitoringInterval);
-      }
-      
-
-      async function loadSessionHistory() {
-          try {
-              const [activeResponse, dbResponse] = await Promise.all([
-                  fetch('http://localhost:3000/active-sessions'),
-                  fetch('http://localhost:3000/sessions')
-              ]);
-              if (!dbResponse.ok) throw new Error('Falha ao buscar histórico do banco.');
-              const activeSessions = activeResponse.ok ? await activeResponse.json() : [];
-              const dbSessions = await dbResponse.json();
-
-              const formattedActiveSessions = activeSessions.map(s => ({
-                  id: s.sessionId, url_base: s.url, status: 'iniciado', createdAt: s.startTime, is_active: true
-              }));
-
-              const allSessions = [
-                  ...formattedActiveSessions,
-                  ...dbSessions.filter(dbSession => !formattedActiveSessions.some(active => active.id === dbSession.id))
-              ];
-
-              sessionHistoryList.innerHTML = '';
-              if (allSessions.length === 0) {
-                  sessionHistoryList.innerHTML = '<p style="text-align:center; color:#888;">Nenhuma varredura encontrada.</p>';
-                  return;
-              }
-
-              allSessions.forEach(session => {
-                  const item = document.createElement('div');
-                  item.className = 'session-item';
-                  item.setAttribute('data-session-id', session.id);
-                  item.innerHTML = `
-                      <div class="session-info">
-                        <strong>${session.url_base}</strong><br>
-                        <small>${new Date(session.createdAt).toLocaleString('pt-BR')}</small>
-                      </div>
-                      <div style="display: flex; align-items: center;">
-                        <span class="session-status status-${session.status}">${session.is_active ? 'Em Andamento' : session.status}</span>
-                        ${!session.is_active ? '<button class="session-delete-btn" title="Apagar esta sessão"><i class="fas fa-trash-alt"></i></button>' : ''}
-                      </div>
-                  `;
-                  item.querySelector('.session-info').addEventListener('click', () => displaySessionResults(session.id));
-                  
-                  if (!session.is_active) {
-                      item.querySelector('.session-delete-btn').addEventListener('click', (event) => {
-                          event.stopPropagation();
-                          deleteSession(session.id, session.url_base);
-                      });
-                  }
-                  sessionHistoryList.appendChild(item);
-              });
-          } catch (error) {
-              console.error('Erro ao carregar histórico:', error);
-              addLog(error.message, 'error');
-          }
-      }
-
-      async function deleteSession(sessionId, urlBase) {
-        if (!confirm(`Tem certeza que deseja apagar permanentemente a varredura para:\n${urlBase}?`)) {
-          return;
-        }
-        
-        try {
-          addLog(`Apagando sessão ${sessionId}...`, 'info');
-          const response = await fetch(`http://localhost:3000/sessions/${sessionId}`, {
-            method: 'DELETE'
-          });
-          if (!response.ok) throw new Error('Falha ao apagar a sessão no servidor.');
-          addLog(`Sessão ${sessionId} apagada com sucesso.`, 'success');
-          await loadSessionHistory();
-          if (displayedSessionId === sessionId) {
-            resetUI();
-            addLog('UI reiniciada pois a sessão exibida foi apagada.', 'info');
-          }
-        } catch (error) {
-          console.error('Erro ao apagar sessão:', error);
-          addLog(error.message, 'error');
-        }
-      }
-
-      async function displaySessionResults(sessionId) {
-        displayedSessionId = sessionId;
-        if (!sessionId) return;
-        
-        
-        if (isScanActive && sessionId === currentSessionId) {
-            resetUI(false); 
-            startMonitoring(sessionId);
-            return;
-        }
-
-        resetUI();
-        progressText.textContent = `Carregando resultados para a sessão ${sessionId.substring(0, 8)}...`;
-        addLog(`Carregando resultados da sessão ${sessionId}`, 'info');
-
-        try {
-            const sessionResponse = await fetch(`http://localhost:3000/scan-sessions/${sessionId}`);
-            if (!sessionResponse.ok) throw new Error('Falha ao buscar detalhes da sessão');
-            const session = await sessionResponse.json();
-
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
             
-            if (session.status !== 'iniciado') {
-                const startTime = new Date(session.createdAt);
-                const endTime = new Date(session.updatedAt);
-                const durationInSeconds = Math.floor((endTime - startTime) / 1000);
-                timeElapsedSpan.textContent = formatDuration(durationInSeconds);
+            // Bloco 1: Variáveis e Constantes
+            const urlInput = document.getElementById('urlInput');
+            const depthInput = document.getElementById('depthInput');
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            const exportBtn = document.getElementById('exportBtn');
+            const exportOptionsMenu = document.getElementById('exportOptionsMenu');
+            const totalLinksSpan = document.getElementById('totalLinks');
+            const brokenLinksSpan = document.getElementById('brokenLinks');
+            const pendingLinksSpan = document.getElementById('pendingLinks');
+            const timeElapsedSpan = document.getElementById('timeElapsed');
+            const progressText = document.getElementById('progressText');
+            const brokenLinksList = document.getElementById('brokenLinksList');
+            const allLinksList = document.getElementById('allLinksList');
+            const logsList = document.getElementById('logsList');
+            const sessionHistoryList = document.getElementById('sessionHistoryList');
+            const historyHeader = document.getElementById('historyHeader');
+            const sessionListContainer = document.getElementById('sessionListContainer');
+            const filterInput = document.getElementById('filterInput');
+            const authToken = localStorage.getItem('authToken');
+
+            let elapsedInterval;
+            let monitoringInterval;
+            let currentSessionId = null;
+            let displayedSessionId = null;
+            let isScanActive = false;
+            let scanStartTime;
+            let allLinksFromSession = [];
+
+            // Bloco 2: Funções
+            function formatDuration(seconds) {
+                const s = Math.floor(seconds % 60);
+                const m = Math.floor((seconds / 60) % 60);
+                const h = Math.floor(seconds / 3600);
+                if (h > 0) return `${h}h ${m}m ${s}s`;
+                if (m > 0) return `${m}m ${s}s`;
+                return `${s}s`;
             }
-            
-            const linksResponse = await fetch(`http://localhost:3000/links?session_id=${sessionId}`);
-            if (!linksResponse.ok) throw new Error('Falha ao buscar os links da sessão');
-            const links = await linksResponse.json();
-            
-            const brokenLinks = links.filter(link => link.status && (link.status.toLowerCase().includes('erro') || link.status.toLowerCase().includes('inacessível')));
-            allLinksList.innerHTML = links.map(link => renderLinkItem(link)).join('');
-            brokenLinksList.innerHTML = brokenLinks.map(link => renderLinkItem(link)).join('');
-            totalLinksSpan.textContent = links.length;
-            brokenLinksSpan.textContent = brokenLinks.length;
-            pendingLinksSpan.textContent = links.filter(l => l.status === 'Na fila').length;
-            document.getElementById('allLinksCount').textContent = `(${links.length})`;
-            document.getElementById('brokenLinksCount').textContent = `(${brokenLinks.length})`;
-            progressText.textContent = `Exibindo ${links.length} links da sessão selecionada.`;
-            exportBtn.disabled = links.length === 0;
 
-        } catch (error) {
-            console.error('Erro ao exibir resultados da sessão:', error);
-            addLog(error.message, 'error');
-            progressText.textContent = 'Erro ao carregar resultados.';
-        }
-      }
+            function addLog(message, type = 'info') {
+                const logItem = document.createElement('div');
+                logItem.className = `log-item log-${type}`;
+                logItem.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                logsList.prepend(logItem);
+            }
 
-      function renderLinkItem(link) {
-        const isBroken = link.status && (link.status.toLowerCase().includes('erro') || link.status.toLowerCase().includes('inacessível'));
-        const statusClass = isBroken ? 'status-erro' : 'status-funcionando';
-        
-        let finalStatus = link.status || 'Não verificado';
-        if (link.httpCode && !finalStatus.toLowerCase().includes('erro')) {
-          finalStatus += ` [${link.httpCode}]`;
-        }
-        return `
-          <div class="link-item">
-            <div class="link-left">
-              <a href="${link.url}" target="_blank">${link.url}</a>
-              <div class="link-meta"><strong>Origem:</strong> ${link.origem}</div>
-              ${link.finalUrl && link.finalUrl !== link.url ? `<div class="link-meta"><strong>Redirecionado para:</strong> ${link.finalUrl}</div>` : ''}
-            </div>
-            <span class="status-badge ${statusClass}">${finalStatus}</span>
-          </div>`;
-      }
-
-      function startMonitoring(sessionId) {
-        addLog(`Monitoramento da sessão ${sessionId} ativado.`, 'info');
-        
-        clearInterval(monitoringInterval);
-        
-        monitoringInterval = setInterval(async () => {
-            if (!currentSessionId) {
+            function resetUI(clearLogs = true) {
+                totalLinksSpan.textContent = '0';
+                brokenLinksSpan.textContent = '0';
+                pendingLinksSpan.textContent = '0';
+                timeElapsedSpan.textContent = '0s';
+                brokenLinksList.innerHTML = '';
+                allLinksList.innerHTML = '';
+                document.getElementById('brokenLinksCount').textContent = '';
+                document.getElementById('allLinksCount').textContent = '';
+                progressText.textContent = 'Aguardando início...';
+                if (clearLogs) {
+                    logsList.innerHTML = '';
+                }
+                if (authToken) {
+                    startBtn.disabled = false;
+                } else {
+                    startBtn.disabled = true;
+                }
+                stopBtn.disabled = true;
+                exportBtn.disabled = true;
+                allLinksFromSession = [];
                 clearInterval(monitoringInterval);
-                return;
+                if (!isScanActive) {
+                    clearInterval(elapsedInterval);
+                }
             }
-            try {
-                const linksResponse = await fetch(`http://localhost:3000/links?session_id=${sessionId}`);
-                const links = await linksResponse.json();
-                
-                const broken = links.filter(link => link.status && (link.status.toLowerCase().includes('erro') || link.status.toLowerCase().includes('inacessível')));
-                allLinksList.innerHTML = links.map(link => renderLinkItem(link)).join('');
-                brokenLinksList.innerHTML = broken.map(link => renderLinkItem(link)).join('');
 
-                totalLinksSpan.textContent = links.length;
-                brokenLinksSpan.textContent = broken.length;
-                pendingLinksSpan.textContent = links.filter(l => l.status === 'Na fila').length;
-                document.getElementById('allLinksCount').textContent = `(${links.length})`;
-                document.getElementById('brokenLinksCount').textContent = `(${broken.length})`;
-                
-                const sessionResponse = await fetch(`http://localhost:3000/scan-sessions/${sessionId}`);
-                const session = await sessionResponse.json();
-                
-                progressText.textContent = `Analisando... ${links.length} links encontrados. Status: ${session.status}`;
-
-                if (session.status === 'finalizado' || session.status === 'erro' || session.status === 'interrompido') {
-                  clearInterval(monitoringInterval);
-                  clearInterval(elapsedInterval);
-                  isScanActive = false;
-                  document.querySelector('.stats-container').classList.remove('scanning');
-                  progressText.textContent = `Varredura concluída! Status: ${session.status}.`;
-                  addLog(`Varredura finalizada com status: ${session.status}`, session.status === 'finalizado' ? 'success' : 'error');
-                  
-                  if (session.depthReached !== null && session.depthReached !== undefined) {
-                      addLog(`Profundidade máxima atingida: ${session.depthReached}`, 'info');
-                  }
-                  
-                  if (session.status === 'erro' && session.errorMessage) {
-                      addLog(`ERRO CRÍTICO: ${session.errorMessage}`, 'error');
-                  }
-                  
-                  stopBtn.disabled = true;
-                  startBtn.disabled = false;
-                  exportBtn.disabled = links.length === 0;
-                  currentSessionId = null;
-                  await loadSessionHistory();
-              }
-            } catch (error) {
-                addLog(`Erro no monitoramento: ${error.message}`, 'error');
+            async function loadSessionHistory() {
+                try {
+                    const fetchOptions = { headers: { 'Authorization': `Bearer ${authToken}` } };
+                    const response = await fetch('http://localhost:3000/sessions', fetchOptions);
+                    if (!response.ok) throw new Error('Falha ao carregar o histórico de varreduras.');
+                    const sessions = await response.json();
+                    sessionHistoryList.innerHTML = '';
+                    if (sessions.length === 0) {
+                        sessionHistoryList.innerHTML = '<p style="text-align:center; color:#888;">Nenhuma varredura encontrada.</p>';
+                        return;
+                    }
+                    sessions.forEach(session => {
+                        const item = document.createElement('div');
+                        item.className = 'session-item';
+                        item.setAttribute('data-session-id', session.id);
+                        const statusText = session.status === 'iniciado' ? 'Em Andamento' : session.status;
+                        item.innerHTML = `<div class="session-info"><strong>${session.url_base}</strong><br><small>${new Date(session.createdAt).toLocaleString('pt-BR')}</small></div><div style="display: flex; align-items: center;"><span class="session-status status-${session.status}">${statusText}</span><button class="session-delete-btn" title="Apagar esta sessão"><i class="fas fa-trash-alt"></i></button></div>`;
+                        item.querySelector('.session-info').addEventListener('click', () => displaySessionResults(session.id));
+                        item.querySelector('.session-delete-btn').addEventListener('click', (event) => {
+                            event.stopPropagation();
+                            deleteSession(session.id, session.url_base);
+                        });
+                        sessionHistoryList.appendChild(item);
+                    });
+                } catch (error) {
+                    addLog(error.message, 'error');
+                }
             }
-        }, 3000);
-      }
 
-      async function startVerification() {
-        const alertBox = document.querySelector('.alert-box');
-        if (alertBox) {
-            alertBox.classList.remove('hidden'); 
-            alertBox.classList.add('flash');     
+            async function deleteSession(sessionId, urlBase) {
+                if (!confirm(`Tem certeza que deseja apagar permanentemente a varredura para:\n${urlBase}?`)) return;
+                try {
+                    addLog(`Apagando sessão ${sessionId}...`, 'info');
+                    const response = await fetch(`http://localhost:3000/sessions/${sessionId}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    });
+                    if (!response.ok) throw new Error('Falha ao apagar a sessão no servidor.');
+                    addLog(`Sessão ${sessionId} apagada com sucesso.`, 'success');
+                    await loadSessionHistory();
+                    if (displayedSessionId === sessionId) {
+                        resetUI();
+                        addLog('UI reiniciada pois a sessão exibida foi apagada.', 'info');
+                    }
+                } catch (error) {
+                    addLog(`Erro ao apagar sessão: ${error.message}`, 'error');
+                }
+            }
 
-            setTimeout(() => {
-                alertBox.classList.remove('flash');
-            }, 1500);
-        }
-        const url = urlInput.value.trim();
-        const depth = document.getElementById('depthInput').value;
-        if (!url) { alert('Por favor, digite uma URL válida!'); return; }
-        
-        resetUI();
-        isScanActive = true;
-        scanStartTime = Date.now();
-        elapsedInterval = setInterval(() => {
-            const seconds = Math.floor((Date.now() - scanStartTime) / 1000);
-            timeElapsedSpan.textContent = formatDuration(seconds);
-        }, 1000);
+            async function displaySessionResults(sessionId) {
+                displayedSessionId = sessionId;
+                if (!sessionId) return;
+                if (isScanActive && sessionId === currentSessionId) {
+                    clearInterval(monitoringInterval);
+                    elapsedInterval = setInterval(() => {
+                        const seconds = Math.floor((Date.now() - scanStartTime) / 1000);
+                        timeElapsedSpan.textContent = formatDuration(seconds);
+                    }, 1000);
+                    startBtn.disabled = true;
+                    stopBtn.disabled = false;
+                    exportBtn.disabled = true;
+                    startMonitoring(sessionId);
+                    return;
+                }
+                resetUI(false);
+                progressText.textContent = `Carregando resultados...`;
+                try {
+                    const fetchOptions = { headers: { 'Authorization': `Bearer ${authToken}` } };
+                    const [sessionResponse, linksResponse] = await Promise.all([
+                        fetch(`http://localhost:3000/scan-sessions/${sessionId}`, fetchOptions),
+                        fetch(`http://localhost:3000/links?session_id=${sessionId}`, fetchOptions)
+                    ]);
+                    if (!sessionResponse.ok || !linksResponse.ok) throw new Error('Falha ao buscar dados da sessão.');
+                    const session = await sessionResponse.json();
+                    allLinksFromSession = await linksResponse.json();
+                    if (session.status !== 'iniciado') {
+                        const startTime = new Date(session.createdAt);
+                        const endTime = new Date(session.updatedAt);
+                        timeElapsedSpan.textContent = formatDuration(Math.floor((endTime - startTime) / 1000));
+                    }
+                    renderFilteredLists();
+                    progressText.textContent = `Exibindo ${allLinksFromSession.length} links da sessão selecionada.`;
+                    exportBtn.disabled = allLinksFromSession.length === 0;
+                } catch (error) {
+                    progressText.textContent = 'Erro ao carregar resultados.';
+                    addLog(error.message, 'error');
+                }
+            }
 
-        addLog(`Iniciando varredura em ${url}`, 'info');
-        document.querySelector('.stats-container').classList.add('scanning');
-        startBtn.disabled = true;
-        stopBtn.disabled = false;
-        
-        try {
-            const crawlResponse = await fetch('http://localhost:3000/start-crawl', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url, depth })
+            function renderLinkItem(link) {
+                const statusClass = `status-${(link.status || 'nao-verificado').toLowerCase().replace(/ /g, '-').replace('ç', 'c')}`;
+
+                let displayText = link.status || 'Não verificado';
+                if (link.httpCode && link.status.toLowerCase().includes('funcionando')) {
+                    displayText += ` [${link.httpCode}]`;
+                }
+
+                return `
+                    <div class="link-item">
+                        <div class="link-left">
+                            <a href="${link.url}" target="_blank">${link.url}</a>
+                            <div class="link-meta"><strong>Origem:</strong> ${link.origem}</div>
+                            ${link.finalUrl && link.finalUrl !== link.url ? `<div class="link-meta"><strong>Redirecionado para:</strong> ${link.finalUrl}</div>` : ''}
+                        </div>
+                        <span class="status-badge ${statusClass}">${displayText}</span>
+                    </div>`;
+            }
+
+            function renderFilteredLists() {
+                console.log("--- INICIANDO RENDERIZAÇÃO FILTRADA ---");
+                const searchText = document.getElementById('filterInput').value.toLowerCase();
+                const selectedErrors = [];
+                document.querySelectorAll('.error-checkbox:checked').forEach(checkbox => {
+                    selectedErrors.push(checkbox.value);
+                });
+
+                console.log(`Texto da pesquisa: '${searchText}'`);
+                console.log("Erros selecionados:", selectedErrors);
+                console.log(`Total de links na memória (allLinksFromSession): ${allLinksFromSession.length}`);
+
+                // --- Lógica para a aba "TODOS OS LINKS" ---
+                let allFilteredLinks = allLinksFromSession;
+                if (searchText) {
+                    allFilteredLinks = allFilteredLinks.filter(link => link.url.toLowerCase().includes(searchText));
+                }
+                console.log(`-> Links para a aba 'Todos os Links' após filtro de texto: ${allFilteredLinks.length}`);
+                allLinksList.innerHTML = allFilteredLinks.map(link => renderLinkItem(link)).join('');
+
+                // --- Lógica para a aba "LINKS COM PROBLEMAS" ---
+                let brokenFilteredLinks = allLinksFromSession.filter(link => link.status && (link.status.toLowerCase().includes('erro') || link.status.toLowerCase().includes('timeout')));
+                if (searchText) {
+                    brokenFilteredLinks = brokenFilteredLinks.filter(link => link.url.toLowerCase().includes(searchText));
+                }
+                if (selectedErrors.length > 0) {
+                    brokenFilteredLinks = brokenFilteredLinks.filter(link => {
+                        if (selectedErrors.includes('4xx') && link.httpCode >= 400 && link.httpCode < 500) return true;
+                        if (selectedErrors.includes('5xx') && link.httpCode >= 500 && link.httpCode < 600) return true;
+                        if (selectedErrors.includes('timeout') && link.status.toLowerCase() === 'timeout') return true;
+                        return false;
+                    });
+                }
+                console.log(`-> Links para a aba 'Links com Problemas' após todos os filtros: ${brokenFilteredLinks.length}`);
+                brokenLinksList.innerHTML = brokenFilteredLinks.map(link => renderLinkItem(link)).join('');
+
+                // --- ATUALIZAÇÃO DOS CONTADORES ---
+                totalLinksSpan.textContent = allLinksFromSession.length;
+                brokenLinksSpan.textContent = allLinksFromSession.filter(l => l.status && (l.status.toLowerCase().includes('erro') || l.status.toLowerCase().includes('timeout'))).length;
+                pendingLinksSpan.textContent = allLinksFromSession.filter(l => l.status === 'Na fila' || l.status === 'Não verificado').length;
+                
+                document.getElementById('allLinksCount').textContent = `(${allFilteredLinks.length})`;
+                document.getElementById('brokenLinksCount').textContent = `(${brokenFilteredLinks.length})`;
+                console.log("--- RENDERIZAÇÃO CONCLUÍDA ---");
+            }
+
+            function startMonitoring(sessionId) {
+                monitoringInterval = setInterval(async () => {
+                    if (!currentSessionId) { clearInterval(monitoringInterval); return; }
+                    try {
+                        const fetchOptions = { headers: { 'Authorization': `Bearer ${authToken}` } };
+                        const [sessionResponse, linksResponse] = await Promise.all([
+                            fetch(`http://localhost:3000/scan-sessions/${sessionId}`, fetchOptions),
+                            fetch(`http://localhost:3000/links?session_id=${sessionId}`, fetchOptions)
+                        ]);
+                        if(!sessionResponse.ok || !linksResponse.ok) return;
+                        const session = await sessionResponse.json();
+                        allLinksFromSession = await linksResponse.json();
+                        renderFilteredLists();
+                        progressText.textContent = `Analisando... ${allLinksFromSession.length} links encontrados. Status: ${session.status}`;
+                        if (session.status === 'finalizado' || session.status === 'erro' || session.status === 'interrompido') {
+                            clearInterval(monitoringInterval);
+                            clearInterval(elapsedInterval);
+                            isScanActive = false;
+                            document.querySelector('.stats-container').classList.remove('scanning');
+                            progressText.textContent = `Varredura concluída! Status: ${session.status}.`;
+                            addLog(`Varredura finalizada com status: ${session.status}`, session.status === 'finalizado' ? 'success' : 'error');
+                            if (session.depthReached !== null) { addLog(`Profundidade máxima atingida: ${session.depthReached}`, 'info'); }
+                            if (session.status === 'erro' && session.errorMessage) { addLog(`ERRO CRÍTICO: ${session.errorMessage}`, 'error'); }
+                            stopBtn.disabled = true;
+                            startBtn.disabled = false;
+                            exportBtn.disabled = allLinksFromSession.length > 0;
+                            currentSessionId = null;
+                            await loadSessionHistory();
+                        }
+                    } catch (error) {
+                        addLog(`Erro no monitoramento: ${error.message}`, 'error');
+                    }
+                }, 3000);
+            }
+            
+            async function startVerification() {
+                const alertBox = document.querySelector('.alert-box');
+                if (alertBox) {
+                    alertBox.classList.remove('hidden');
+                    alertBox.classList.add('flash');
+                    setTimeout(() => { alertBox.classList.remove('flash'); }, 1500);
+                }
+                const url = urlInput.value.trim();
+                const depth = depthInput.value;
+                if (!url) { return Swal.fire('Atenção', 'Por favor, digite uma URL válida!', 'warning'); }
+                
+                resetUI(true); // Limpa a UI, incluindo os logs antigos
+                isScanActive = true;
+                scanStartTime = Date.now();
+                
+                elapsedInterval = setInterval(() => {
+                    const seconds = Math.floor((Date.now() - scanStartTime) / 1000);
+                    timeElapsedSpan.textContent = formatDuration(seconds);
+                }, 1000);
+
+                document.querySelector('.stats-container').classList.add('scanning');
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+                
+                try {
+                    const crawlResponse = await fetch('http://localhost:3000/start-crawl', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+                        body: JSON.stringify({ url, depth })
+                    });
+                    if (!crawlResponse.ok) {
+                        const err = await crawlResponse.json();
+                        throw new Error(err.error || 'Erro ao iniciar a varredura no servidor');
+                    }
+                    const result = await crawlResponse.json();
+                    currentSessionId = result.sessionId;
+                    displayedSessionId = currentSessionId;
+                    
+                    await loadSessionHistory(); 
+                    startMonitoring(currentSessionId);
+
+                    // --- NOVA LÓGICA DE SINTONIZAÇÃO ---
+                    addLog('Conectando ao stream de logs...', 'info');
+                    const eventSource = new EventSource(`/scan-stream/${currentSessionId}`);
+                    
+                    eventSource.onmessage = (event) => {
+                        // Adiciona cada log recebido da "rádio" à tela
+                        addLog(event.data, 'info');
+                    };
+
+                    eventSource.onerror = () => {
+                        addLog('Conexão com o stream de logs perdida.', 'error');
+                        eventSource.close();
+                    };
+                    
+                } catch (error) {
+                    addLog(`Erro crítico ao iniciar: ${error.message}`, 'error');
+                    document.querySelector('.stats-container').classList.remove('scanning');
+                    resetUI(false);
+                    isScanActive = false;
+                }
+            }
+            
+            async function stopVerification() {
+                if (!currentSessionId) return;
+                addLog('Enviando solicitação para parar...', 'info');
+                try {
+                    const response = await fetch(`http://localhost:3000/stop-crawl/${currentSessionId}`, {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    });
+                    if (!response.ok) {
+                        const err = await response.json();
+                        throw new Error(err.message || 'Erro desconhecido');
+                    }
+                    addLog('Varredura interrompida pelo usuário.', 'success');
+                    isScanActive = false;
+                    document.querySelector('.stats-container').classList.remove('scanning');
+                    clearInterval(elapsedInterval);
+                    progressText.textContent = 'Varredura interrompida!';
+                    stopBtn.disabled = true;
+                    startBtn.disabled = false;
+                    await loadSessionHistory();
+                } catch (error) {
+                    addLog(`Falha ao parar a varredura: ${error.message}`, 'error');
+                }
+            }
+
+            // Bloco 3: Event Listeners e Inicialização
+            startBtn.addEventListener('click', startVerification);
+            stopBtn.addEventListener('click', stopVerification);
+            historyHeader.addEventListener('click', () => {
+                historyHeader.classList.toggle('open');
+                sessionListContainer.classList.toggle('open');
             });
-            if (!crawlResponse.ok) throw new Error('Erro ao iniciar a varredura no servidor');
+            filterInput.addEventListener('input', renderFilteredLists);
             
-            const result = await crawlResponse.json();
-            currentSessionId = result.sessionId;
-            displayedSessionId = currentSessionId;
-            
-            await loadSessionHistory(); 
-            startMonitoring(currentSessionId); 
-
-        } catch (error) {
-            addLog(`Erro crítico ao iniciar: ${error.message}`, 'error');
-            resetUI();
-            isScanActive = false;
-        }
-      }
-      
-      async function stopVerification() {
-          if (!currentSessionId) return;
-          addLog('Enviando solicitação para parar...', 'info');
-          try {
-            const response = await fetch(`http://localhost:3000/stop-crawl/${currentSessionId}`, { method: 'POST' });
-            if (!response.ok) {
-              const err = await response.json();
-              throw new Error(err.message || 'Erro desconhecido');
+            const clearFilterBtn = document.getElementById('clearFilterBtn');
+            if (clearFilterBtn) {
+                clearFilterBtn.addEventListener('click', () => {
+                    filterInput.value = '';
+                    errorFilter.value = 'all';
+                    renderFilteredLists();
+                });
             }
             
-            addLog('Varredura interrompida pelo usuário.', 'success');
-            isScanActive = false;
-            document.querySelector('.stats-container').classList.remove('scanning');
-            clearInterval(elapsedInterval); 
-            progressText.textContent = 'Varredura interrompida!';
-            stopBtn.disabled = true;
-            startBtn.disabled = false;
-            await loadSessionHistory(); 
-            
-
-          } catch (error) {
-            addLog(`Falha ao parar a varredura: ${error.message}`, 'error');
-          }
-        }
-
-      
-      document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.disabled-link').forEach(link => {
-            link.addEventListener('click', (event) => {
-                event.preventDefault(); // Impede o link de navegar
-                alert('Indisponível no momento');
+            document.querySelectorAll('.tab-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.querySelector('.tab-btn.active').classList.remove('active');
+                    document.querySelector('.tab-content.active').classList.remove('active');
+                    button.classList.add('active');
+                    document.getElementById(button.dataset.tab + 'Tab').classList.add('active');
+                });
             });
+            
+            exportBtn.addEventListener('click', (event) => {
+                event.stopPropagation();
+                exportOptionsMenu.classList.toggle('show');
+            });
+            
+            document.querySelectorAll('.export-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    if (!displayedSessionId) { 
+                        Swal.fire('Atenção', 'Nenhuma sessão selecionada para exportar!', 'warning');
+                        return; 
+                    }
+                    const format = option.getAttribute('data-format');
+                    window.open(`http://localhost:3000/export/${format}/${displayedSessionId}`, '_blank');
+                    exportOptionsMenu.classList.remove('show');
+                });
+            });
+            
+            window.addEventListener('click', (event) => {
+                if (exportOptionsMenu.classList.contains('show') && !exportBtn.contains(event.target)) {
+                    exportOptionsMenu.classList.remove('show');
+                }
+            });
+            
+            tippy('[data-tippy-content]', { delay: [500, 0], placement: 'top' });
+            
+            window.addEventListener('beforeunload', (event) => {
+                if (isScanActive) {
+                    event.preventDefault();
+                    event.returnValue = '';
+                }
+            });
+
+            document.querySelectorAll('.error-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', renderFilteredLists);
+            });
+            
+            // --- INICIALIZAÇÃO DA PÁGINA ---
+            loadSessionHistory();
+            addLog('Dashboard pronto.', 'success');
         });
+    </script>
+    <script src="/global.js"></script>
 
-        resetUI();
-        loadSessionHistory();
-        addLog('Dashboard pronto.', 'success');
-      });
-
-      
-      
-      startBtn.addEventListener('click', startVerification);
-      stopBtn.addEventListener('click', stopVerification);
-      document.querySelectorAll('.tab-btn').forEach(button => {
-        button.addEventListener('click', () => {
-          document.querySelector('.tab-btn.active').classList.remove('active');
-          document.querySelector('.tab-content.active').classList.remove('active');
-          button.classList.add('active');
-          document.getElementById(button.dataset.tab + 'Tab').classList.add('active');
-        });
-      });
-
-
-      exportBtn.addEventListener('click', (event) => {
-        event.stopPropagation(); 
-        exportOptionsMenu.classList.toggle('show');
-      });
-      
-      const historyHeader = document.getElementById('historyHeader');
-      const sessionListContainer = document.getElementById('sessionListContainer');
-      historyHeader.addEventListener('click', () => {
-        historyHeader.classList.toggle('open');
-        sessionListContainer.classList.toggle('open');
-      });
-
-
-      document.querySelectorAll('.export-option').forEach(option => {
-        option.addEventListener('click', () => {
-          if (!displayedSessionId) {
-            alert('Nenhuma sessão selecionada para exportar!');
-            return;
-          }
-          const format = option.getAttribute('data-format');
-          addLog(`Gerando relatório no formato ${format.toUpperCase()}...`, 'info');
-          window.open(`http://localhost:3000/export/${format}/${displayedSessionId}`, '_blank');
-          exportOptionsMenu.classList.remove('show'); 
-        });
-      });
-
-
-      window.addEventListener('click', (event) => {
-        if (exportOptionsMenu.classList.contains('show') && !exportOptionsMenu.contains(event.target)) {
-            if(!exportBtn.contains(event.target)) {
-                exportOptionsMenu.classList.remove('show');
-            }
-        }
-      });
-
-      tippy('[data-tippy-content]', {
-        delay: [500, 0], 
-        placement: 'top', 
-      });
-
-
-      window.addEventListener('beforeunload', (event) => {
-        if (isScanActive) {
-          event.preventDefault();
-          event.returnValue = '';
-        }
-      });
-
-  </script>
 </body>
 </html>

@@ -1,9 +1,11 @@
 const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcrypt');
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('Iniciando a semeadura do banco de dados...');
 
+  await prisma.User.deleteMany({});
   await prisma.Resposta.deleteMany({});
   await prisma.Avaliacao.deleteMany({});
   await prisma.Requisito.deleteMany({});
@@ -122,7 +124,63 @@ async function main() {
     ]
   });
   console.log('Lista de secretarias criada com sucesso.');
+
+  console.log('Criando usuários de exemplo...');
+
+  // 1. Define os usuários e suas senhas em texto puro
+  const usersData = [
+    {
+      email: 'admin@gmail.com',
+      password: '@4dm1ntr4d0r2505', 
+      nome: 'Administrador',
+      secretariaSigla: 'SCGE',
+      role: 'ADMIN' 
+    },
+    {
+      email: 'scge@exemplo.com',
+      password: 'senha_scge',
+      nome: 'Usuário SCGE',
+      secretariaSigla: 'SCGE',
+      role: 'SECRETARIA' 
+    },
+    {
+      email: 'sad@exemplo.com',
+      password: 'senha_sad',
+      nome: 'Usuário SAD',
+      secretariaSigla: 'SAD',
+      role: 'SECRETARIA'
+    }
+  ];
+
+  // 2. Itera sobre cada usuário para criar no banco
+  for (const u of usersData) {
+    // Encontra a secretaria pela sigla para obter o ID
+    const secretaria = await prisma.secretaria.findUnique({
+      where: { sigla: u.secretariaSigla },
+    });
+
+    if (!secretaria) {
+      console.warn(`Secretaria com sigla ${u.secretariaSigla} não encontrada. Pulando usuário ${u.email}.`);
+      continue;
+    }
+
+    // Criptografa a senha com bcrypt
+    const hashedPassword = bcrypt.hashSync(u.password, 10); 
+    
+    // Cria o usuário no banco de dados com a senha já criptografada
+    await prisma.user.create({
+      data: {
+        email: u.email,
+        password: hashedPassword,
+        nome: u.nome,
+        role: u.role || 'SECRETARIA', 
+        secretariaId: secretaria.id,
+      },
+    });
+  }
+  console.log(`${usersData.length} novos usuários criados com sucesso.`);
 }
+
 
 main()
   .catch((e) => {
