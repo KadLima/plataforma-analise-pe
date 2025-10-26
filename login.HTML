@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <title>Login - Análise PE</title>
+    <title>Login - SIM|PE</title>
     <style>
         :root {
             --azul-gov-principal: #002776;
@@ -13,6 +13,8 @@
             --cinza-fundo: #f4f4f4;
             --branco: #ffffff;
             --vermelho-erro: #dc3545;
+            --verde-sucesso: #28a745;
+            --laranja-alerta: #fd7e14;
         }
         body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--cinza-fundo); color: var(--cinza-texto); display: flex; flex-direction: column; min-height: 100vh; }
         .main-header { background-color: var(--branco); box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 0 5%; }
@@ -39,7 +41,7 @@
         }
         .login-container {
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             padding: 40px;
             background-color: var(--branco);
             border-radius: 8px;
@@ -66,6 +68,12 @@
             border: 1px solid #ddd;
             border-radius: 6px;
             font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+        .form-group input:focus {
+            border-color: var(--azul-gov-principal);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 39, 118, 0.1);
         }
         .btn {
             width: 100%;
@@ -78,8 +86,22 @@
             font-size: 1.1em;
             font-weight: bold;
             transition: background-color .3s;
+            margin-bottom: 10px;
         }
         .btn:hover { background-color: #001a4d; }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        .btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        #logout-btn {
+            cursor: pointer;
+        }
         .error-message {
             color: var(--vermelho-erro);
             background-color: #f8d7da;
@@ -88,7 +110,17 @@
             border-radius: 6px;
             margin-top: 20px;
             text-align: center;
-            display: none; /* Começa escondido */
+            display: none;
+        }
+        .success-message {
+            color: var(--verde-sucesso);
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
         }
 
         .main-footer {
@@ -97,8 +129,8 @@
             margin-top: auto;
             background-color: var(--branco);
             font-size: 0.9em;
-            position: relative; /* Essencial para o posicionamento do logo */
-            height: 60px; /* Ajuda a alinhar tudo */
+            position: relative;
+            height: 60px;
         }
         .main-footer .footer-content {
             display: flex;
@@ -124,6 +156,118 @@
             color: var(--azul-gov-principal);
         }
 
+        /* --- NOVOS ESTILOS PARA SEGURANÇA --- */
+        
+        /* Container do CAPTCHA */
+        .captcha-container {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #e1e5e9;
+            margin-bottom: 20px;
+        }
+        .captcha-text {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 5px;
+            background: linear-gradient(45deg, #002776, #0056b3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px dashed #ccc;
+            background-color: #f8f9fa;
+        }
+        .refresh-captcha {
+            background: none;
+            border: none;
+            color: var(--azul-gov-principal);
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: underline;
+            margin-top: 10px;
+        }
+        .refresh-captcha:hover {
+            color: #0056b3;
+        }
+
+        /* Validação de força da senha */
+        .password-strength {
+            margin-top: 8px;
+        }
+        .strength-meter {
+            height: 4px;
+            background: #e1e5e9;
+            border-radius: 2px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+        .strength-weak { background: var(--vermelho-erro); width: 25%; }
+        .strength-fair { background: var(--laranja-alerta); width: 50%; }
+        .strength-good { background: #ffc107; width: 75%; }
+        .strength-strong { background: var(--verde-sucesso); width: 100%; }
+        .strength-text {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .requirements {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .requirement {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .requirement.valid {
+            color: var(--verde-sucesso);
+        }
+        .requirement.invalid {
+            color: var(--vermelho-erro);
+        }
+        .requirement-icon {
+            margin-right: 5px;
+            font-size: 0.7rem;
+        }
+        .suggest-password {
+            background: none;
+            border: none;
+            color: var(--azul-gov-principal);
+            cursor: pointer;
+            font-size: 0.8rem;
+            text-decoration: underline;
+            margin-top: 5px;
+            padding: 0;
+        }
+        .suggest-password:hover {
+            color: #0056b3;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         /* --- ESTILOS DA CAIXA DE SOLICITAÇÃO DE ACESSO --- */
         .request-access-box {
             margin-top: 30px;
@@ -147,6 +291,45 @@
             color: #666;
         }
 
+        /* Links de ajuda */
+        .help-links {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .help-links a {
+            color: var(--azul-gov-principal);
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 0.9em;
+        }
+        .help-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Código de verificação */
+        .code-inputs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .code-input {
+            width: 40px;
+            height: 50px;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        .code-input:focus {
+            border-color: var(--azul-gov-principal);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 39, 118, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -156,7 +339,7 @@
                 <a href="/">
                     <img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco">
                     <div>
-                        <span class="site-title">Análise de Sites</span>
+                        <span class="site-title">SIM|PE</span>
                         <span class="site-subtitle">Portal da Transparência</span>
                     </div>
                 </a>
@@ -172,14 +355,47 @@
             <form id="login-form">
                 <div class="form-group">
                     <label for="email">E-mail</label>
-                    <input type="email" id="email" name="email" required>
+                    <input type="email" id="email" name="email" required autocomplete="email" placeholder="seu.email@secretaria.pe.gov.br">
                 </div>
                 <div class="form-group">
                     <label for="password">Senha</label>
-                    <input type="password" id="password" name="password" required>
+                    <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Digite sua senha">
                 </div>
-                <button type="submit" class="btn">Entrar</button>
+
+                <!-- CAPTCHA - NOVO CAMPO OBRIGATÓRIO -->
+                <div class="form-group">
+                    <label>Verificação de Segurança</label>
+                    <div class="captcha-container">
+                        <div>Digite o texto abaixo:</div>
+                        <div id="captchaText" class="captcha-text">CARREGANDO...</div>
+                        <input 
+                            type="text" 
+                            id="captchaInput" 
+                            name="captchaInput" 
+                            required 
+                            placeholder="Digite o texto acima"
+                            style="width: 100%; padding: 10px; text-align: center; font-size: 1.1rem; margin: 10px 0;"
+                            autocomplete="off"
+                        >
+                        <button type="button" class="refresh-captcha" onclick="loadCaptcha()">
+                            🔄 Atualizar CAPTCHA
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" id="loginButton">
+                    <span class="spinner" id="loginSpinner" style="display: none;"></span>
+                    <span id="loginText">Entrar</span>
+                </button>
+                
+                <div class="help-links">
+                    <a href="#" id="forgot-password-link">Esqueci minha senha</a>
+                    <span>•</span>
+                    <a href="#" id="first-access-link">Primeiro acesso</a>
+                </div>
+                
                 <div id="error-message" class="error-message"></div>
+                <div id="success-message" class="success-message"></div>
             </form>
 
             <div class="request-access-box">
@@ -192,75 +408,646 @@
                     Informe o nome do órgão, o responsável pelo controle interno e um e-mail válido. Sua solicitação será analisada pela nossa equipe.
                 </p>
             </div>
-            </div>
         </div>
     </main>
 
     <footer class="main-footer">
         <div class="footer-content">
-            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. | <a href="/admin" id="admin-footer-link">Área Administrativa</a></p>
+            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a href="/admin" id="admin-footer-link">Área Administrativa</a></p>
             <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
         </div>
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        // Variáveis globais
+        let currentCaptchaId = '';
+
+        // Carregar CAPTCHA ao iniciar a página
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadCaptcha();
+            initializeLoginForm();
+        });
+
+        // Carregar CAPTCHA do servidor
+        async function loadCaptcha() {
+            try {
+                const response = await fetch('/api/captcha');
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar CAPTCHA');
+                }
+                const data = await response.json();
+                
+                currentCaptchaId = data.id;
+                document.getElementById('captchaText').textContent = data.text;
+                document.getElementById('captchaInput').value = '';
+            } catch (error) {
+                console.error('Erro ao carregar CAPTCHA:', error);
+                document.getElementById('captchaText').textContent = 'ERRO - Tente recarregar';
+            }
+        }
+
+        // Validar força da senha em tempo real
+        async function checkPasswordStrength(password) {
+            if (!password) {
+                updatePasswordStrengthUI({ isValid: false, requirements: {} });
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/check-password-strength', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ password })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    updatePasswordStrengthUI(result);
+                }
+            } catch (error) {
+                console.error('Erro ao verificar força da senha:', error);
+            }
+        }
+
+        // Atualizar UI da força da senha
+        function updatePasswordStrengthUI(strength) {
+            const requirementsDiv = document.getElementById('passwordRequirements');
+            if (!requirementsDiv) return;
+
+            let strengthClass = 'strength-weak';
+            let strengthText = 'Senha fraca';
+            
+            if (strength.isValid) {
+                strengthClass = 'strength-strong';
+                strengthText = 'Senha forte ✓';
+            } else if (strength.requirements.minLength && 
+                      (strength.requirements.hasUpperCase || strength.requirements.hasLowerCase || strength.requirements.hasNumbers)) {
+                strengthClass = 'strength-good';
+                strengthText = 'Senha boa';
+            } else if (strength.requirements.minLength) {
+                strengthClass = 'strength-fair';
+                strengthText = 'Senha razoável';
+            }
+
+            requirementsDiv.innerHTML = `
+                <div class="password-strength">
+                    <div class="strength-meter">
+                        <div class="strength-fill ${strengthClass}"></div>
+                    </div>
+                    <div class="strength-text">${strengthText}</div>
+                    <div class="requirements">
+                        <div class="requirement ${strength.requirements.minLength ? 'valid' : 'invalid'}">
+                            <span class="requirement-icon">${strength.requirements.minLength ? '✓' : '✗'}</span>
+                            Mínimo 8 caracteres
+                        </div>
+                        <div class="requirement ${strength.requirements.hasUpperCase ? 'valid' : 'invalid'}">
+                            <span class="requirement-icon">${strength.requirements.hasUpperCase ? '✓' : '✗'}</span>
+                            Letra maiúscula
+                        </div>
+                        <div class="requirement ${strength.requirements.hasLowerCase ? 'valid' : 'invalid'}">
+                            <span class="requirement-icon">${strength.requirements.hasLowerCase ? '✓' : '✗'}</span>
+                            Letra minúscula
+                        </div>
+                        <div class="requirement ${strength.requirements.hasNumbers ? 'valid' : 'invalid'}">
+                            <span class="requirement-icon">${strength.requirements.hasNumbers ? '✓' : '✗'}</span>
+                            Número
+                        </div>
+                        <div class="requirement ${strength.requirements.hasSpecialChar ? 'valid' : 'invalid'}">
+                            <span class="requirement-icon">${strength.requirements.hasSpecialChar ? '✓' : '✗'}</span>
+                            Caractere especial
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Gerar senha sugerida
+        async function suggestPassword() {
+            try {
+                const response = await fetch('/api/suggest-password');
+                if (response.ok) {
+                    const data = await response.json();
+                    return data.password;
+                }
+            } catch (error) {
+                console.error('Erro ao gerar senha sugerida:', error);
+            }
+            return null;
+        }
+
+        // Inicializar o formulário de login
+        function initializeLoginForm() {
             const loginForm = document.getElementById('login-form');
             const emailInput = document.getElementById('email');
             const passwordInput = document.getElementById('password');
             const errorMessageDiv = document.getElementById('error-message');
+            const successMessageDiv = document.getElementById('success-message');
+            const forgotPasswordLink = document.getElementById('forgot-password-link');
+            const firstAccessLink = document.getElementById('first-access-link');
+            const loginButton = document.getElementById('loginButton');
+            const loginSpinner = document.getElementById('loginSpinner');
+            const loginText = document.getElementById('loginText');
 
+            // Login normal
             loginForm.addEventListener('submit', async (event) => {
-                event.preventDefault(); // Impede o recarregamento padrão da página
+                event.preventDefault(); 
 
                 const email = emailInput.value;
                 const password = passwordInput.value;
-                errorMessageDiv.style.display = 'none'; // Esconde mensagens de erro antigas
+                const captchaAnswer = document.getElementById('captchaInput').value;
+                
+                errorMessageDiv.style.display = 'none';
+                successMessageDiv.style.display = 'none';
+
+                // Validação básica
+                if (!email || !password || !captchaAnswer) {
+                    showError('Por favor, preencha todos os campos.');
+                    return;
+                }
+
+                // Validação de email
+                if (!isValidEmail(email)) {
+                    showError('Por favor, digite um email válido.');
+                    return;
+                }
+
+                // Mostrar loading
+                loginButton.disabled = true;
+                loginSpinner.style.display = 'inline-block';
+                loginText.textContent = 'Entrando...';
 
                 try {
-                    const response = await fetch('http://localhost:3000/login', {
+                    const response = await fetch('/login', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ email, password }),
+                        body: JSON.stringify({ 
+                            email, 
+                            password, 
+                            captchaId: currentCaptchaId,
+                            captchaAnswer 
+                        }),
                     });
 
                     const data = await response.json();
 
                     if (!response.ok) {
-                        // Se o servidor retornou um erro (ex: 401 Credenciais inválidas)
                         throw new Error(data.error || 'Ocorreu um erro.');
                     }
 
-                    // Se o login foi bem-sucedido:
-                    // 1. Salva o "passe de acesso" (token) no armazenamento do navegador
                     localStorage.setItem('authToken', data.token);
+                    
+                    showSuccess('Login bem-sucedido! Redirecionando...');
                     
                     Swal.fire({
                         icon: 'success',
-                        iconColor: '#28a745',
-                        title: 'Login bem-sucedido!',
+                        title: 'Login realizado!',
                         text: 'Você será redirecionado em instantes.',
                         timer: 2000,
                         showConfirmButton: false,
-                        allowOutsideClick: false,
-                        confirmButtonColor: '#002776'
+                        allowOutsideClick: false
                     });
+                    
                     setTimeout(() => {
-                        window.location.href = '/'; 
-                    }, 3000);
+                        window.location.href = '/';
+                    }, 2000);
 
                 } catch (error) {
-                    // Mostra a mensagem de erro na tela
-                    errorMessageDiv.textContent = error.message;
-                    errorMessageDiv.style.display = 'block';
+                    showError(error.message);
+                    // Recarregar CAPTCHA em caso de erro
+                    await loadCaptcha();
+                } finally {
+                    // Restaurar botão
+                    loginButton.disabled = false;
+                    loginSpinner.style.display = 'none';
+                    loginText.textContent = 'Entrar';
                 }
             });
-        });
+
+            // Recuperação de senha
+            forgotPasswordLink.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await handlePasswordRecovery();
+            });
+
+            // Primeiro acesso
+            firstAccessLink.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await handleFirstAccess();
+            });
+        }
+
+        // Função de validação de email
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Mostrar mensagem de erro
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        // Mostrar mensagem de sucesso
+        function showSuccess(message) {
+            const successDiv = document.getElementById('success-message');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+        }
+
+        // Recuperação de senha
+        async function handlePasswordRecovery() {
+            const { value: email } = await Swal.fire({
+                title: 'Recuperação de Senha',
+                input: 'email',
+                inputLabel: 'Digite seu email cadastrado',
+                inputPlaceholder: 'seu@email.gov.br',
+                showCancelButton: true,
+                confirmButtonText: 'Enviar código',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: 'var(--azul-gov-principal)',
+                inputValidator: (value) => {
+                    if (!value) return 'Por favor, digite seu email!';
+                    if (!isValidEmail(value)) return 'Digite um email válido!';
+                }
+            });
+
+            if (email) {
+                try {
+                    const response = await fetch('/api/recuperar-senha', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email }),
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        await Swal.fire({
+                            icon: 'success',
+                            title: 'Código enviado!',
+                            text: 'Enviamos um código de verificação para seu email.',
+                            confirmButtonColor: 'var(--azul-gov-principal)'
+                        });
+
+                        await solicitarCodigoVerificacao(email, 'recuperacao');
+                    } else {
+                        throw new Error(data.error || 'Erro ao enviar código');
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro',
+                        text: error.message,
+                        confirmButtonColor: 'var(--vermelho-erro)'
+                    });
+                }
+            }
+        }
+
+        // Primeiro acesso
+        async function handleFirstAccess() {
+            const { value: email } = await Swal.fire({
+                title: 'Primeiro Acesso',
+                input: 'email',
+                inputLabel: 'Digite o email cadastrado no sistema',
+                inputPlaceholder: 'seu@email.gov.br',
+                showCancelButton: true,
+                confirmButtonText: 'Solicitar acesso',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: 'var(--azul-gov-principal)',
+                inputValidator: (value) => {
+                    if (!value) return 'Por favor, digite seu email!';
+                    if (!isValidEmail(value)) return 'Digite um email válido!';
+                }
+            });
+
+            if (email) {
+                try {
+                    const response = await fetch('/api/primeiro-acesso', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email }),
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        await Swal.fire({
+                            icon: 'success',
+                            title: 'Solicitação enviada!',
+                            text: 'Enviamos um código de verificação para seu email.',
+                            confirmButtonColor: 'var(--azul-gov-principal)'
+                        });
+
+                        await solicitarCodigoVerificacao(email, 'primeiro_acesso');
+                    } else {
+                        throw new Error(data.error || 'Erro ao solicitar acesso');
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro',
+                        text: error.message,
+                        confirmButtonColor: 'var(--vermelho-erro)'
+                    });
+                }
+            }
+        }
+
+        // Função para reenviar código de verificação
+        async function reenviarCodigoVerificacao(email, tipo) {
+            try {
+                const endpoint = tipo === 'recuperacao' 
+                    ? '/api/recuperar-senha' 
+                    : '/api/primeiro-acesso';
+                
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Código reenviado!',
+                        text: 'Enviamos um novo código para seu email.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                } else {
+                    throw new Error(data.error || 'Erro ao reenviar código');
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro',
+                    text: error.message,
+                    confirmButtonColor: 'var(--vermelho-erro)'
+                });
+                throw error; 
+            }
+        }
+
+        // Função para solicitar código de verificação (mantida do seu código original)
+        async function solicitarCodigoVerificacao(email, tipo) {
+            const { value: codigo } = await Swal.fire({
+                title: `Digite o código de 6 dígitos`,
+                html: `
+                    <div class="code-inputs">
+                        <input type="text" maxlength="1" class="code-input" data-index="0">
+                        <input type="text" maxlength="1" class="code-input" data-index="1">
+                        <input type="text" maxlength="1" class="code-input" data-index="2">
+                        <input type="text" maxlength="1" class="code-input" data-index="3">
+                        <input type="text" maxlength="1" class="code-input" data-index="4">
+                        <input type="text" maxlength="1" class="code-input" data-index="5">
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                        Código enviado para: ${email}
+                    </p>
+                `,
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Verificar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: 'var(--azul-gov-principal)',
+                preConfirm: () => {
+                    const inputs = Swal.getHtmlContainer().querySelectorAll('.code-input');
+                    let codigo = '';
+                    for (let input of inputs) {
+                        if (!input.value) {
+                            Swal.showValidationMessage('Preencha todos os dígitos');
+                            return false;
+                        }
+                        codigo += input.value;
+                    }
+                    return codigo;
+                },
+                didOpen: () => {
+                    const inputs = Swal.getHtmlContainer().querySelectorAll('.code-input');
+                    inputs[0].focus();
+                    
+                    inputs.forEach((input, index) => {
+                        input.addEventListener('input', (e) => {
+                            if (e.target.value.length === 1 && index < 5) {
+                                inputs[index + 1].focus();
+                            }
+                        });
+                        
+                        input.addEventListener('keydown', (e) => {
+                            if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                                inputs[index - 1].focus();
+                            }
+                        });
+                    });
+                }
+            });
+
+            if (codigo) {
+                try {
+                    const response = await fetch('/api/verificar-codigo', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, codigo, tipo }),
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        if (tipo === 'recuperacao') {
+                            await redefinirSenha(email);
+                        } else {
+                            await criarSenhaPrimeiroAcesso(email);
+                        }
+                    } else {
+                        throw new Error(data.error || 'Código inválido');
+                    }
+                } catch (error) {
+                     const result = await Swal.fire({
+                        icon: 'error',
+                        title: 'Código inválido',
+                        text: error.message,
+                        showCancelButton: true,
+                        confirmButtonText: 'Receber novo código',
+                        cancelButtonText: 'Tentar outro código',
+                        confirmButtonColor: 'var(--azul-gov-principal)',
+                        cancelButtonColor: 'var(--vermelho-erro)'
+                    });
+                }
+            }
+        }
+
+        // Redefinir senha com validação de força
+        async function redefinirSenha(email) {
+            const suggestedPassword = await suggestPassword();
+            
+            const { value: formValues } = await Swal.fire({
+                title: 'Nova Senha',
+                html: `
+                    <input type="password" id="nova-senha" class="swal2-input" placeholder="Nova senha" required>
+                    <input type="password" id="confirmar-senha" class="swal2-input" placeholder="Confirmar nova senha" required>
+                    <div id="passwordRequirements"></div>
+                    ${suggestedPassword ? `
+                        <button type="button" class="suggest-password" onclick="document.getElementById('nova-senha').value='${suggestedPassword}'; document.getElementById('confirmar-senha').value='${suggestedPassword}'; checkPasswordStrength('${suggestedPassword}')">
+                            🔒 Usar senha forte sugerida
+                        </button>
+                    ` : ''}
+                `,
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Redefinir Senha',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: 'var(--azul-gov-principal)',
+                didOpen: () => {
+                    const novaSenhaInput = document.getElementById('nova-senha');
+                    const confirmarSenhaInput = document.getElementById('confirmar-senha');
+                    
+                    novaSenhaInput.addEventListener('input', (e) => {
+                        checkPasswordStrength(e.target.value);
+                    });
+                },
+                preConfirm: () => {
+                    const novaSenha = Swal.getPopup().querySelector('#nova-senha').value;
+                    const confirmarSenha = Swal.getPopup().querySelector('#confirmar-senha').value;
+                    
+                    if (!novaSenha || !confirmarSenha) {
+                        Swal.showValidationMessage('Preencha ambos os campos');
+                        return false;
+                    }
+                    
+                    if (novaSenha !== confirmarSenha) {
+                        Swal.showValidationMessage('As senhas não coincidem');
+                        return false;
+                    }
+                    
+                    // Validação de força será feita pelo backend
+                    return { novaSenha, confirmarSenha };
+                }
+            });
+
+            if (formValues) {
+                try {
+                    const response = await fetch('/api/redefinir-senha', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, novaSenha: formValues.novaSenha }),
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        await Swal.fire({
+                            icon: 'success',
+                            title: 'Senha redefinida!',
+                            text: 'Sua senha foi alterada com sucesso.',
+                            confirmButtonColor: 'var(--azul-gov-principal)'
+                        });
+                    } else {
+                        throw new Error(data.error || 'Erro ao redefinir senha');
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro',
+                        text: error.message,
+                        confirmButtonColor: 'var(--vermelho-erro)'
+                    });
+                }
+            }
+        }
+
+        // Criar senha no primeiro acesso com validação de força
+        async function criarSenhaPrimeiroAcesso(email) {
+            const suggestedPassword = await suggestPassword();
+            
+            const { value: formValues } = await Swal.fire({
+                title: 'Criar Senha',
+                html: `
+                    <input type="password" id="nova-senha" class="swal2-input" placeholder="Crie sua senha" required>
+                    <input type="password" id="confirmar-senha" class="swal2-input" placeholder="Confirmar senha" required>
+                    <div id="passwordRequirements"></div>
+                    ${suggestedPassword ? `
+                        <button type="button" class="suggest-password" onclick="document.getElementById('nova-senha').value='${suggestedPassword}'; document.getElementById('confirmar-senha').value='${suggestedPassword}'; checkPasswordStrength('${suggestedPassword}')">
+                            🔒 Usar senha forte sugerida
+                        </button>
+                    ` : ''}
+                    <p style="font-size: 0.8em; color: #666; text-align: left; margin-top: 10px;">
+                        A senha deve ter: 8+ caracteres, letra maiúscula, minúscula, número e caractere especial.
+                    </p>
+                `,
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Criar Senha',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: 'var(--azul-gov-principal)',
+                didOpen: () => {
+                    const novaSenhaInput = document.getElementById('nova-senha');
+                    const confirmarSenhaInput = document.getElementById('confirmar-senha');
+                    
+                    novaSenhaInput.addEventListener('input', (e) => {
+                        checkPasswordStrength(e.target.value);
+                    });
+                },
+                preConfirm: () => {
+                    const novaSenha = Swal.getPopup().querySelector('#nova-senha').value;
+                    const confirmarSenha = Swal.getPopup().querySelector('#confirmar-senha').value;
+                    
+                    if (!novaSenha || !confirmarSenha) {
+                        Swal.showValidationMessage('Preencha ambos os campos');
+                        return false;
+                    }
+                    
+                    if (novaSenha !== confirmarSenha) {
+                        Swal.showValidationMessage('As senhas não coincidem');
+                        return false;
+                    }
+                    
+                    return { novaSenha, confirmarSenha };
+                }
+            });
+
+            if (formValues) {
+                try {
+                    const response = await fetch('/api/criar-senha', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, novaSenha: formValues.novaSenha }),
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        await Swal.fire({
+                            icon: 'success',
+                            title: 'Senha criada!',
+                            text: 'Sua conta foi ativada com sucesso. Você já pode fazer login.',
+                            confirmButtonColor: 'var(--azul-gov-principal)'
+                        });
+                    } else {
+                        throw new Error(data.error || 'Erro ao criar senha');
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro',
+                        text: error.message,
+                        confirmButtonColor: 'var(--vermelho-erro)'
+                    });
+                }
+            }
+        }
     </script>
 
     <script src="/global.js"></script>
-
 </body>
 </html>

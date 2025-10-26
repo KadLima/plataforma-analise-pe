@@ -16,7 +16,118 @@
             --vermelho-destaque: #dc3545;
             --cinza-borda: #ddd;
         }
-        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--cinza-fundo); color: var(--cinza-texto); line-height: 1.6; }
+        
+        .recurso-info-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid #6f42c1;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 12px rgba(111, 66, 193, 0.1);
+        }
+        
+        .prazo-alerta {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+        }
+        
+        .prazo-expirado {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border: 2px solid #dc3545;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+        }
+        
+        .prazo-info {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            border: 2px solid #0c5460;
+            border-radius: 10px;
+            padding: 12px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(12, 84, 96, 0.2);
+            text-align: center;
+        }
+
+        /* TODOS OS OUTROS ESTILOS ORIGINAIS MANTIDOS */
+        .recurso-info-card h4 {
+            color: #6f42c1;
+            margin: 0 0 15px 0;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .recurso-decisao {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.85em;
+            margin: 5px 0;
+        }
+        
+        .decisao-atende {
+            background-color: var(--verde-sucesso);
+            color: var(--branco);
+        }
+        
+        .decisao-nao-atende {
+            background-color: var(--vermelho-destaque);
+            color: var(--branco);
+        }
+
+        .card-com-recurso:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(111, 66, 193, 0.15);
+        }
+
+        .card-com-recurso-verde {
+            border-left: 5px solid var(--verde-sucesso) !important;
+            background: linear-gradient(135deg, #ffffff 0%, #f0fff4 100%) !important;
+            position: relative;
+        }
+
+        .card-com-recurso-vermelho {
+            border-left: 5px solid var(--vermelho-destaque) !important;
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%) !important;
+            position: relative;
+        }
+
+        .card-com-recurso-verde::before,
+        .card-com-recurso-vermelho::before {
+            content: "📤 RECURSO";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #6f42c1;
+            color: white;
+            padding: 3px 6px;
+            border-radius: 8px;
+            font-size: 0.65em;
+            font-weight: bold;
+            opacity: 0.9;
+        }     
+        
+        .card-com-recurso-verde:hover {
+            box-shadow: 0 4px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .card-com-recurso-vermelho:hover {
+            box-shadow: 0 4px 20px rgba(220, 53, 69, 0.3);
+        }
+
+        .tem-recurso {
+            position: relative;
+        }
+
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--cinza-fundo); color: var(--cinza-texto); line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
         .main-header { background-color: var(--branco); box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 0 5%; position: sticky; top: 0; z-index: 1000; }
         .main-nav { display: flex; justify-content: space-between; align-items: center; height: 70px; max-width: 1200px; margin: 0 auto; }
         .logo a { text-decoration: none; display: flex; align-items: center; gap: 12px; }
@@ -26,60 +137,613 @@
         .main-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; }
         .main-nav a { text-decoration: none; color: var(--cinza-texto); font-weight: 600; padding: 10px; border-bottom: 2px solid transparent; transition: all 0.3s ease; }
         .main-nav a:hover, .main-nav a.active { color: var(--azul-gov-principal); border-bottom-color: var(--amarelo-gov-detalhe); }
-        .main-footer { text-align: center; padding: 20px; margin-top: 40px; background-color: var(--branco); font-size: 0.9em; position: relative; height: 60px; }
+        .main-footer { text-align: center; padding: 20px; margin-top: auto; background-color: var(--branco); font-size: 0.9em; position: relative; height: 60px; box-sizing: content-box; }
         .main-footer .footer-content { display: flex; justify-content: center; align-items: center; height: 100%; }
-        .main-footer img { height: 55px; width: auto; position: absolute; right: 5%; top: 50%; transform: translateY(-50%); }
+        .main-footer img { height: 110px; width: auto; position: absolute; right: 5%; top: 50%; transform: translateY(-50%); }
         .main-footer p a { color: var(--cinza-texto); font-weight: 600; text-decoration: none; }
-        main { padding: 40px 5%; min-height: calc(100vh - 190px); box-sizing: border-box; }
+        main { padding: 40px 5%; }
         .report-container { max-width: 900px; margin: 0 auto; }
         .report-header { background: var(--branco); padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 30px; }
         .report-header h1 { margin: 0 0 10px 0; color: var(--azul-gov-principal); }
         .report-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9em; color: #555; }
-        .score-container { text-align: center; background-color: var(--azul-gov-principal); color: var(--branco); padding: 20px; border-radius: 8px; margin-bottom: 30px; }
-        .score-container h2 { margin: 0 0 5px 0; text-transform: uppercase; font-size: 1.2em; }
-        .score-container .score-value { font-size: 2.5em; font-weight: bold; }
-        .resposta-card { background-color: var(--branco); border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .resposta-header { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-        .resposta-header strong { flex-grow: 1; }
+        
+        .score-container { 
+            display: flex; 
+            gap: 20px; 
+            text-align: center; 
+            background-color: var(--azul-gov-principal); 
+            color: var(--branco); 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin-bottom: 30px; 
+        }
+        .score-box { 
+            flex: 1; 
+            text-align: center; 
+            border-right: 1px solid rgba(255, 255, 255, 0.3); 
+        }
+        .score-box:last-child { 
+            border-right: none; 
+        }
+        .score-box h2 { 
+            margin: 0 0 5px 0; 
+            text-transform: uppercase; 
+            font-size: 1em; 
+            opacity: 0.8; 
+        }
+        .score-box .score-value { 
+            font-size: 2.2em; 
+            font-weight: bold; 
+        }
+
+        .resposta-card { 
+            background-color: var(--branco); 
+            border-radius: 8px; 
+            margin-bottom: 15px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+            overflow: hidden; 
+            border-left: 5px solid var(--cinza-borda);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .resposta-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .card-mantido-sim:hover {
+            box-shadow: 0 4px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .card-mantido-nao:hover {
+            box-shadow: 0 4px 20px rgba(220, 53, 69, 0.3);
+        }
+
+        .card-mantido-sim { 
+            border-left: 5px solid var(--verde-sucesso); 
+            border-radius: 8px;
+        }
+        .card-mantido-nao { 
+            border-left: 5px solid var(--vermelho-destaque); 
+            border-radius: 8px;
+        }
+        .card-alterado-rejeitado { 
+            border-left: 5px solid var(--vermelho-destaque); 
+            border-radius: 8px;
+        }
+        .card-alterado-aprovado { 
+            border-left: 5px solid var(--verde-sucesso); 
+            border-radius: 8px;
+        }
+        .recurso-enviado { 
+            border-left: 5px solid #6f42c1; 
+            border-radius: 8px;
+        }
+
+        .analise-scge-destaque {
+            background: linear-gradient(135deg, #e9eef5 0%, #f8f9fa 100%);
+            border: 2px solid var(--azul-gov-principal);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 39, 118, 0.1);
+        }
+
+        .analise-scge-destaque h5 {
+            background-color: var(--azul-gov-principal) !important;
+            color: var(--branco) !important;
+            padding: 8px 16px !important;
+            margin: -14px -15px 15px -15px !important; 
+            border-radius: 6px 6px 0 0;
+            font-size: 0.95em !important;
+            font-weight: 700 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .analise-scge-destaque p {
+            font-size: 0.95em;
+            margin: 15px 0;
+            line-height: 1.5;
+        }
+
+        .analise-scge-destaque .linha-analise {
+            margin: 18px 0;          
+            padding: 8px 0;         
+        }
+
+        .analise-scge-destaque .status-validacao {
+            font-size: 0.85em;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+
+        .comentario-analista-destaque {
+            background-color: #fff3cd;
+            border-left: 4px solid var(--amarelo-gov-detalhe);
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0 0 0;
+            font-style: normal !important;
+        }
+
+        .comentario-analista-destaque strong {
+            color: var(--azul-gov-principal);
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .comentario-analista-destaque p {
+            margin: 0;
+            color: #000000 !important;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        
+        .resposta-header { 
+            padding: 15px; 
+            border-bottom: 1px solid #eee; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            flex-wrap: wrap; 
+        }
         .resposta-body { padding: 15px; }
-        .resposta-status { display: flex; gap: 20px; flex-wrap: wrap; }
-        .atende-badge { font-weight: bold; padding: 5px 10px; border-radius: 20px; color: var(--branco); font-size: 0.9em; }
+
+        .summary-header { 
+            cursor: pointer; 
+            font-weight: normal; 
+            padding: 10px 20px;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start; 
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .summary-header strong { font-weight: bold; }
+        .summary-status-badge { 
+            padding: 6px 12px; 
+            border-radius: 15px; 
+            font-size: 0.85em; 
+            font-weight: 600; 
+            color: var(--branco); 
+            display: inline-block;
+            white-space: nowrap;
+        }
+        .summary-status-mantido { background-color: var(--verde-sucesso); }
+        .summary-status-nao-atende { background-color: var(--vermelho-destaque); }
+        .summary-status-recurso { background-color: #6f42c1; }
+        .summary-status-atende { background-color: var(--verde-sucesso); }
+        .summary-status-divergencia { background-color: #ffc107; color: #333; }
+
+        .recurso-alerta[style*="background-color: #f0fff4"] {
+            background: linear-gradient(135deg, #f0fff4 0%, #e8f5e8 100%) !important;
+            border: 2px solid #28a745 !important;
+            color: #2d5016 !important;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2) !important;
+            padding: 5px;
+            border-radius: 8px;
+        }
+
+        .recurso-alerta[style*="background-color: #f0fff4"]:hover {
+            background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%) !important;
+            border-color: #218838 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(40, 167, 69, 0.3) !important;
+        }
+
+        .recurso-alerta[style*="background-color: #f0fff4"]::before {
+            content: "✅" !important;
+        }
+
+        .recurso-alerta {
+            background-color: #fffaf0;
+            border: 2px solid #ffc107; 
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 600; 
+            color: #856404;
+            margin: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer; 
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3); 
+        }
+
+        .recurso-alerta:hover {
+            background-color: #fff3cd; 
+            border-color: #ffb507;
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+        }
+        .recurso-alerta::before {
+            content: "⚠️";
+            font-size: 1.2em;
+        }
+
+        .info-block { 
+            border-top: 1px solid #eee; 
+            padding-top: 15px; 
+            margin-top: 15px; 
+        }
+        .resposta-body > .info-block:first-child, 
+        .modal-body > .info-block:first-child { 
+            border-top: none; 
+            padding-top: 0; 
+            margin-top: 0; 
+        }
+        .info-block h4, .info-block h5, .info-block h6 { 
+            margin: 0 0 10px 0; 
+            background-color: #e9eef5; 
+            padding: 8px 12px; 
+            border-radius: 4px; 
+            font-size: 1em; 
+            color: var(--azul-gov-principal); 
+            font-weight: 600; 
+        }
+        .info-block p { font-size: 0.9em; margin: 5px 0; }
+        .highlight-answer { 
+            font-weight: bold; 
+            background-color: #e9ecef; 
+            padding: 2px 6px; 
+            border-radius: 4px; 
+            display: inline-block; 
+        }
+        
+        .atende-badge { 
+            font-weight: bold; 
+            padding: 6px 12px; 
+            border-radius: 15px; 
+            color: var(--branco); 
+            font-size: 0.85em; 
+            display: inline-block;
+        }
         .atende-sim { background-color: var(--verde-sucesso); }
         .atende-nao { background-color: var(--vermelho-destaque); }
-        .evidence-section, .comment-section { margin-top: 15px; padding-top: 15px; border-top: 1px solid #f0f0f0; }
-        .evidence-section h4, .comment-section h4 { font-size: 1em; color: #555; margin: 0 0 10px 0; }
-        .evidence-list { list-style: none; padding-left: 0; margin: 0; }
-        .evidence-item { display: flex; justify-content: space-between; align-items: center; background-color: #f8f9fa; padding: 8px 12px; border-radius: 6px; margin-bottom: 5px; font-size: 0.9em; }
-        .evidence-item a { word-break: break-all; }
-        .comment-section p { margin: 0; font-style: italic; color: #555; }
-        .admin-feedback-box { margin-top: 15px; padding: 15px; background-color: #e9eef5; border-left: 4px solid var(--azul-gov-principal); border-radius: 4px; }
-        .admin-feedback-box h4 { margin: 0 0 10px 0; color: var(--azul-gov-principal); }
-        .admin-feedback-box p { margin: 0; font-style: italic; }
-        .status-validacao { font-weight: bold; padding: 3px 8px; border-radius: 4px; font-size: 0.8em; text-transform: uppercase; color: var(--branco); }
+
+        .tem-recurso-enviado {
+            position: relative;
+            border-left: 5px solid #6f42c1 !important;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 8px;
+        }
+
+        .tem-recurso-enviado::before {
+            content: "RECURSO";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #6f42c1;
+            color: white;
+            padding: 3px 6px;
+            border-radius: 8px;
+            font-size: 0.65em;
+            font-weight: bold;
+            opacity: 0.9;
+        }
+
+        .tem-recurso-enviado.card-mantido-sim {
+            border-left: 5px solid var(--verde-sucesso) !important;
+            background: linear-gradient(135deg, #ffffff 0%, #f0fff4 100%) !important;
+        }
+
+        .tem-recurso-enviado.card-mantido-nao {
+            border-left: 5px solid var(--vermelho-destaque) !important;
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%) !important;
+        }
+
+        .detalhes-recurso {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #e9ecef;
+        }
+
+        .detalhes-recurso h5 {
+            color: #6f42c1;
+            margin: 0 0 10px 0;
+            font-size: 1em;
+        }
+
+        .info-recurso {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+
+        .info-item strong {
+            color: #495057;
+            display: block;
+            font-size: 0.85em;
+            margin-bottom: 2px;
+        }
+        .status-validacao { 
+            font-weight: bold; 
+            padding: 3px 8px; 
+            border-radius: 4px; 
+            font-size: 0.8em; 
+            text-transform: uppercase; 
+            color: var(--branco); 
+        }
         .status-aprovado { background-color: var(--verde-sucesso); }
         .status-rejeitado { background-color: var(--vermelho-destaque); }
-        .recurso-box { margin-top: 20px; padding: 20px; border: 1px solid var(--amarelo-gov-detalhe); background-color: #fffaf0; border-radius: 8px; }
-        .recurso-box h4 { margin-top: 0; margin-bottom: 5px; color: var(--azul-gov-principal); }
-        .recurso-box > p { font-size: 0.9em; margin-top: 0; margin-bottom: 20px; color: #555; }
-        .recurso-box .requisito-actions, .recurso-box .comment-container { margin-top: 15px; }
-        .btn { padding: 10px 20px; background-color: var(--azul-gov-principal); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9em; font-weight: bold; text-decoration: none; }
-        .btn-toggle { padding: 6px 14px; border: 1px solid var(--cinza-borda); background-color: var(--branco); border-radius: 20px; cursor: pointer; font-weight: 600; }
-        .btn-toggle.active { background-color: var(--verde-sucesso); color: var(--branco); border-color: var(--verde-sucesso); }
-        .btn-toggle[data-action*="nao"].active { background-color: var(--vermelho-destaque); border-color: var(--vermelho-destaque); }
-        .link-comprovante-wrapper { display: none; width: 100%; margin-top: 15px; }
-        .link-comprovante-wrapper.show { display: block; }
-        .remove-evidence-btn { background: none; border: none; color: var(--vermelho-destaque); cursor: pointer; font-size: 1.5em; padding: 0 5px; line-height: 1; }
-        .add-evidence-buttons { display: flex; gap: 10px; margin-top: 10px; }
-        .btn-add-evidence { padding: 6px 12px; font-size: 0.8em; border-radius: 6px; border: 1px solid var(--azul-gov-principal); background-color: var(--branco); color: var(--azul-gov-principal); font-weight: bold; cursor: pointer; }
-        .btn-add-evidence:hover { background-color: #e9eef5; }
-        .comment-container { margin-top: 15px; }
-        .recurso-comment { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid var(--cinza-borda); border-radius: 6px; font-size: 0.9em; min-height: 70px; resize: vertical; }
+        .status-pendente { background-color: #ffc107; color: #333; }
+        
+        .evidence-section, .comment-section { 
+            margin-top: 15px; 
+            padding-top: 15px; 
+            border-top: 1px solid #f0f0f0; 
+        }
+        .evidence-section h4, .comment-section h4 { 
+            font-size: 1em; 
+            color: #555; 
+            margin: 0 0 10px 0; 
+        }
+        .evidence-list { 
+            list-style: none; 
+            padding-left: 0; 
+            margin: 0; 
+        }
+        .evidence-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background-color: #f8f9fa; 
+            padding: 8px 12px; 
+            border-radius: 6px; 
+            margin-bottom: 5px; 
+            font-size: 0.9em; 
+        }
+        .evidence-item a { word-break: break-all; }
+        .comment-section p { margin: 0; font-style: italic; color: #555; }
+        
+        .admin-feedback-box { 
+            margin-top: 15px; 
+            padding: 15px; 
+            background-color: #e9eef5; 
+            border-left: 4px solid var(--azul-gov-principal); 
+            border-radius: 4px; 
+        }
+        .admin-feedback-box h4 { 
+            margin: 0 0 10px 0; 
+            color: var(--azul-gov-principal); 
+        }
+        
+        .recurso-box { 
+            margin-top: 20px; 
+            padding: 20px; 
+            border: 1px solid var(--amarelo-gov-detalhe); 
+            background-color: #fffaf0; 
+            border-radius: 8px; 
+        }
+        .recurso-box h4 { 
+            margin-top: 0; 
+            margin-bottom: 5px; 
+            color: var(--azul-gov-principal); 
+        }
+        .recurso-box > p { 
+            font-size: 0.9em; 
+            margin-top: 0; 
+            margin-bottom: 20px; 
+            color: #555; 
+        }
+        .requisito-actions {
+            display: flex;
+            gap: 15px; 
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .btn { 
+            padding: 10px 20px; 
+            background-color: var(--azul-gov-principal); 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 0.9em; 
+            font-weight: bold; 
+            text-decoration: none; 
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #001a4d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 39, 118, 0.3);
+        }
+        .btn-toggle { 
+            padding: 8px 16px; 
+            border: 1px solid var(--cinza-borda); 
+            background-color: var(--branco); 
+            border-radius: 20px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            transition: all 0.3s ease;
+            min-width: 120px;
+            text-align: center;
+        }
+        .btn-toggle:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .btn-toggle.active { 
+            background-color: var(--verde-sucesso); 
+            color: var(--branco); 
+            border-color: var(--verde-sucesso); 
+        }
+        .btn-toggle[data-action*="nao"].active { 
+            background-color: var(--vermelho-destaque); 
+            border-color: var(--vermelho-destaque); 
+        }
+        .btn-toggle:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .link-comprovante-wrapper { 
+            display: none; 
+            width: 100%; 
+            margin-top: 15px; 
+        }
+        .link-comprovante-wrapper.show { 
+            display: block; 
+        }
+        .remove-evidence-btn { 
+            background: none; 
+            border: none; 
+            color: var(--vermelho-destaque); 
+            cursor: pointer; 
+            font-size: 1.5em; 
+            padding: 0 5px; 
+            line-height: 1; 
+            transition: all 0.3s ease;
+        }
+        .remove-evidence-btn:hover {
+            color: #a71e2a;
+            transform: scale(1.1);
+        }
+        .add-evidence-buttons { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 10px; 
+        }
+        .btn-add-evidence { 
+            padding: 6px 12px; 
+            font-size: 0.8em; 
+            border-radius: 6px; 
+            border: 1px solid var(--azul-gov-principal); 
+            background-color: var(--branco); 
+            color: var(--azul-gov-principal); 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+        }
+        .btn-add-evidence:hover { 
+            background-color: #e9eef5; 
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 39, 118, 0.2);
+        }
+        .comment-container { 
+            margin-top: 15px; 
+        }
+        .recurso-comment { 
+            width: 100%; 
+            box-sizing: border-box; 
+            padding: 10px; 
+            border: 1px solid var(--cinza-borda); 
+            border-radius: 6px; 
+            font-size: 0.9em; 
+            min-height: 70px; 
+            resize: none; 
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .modal-overlay { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0, 0, 0, 0.6); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 2000; 
+        }
+        .modal-content { 
+            background: var(--branco); 
+            padding: 30px; 
+            border-radius: 8px; 
+            width: 90%; 
+            max-width: 800px; 
+            max-height: 90vh; 
+            overflow-y: auto; 
+            position: relative; 
+        }
+        .modal-close-btn { 
+            position: absolute; 
+            top: 10px; 
+            right: 15px; 
+            background: none; 
+            border: none; 
+            font-size: 2.5em; 
+            line-height: 1; 
+            color: #aaa; 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+        }
+        .modal-close-btn:hover { 
+            color: #333; 
+            transform: scale(1.1);
+        }
+
+        #logout-btn { cursor: pointer; }
+
+        .btn-editar-decisao {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--amarelo-gov-detalhe) 0%, #e6c200 100%);
+            color: var(--cinza-texto);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+        }
+        
+        .btn-editar-decisao:hover {
+            background: linear-gradient(135deg, #e6c200 0%, #ccaa00 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+        }
+
+        .logo .site-title {
+            font-size: 1.1em;
+            line-height: 1.1;
+        }
+
+        .logo .site-subtitle {
+            font-size: 0.75em;
+            line-height: 1.1;
+        }
     </style>
 </head>
 <body>
     <header class="main-header">
         <nav class="main-nav">
-            <div class="logo"><a href="/"><img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco"><div><span class="site-title">Análise de Sites</span><span class="site-subtitle">Portal da Transparência</span></div></a></div>
+            <div class="logo">
+                <a href="/">
+                    <img src="/assets/SIMPE-marca.png" alt="Logo do SIMPE">
+                    <div>
+                        <span class="site-title">SIMPE</span>
+                        <span class="site-subtitle">Portal da Transparência</span>
+                    </div>
+                </a>
+            </div>
             <ul id="nav-links"></ul>
         </nav>
     </header>
@@ -87,10 +751,19 @@
     <main>
         <div class="report-container">
             <div id="summary-container" class="report-header"><p>Carregando dados...</p></div>
-            <div id="score-container" class="score-container">
-                <h2>Pontuação da Autoavaliação</h2>
-                <div id="score-value" class="score-value">-- / --</div>
+            <div id="score-wrapper">
+                <div class="score-container">
+                    <div class="score-box">
+                        <h2>Sua Nota (Autoavaliação)</h2>
+                        <div id="score-secretaria" class="score-value">-- / --</div>
+                    </div>
+                    <div class="score-box">
+                        <h2>Nota Validada (SCGE)</h2>
+                        <div id="score-admin" class="score-value">-- / --</div>
+                    </div>
+                </div>
             </div>
+            <div id="prazo-container"></div>
             <div id="respostas-container"></div>
             <div id="recurso-actions-container" style="text-align: right; margin-top: 30px;"></div>
         </div>
@@ -98,114 +771,701 @@
 
     <footer class="main-footer">
         <div class="footer-content">
-            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. | <a href="/admin" id="admin-footer-link" style="display: none;">Área Administrativa</a></p>
+            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a href="/admin" id="admin-footer-link" style="display: none;">Área Administrativa</a></p>
             <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
         </div>
     </footer>
+
+    <div id="modal-overlay" class="modal-overlay" style="display: none;" aria-hidden="true">
+        <div id="modal-content" class="modal-content" tabindex="-1">
+            <button id="modal-close-btn" class="modal-close-btn" aria-label="Fechar modal">&times;</button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             const avaliacaoId = window.location.pathname.split('/').pop();
             const summaryContainer = document.getElementById('summary-container');
-            const scoreValue = document.getElementById('score-value');
+            const prazoContainer = document.getElementById('prazo-container');
+            const scoreSecretariaEl = document.getElementById('score-secretaria');
+            const scoreAdminEl = document.getElementById('score-admin');            
             const respostasContainer = document.getElementById('respostas-container');
             const recursoActionsContainer = document.getElementById('recurso-actions-container');
+            const modalOverlay = document.getElementById('modal-overlay');
+            const modalContent = document.getElementById('modal-content');
+            const modalBody = document.getElementById('modal-body');
+            const modalCloseBtn = document.getElementById('modal-close-btn');
             const authToken = localStorage.getItem('authToken');
+            
+            let avaliacaoCompleta = null;
+            let currentModalRespostaId = null;
+            let prazoExpirado = false;
+            let prazoInfo = null;
+            let warned10min = false;
+            let warned5min = false;
+            let warned1min = false;
 
-            if (!avaliacaoId) {
-                summaryContainer.innerHTML = '<h1>Erro: ID da Avaliação não encontrado na URL.</h1>';
-                return;
+            console.log('=== INICIANDO APLICAÇÃO ===');
+
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            };
+
+            function adicionarListenersAoBox(boxElement) {
+                const debouncedSalvarRascunho = debounce(salvarRascunhoRecurso, 750);
+
+                boxElement.querySelectorAll('.btn-toggle').forEach(botao => {
+                    botao.addEventListener('click', function() {
+                        const action = this.dataset.action;
+                        const grupoBotoes = this.closest('.requisito-actions').querySelectorAll('.btn-toggle');
+                        grupoBotoes.forEach(btn => btn.classList.remove('active'));
+                        this.classList.add('active');
+
+                        const evidenceWrapper = this.closest('.recurso-box').querySelector('.link-comprovante-wrapper');
+                        if (evidenceWrapper) {
+                            if (action.includes('sim-')) {
+                                evidenceWrapper.classList.add('show');
+                            } else {
+                                evidenceWrapper.classList.remove('show');
+                            }
+                        }
+                        salvarRascunhoRecurso();
+                    });
+                });
+
+                boxElement.querySelectorAll('.add-link-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const evidenceList = this.closest('.evidence-container').querySelector('.evidence-list');
+                        Swal.fire({
+                            title: 'Adicionar Nova Evidência',
+                            input: 'url',
+                            inputLabel: 'URL do Link de Comprovação',
+                            inputPlaceholder: 'https://exemplo.com.br/',
+                            confirmButtonText: 'Adicionar',
+                            confirmButtonColor: 'var(--azul-gov-principal)',
+                            showCancelButton: true,
+                            cancelButtonText: 'Cancelar',
+                            cancelButtonColor: 'var(--vermelho-destaque)'
+                        }).then((result) => {
+                            if (result.isConfirmed && result.value) {
+                                const url = result.value;
+                                const newItem = document.createElement('li');
+                                newItem.className = 'evidence-item';
+                                newItem.dataset.link = url;
+                                newItem.innerHTML = `<a href="${url}" target="_blank" title="${url}">${url}</a><button class="remove-evidence-btn" title="Remover Evidência">&times;</button>`;
+                                evidenceList.appendChild(newItem);
+
+                                const removeBtn = newItem.querySelector('.remove-evidence-btn');
+                                removeBtn.addEventListener('click', function() {
+                                    this.closest('.evidence-item').remove();
+                                    salvarRascunhoRecurso();
+                                });
+
+                                salvarRascunhoRecurso();
+                            }
+                        });
+                    });
+                });
+
+                boxElement.querySelectorAll('.remove-evidence-btn').forEach(btn => {
+                    const listenerAttached = btn.getAttribute('data-listener-attached');
+                    if (!listenerAttached) {
+                        btn.addEventListener('click', function() {
+                            this.closest('.evidence-item').remove();
+                            salvarRascunhoRecurso();
+                        });
+                        btn.setAttribute('data-listener-attached', 'true');
+                    }
+                });
+
+                const comentarioEl = boxElement.querySelector('.recurso-comment');
+                if (comentarioEl) {
+                    comentarioEl.addEventListener('input', debouncedSalvarRascunho);
+                    comentarioEl.addEventListener('blur', salvarRascunhoRecurso);
+                }
             }
 
-            try {
-                const response = await fetch(`/api/my-avaliacoes/${avaliacaoId}`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-                if (!response.ok) throw new Error('Não foi possível carregar os dados desta avaliação.');
-                const avaliacao = await response.json();
+            function aplicarEstadoRascunhoAoBox(boxElement, dadosRascunho) {
+                 const comentarioEl = boxElement.querySelector('.recurso-comment');
+                 if (comentarioEl && dadosRascunho?.comentario !== undefined) {
+                     comentarioEl.value = dadosRascunho.comentario;
+                 }
 
-                // --- BLOCO DE SEGURANÇA #1 ---
-                if (!avaliacao.respostas || !Array.isArray(avaliacao.respostas)) {
-                    avaliacao.respostas = [];
+                 const botaoSim = boxElement.querySelector('[data-action="sim-recurso"]');
+                 const botaoNao = boxElement.querySelector('[data-action="nao-recurso"]');
+                 const evidenceWrapper = boxElement.querySelector('.link-comprovante-wrapper');
+
+                 if (botaoSim && botaoNao) {
+                     botaoSim.classList.remove('active');
+                     botaoNao.classList.remove('active');
+                     if (dadosRascunho?.sim === true) {
+                         botaoSim.classList.add('active');
+                         if (evidenceWrapper) evidenceWrapper.classList.add('show');
+                     } else {
+                         botaoNao.classList.add('active');
+                         if (evidenceWrapper) evidenceWrapper.classList.remove('show');
+                     }
+                 }
+
+                 const evidenceList = boxElement.querySelector('.evidence-list-recurso');
+                 if (evidenceList && Array.isArray(dadosRascunho?.evidencias)) {
+                     evidenceList.innerHTML = '';
+                     dadosRascunho.evidencias.forEach(url => {
+                         const newItem = document.createElement('li');
+                         newItem.className = 'evidence-item';
+                         newItem.dataset.link = url;
+                         newItem.innerHTML = `<a href="${url}" target="_blank" title="${url}">${url}</a><button class="remove-evidence-btn" title="Remover Evidência">&times;</button>`;
+                         evidenceList.appendChild(newItem);
+                     });
+                 } else if (evidenceList) {
+                      evidenceList.innerHTML = '';
+                 }
+            }
+
+            async function verificarPrazoRecurso() {
+                try {
+                    const response = await fetch(`/api/avaliacoes/${avaliacaoId}/verificar-prazo-recurso`, {
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    });
+                    
+                    if (response.ok) {
+                        const prazoData = await response.json();
+                        console.log('Dados do prazo recebidos:', prazoData);
+                        
+                        prazoInfo = prazoData;
+                        
+                        // Verificar se o prazo expirou OU se já está marcado como expirado
+                        if ((!prazoData.dentroDoPrazo || prazoData.recursoExpirado) && 
+                            avaliacaoCompleta.status === 'AGUARDANDO_RECURSO') {
+                            prazoExpirado = true;
+                            return false;
+                        } else if (prazoData.dentroDoPrazo && avaliacaoCompleta.status === 'AGUARDANDO_RECURSO') {
+                            prazoExpirado = false;
+                            return true;
+                        }
+                    }
+                    return true; 
+                } catch (error) {
+                    console.error('Erro ao verificar prazo:', error);
+                    return true;
+                }
+            }
+
+            // FUNÇÃO PARA EXIBIR INFORMAÇÕES DO PRAZO (CORRIGIDA COM DIAS/HORAS/MINUTOS)
+            function exibirInformacoesPrazo() {
+                if (avaliacaoCompleta.status === 'AGUARDANDO_RECURSO') {
+                    if (prazoExpirado) {
+                        prazoContainer.innerHTML = `
+                            <div class="prazo-expirado">
+                                <h4>Prazo de Recurso Expirado</h4>
+                                <p>O prazo para envio de recurso expirou em <strong>${new Date(prazoInfo.dataLimite).toLocaleString('pt-BR')}</strong>.</p>
+                                <p style="margin: 10px 0 0 0; font-size: 0.9em; color: #721c24;">
+                                    Não é mais possível enviar recursos para esta avaliação. A SCGE procederá com a análise final.
+                                </p>
+                            </div>
+                        `;
+                    } else if (prazoInfo && prazoInfo.dentroDoPrazo) {
+                        let totalSegundos = prazoInfo.segundosRestantes;
+
+                        const dias = Math.floor(totalSegundos / 86400); 
+                        totalSegundos %= 86400; 
+                        const horas = Math.floor(totalSegundos / 3600); 
+                        totalSegundos %= 3600; 
+                        const minutos = Math.floor(totalSegundos / 60); 
+                        const segundos = totalSegundos % 60; 
+
+                        let tempoFormatado = "";
+                        if (dias > 0) {
+                            tempoFormatado += `${dias} ${dias > 1 ? 'dias' : 'dia'} e `;
+                        }
+                        tempoFormatado += `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+
+                        prazoContainer.innerHTML = `
+                            <div class="prazo-info">
+                                <h4 style="font-size: 1.2em; margin-top: 0; margin-bottom: 10px;">Prazo para Recurso</h4>
+                                <p style="margin-top: 0; margin-bottom: 10px;"><strong>${tempoFormatado}</strong> restantes para enviar o recurso.</p>
+                                <p style="margin: 0; font-size: 1.05em; color: #0c5460; font-weight: 500;">
+                                    Data limite: <strong>${new Date(prazoInfo.dataLimite).toLocaleString('pt-BR')}</strong>
+                                </p>
+                            </div>
+                        `;
+                    } else {
+                        prazoContainer.innerHTML = `
+                            <div class="prazo-alerta">
+                                <h4>⚠️ Prazo de Recurso</h4>
+                                <p>Verificando informações do prazo...</p>
+                            </div>
+                        `;
+                    }
+                } else {
+                    prazoContainer.innerHTML = '';
+                }
+            }
+
+            function inicializarBotoesRecursoAutomatico() {
+                document.querySelectorAll('.recurso-box[data-is-editable="true"]').forEach(recursoBox => {
+                    const initialized = recursoBox.getAttribute('data-listeners-initialized');
+                    if (!initialized) {
+                        adicionarListenersAoBox(recursoBox);
+                        recursoBox.setAttribute('data-listeners-initialized', 'true');
+                    }
+                });
+            }
+
+            function salvarRascunhoRecurso() {
+                console.log('=== SALVANDO RASCUNHO SIMPLIFICADO ===');
+                
+                const rascunhoRecurso = {};
+                let temDados = false;
+
+                document.querySelectorAll('.recurso-box[data-is-editable="true"]').forEach(box => {
+                    const respostaCard = box.closest('.resposta-card');
+                    const respostaId = parseInt(respostaCard.dataset.respostaId);
+
+                    console.log(`Salvando resposta ${respostaId}`);
+
+                    const evidencias = [];
+                    box.querySelectorAll('.evidence-item').forEach(item => {
+                        if (item.dataset.link) {
+                            evidencias.push(item.dataset.link);
+                        }
+                    });
+
+                    const data = {
+                        comentario: box.querySelector('.recurso-comment')?.value || '',
+                        evidencias: evidencias,
+                        sim: box.querySelector('[data-action="sim-recurso"]')?.classList.contains('active') || false,
+                        timestamp: new Date().toISOString() 
+                    };
+                    
+                    rascunhoRecurso[respostaId] = data;
+                    temDados = true;
+                });
+
+                if (temDados) {
+                    localStorage.setItem(`rascunho_recurso_${avaliacaoId}`, JSON.stringify(rascunhoRecurso));
+                    console.log("Rascunho do recurso salvo com sucesso:", rascunhoRecurso);
+
+                    Swal.fire({
+                        title: 'Salvo!',
+                        text: 'Rascunho salvo com sucesso.',
+                        icon: 'success',
+                        timer: 2000, 
+                        showConfirmButton: false,
+                        toast: true, 
+                        position: 'top-end'
+                    });
+                } else {
+                    console.log("Nenhum dado para salvar");
+                }
+            }
+
+            function carregarRascunhoRecurso() {
+                const rascunhoSalvo = localStorage.getItem(`rascunho_recurso_${avaliacaoId}`);
+                const rascunhoGeral = rascunhoSalvo ? JSON.parse(rascunhoSalvo) : {};
+                let algumRascunhoCarregado = false;
+
+                document.querySelectorAll('.recurso-box[data-is-editable="true"]').forEach(box => {
+                    const respostaCard = box.closest('.resposta-card');
+                    if (!respostaCard) return;
+                    const respostaId = respostaCard.dataset.respostaId;
+                    const dadosRascunho = rascunhoGeral[respostaId];
+
+                    aplicarEstadoRascunhoAoBox(box, dadosRascunho);
+                    if (dadosRascunho) {
+                        algumRascunhoCarregado = true;
+                    }
+                });
+
+                if (algumRascunhoCarregado) {
+                console.log("Rascunho de recurso carregado.");
+                } else if (rascunhoSalvo) { 
+                    console.log("Rascunho antigo encontrado, mas não aplicável aos itens atuais.");
+                } else {
+                    console.log("Nenhum rascunho encontrado.");
                 }
 
-                const dataFormatada = new Date(avaliacao.createdAt).toLocaleString('pt-BR');
-                summaryContainer.innerHTML = `<h1>Detalhes da Autoavaliação</h1><div class="report-summary"><span><strong>Órgão:</strong> ${avaliacao.secretaria.nome}</span><span><strong>Ciclo:</strong> ${avaliacao.ciclo}</span><span><strong>URL Avaliada:</strong> ${avaliacao.urlSecretaria}</span><span><strong>Enviado em:</strong> ${dataFormatada}</span></div>`;
 
-                let pontuacaoAlcancada = 0;
-                let pontuacaoTotal = 0;
-                avaliacao.respostas.forEach(resposta => {
-                    const pontuacaoTotalRequisito = resposta.requisito.pontuacao;
-                    pontuacaoTotal += pontuacaoTotalRequisito;
-                    const isSplit = resposta.atendeDisponibilidade !== null || resposta.atendeSerieHistorica !== null;
-                    if (isSplit) {
-                        if (resposta.atendeDisponibilidade) { pontuacaoAlcancada += pontuacaoTotalRequisito / 2; }
-                        if (resposta.atendeSerieHistorica) { pontuacaoAlcancada += pontuacaoTotalRequisito / 2; }
+                setTimeout(inicializarBotoesRecursoAutomatico, 50);
+            }
+
+            // FUNÇÃO: Abrir modal (SIMPLIFICADA)
+            function abrirModal(resposta) {
+                console.log("=== ABRINDO MODAL SIMPLIFICADO ===");
+                console.log("Resposta ID:", resposta.id);
+                console.log("Requisito:", resposta.requisito.texto);
+                
+                currentModalRespostaId = resposta.id;
+                const isRecursoPhase = avaliacaoCompleta.status === 'AGUARDANDO_RECURSO';
+
+                console.log("Status da avaliação:", avaliacaoCompleta.status);
+                console.log("É fase de recurso?", isRecursoPhase);
+
+                // Resposta Original
+                const atendeClasse = resposta.atende ? 'atende-sim' : 'atende-nao';
+                const atendeTexto = resposta.atende ? 'Atende' : 'Não atende';
+                const answerHTML = `<p><strong>Resposta:</strong> <span class="atende-badge ${atendeClasse}">${atendeTexto}</span></p>`;
+                
+                // Evidências
+                let evidencesHTML = '';
+                const evidencias = Array.isArray(resposta.evidencias) ? resposta.evidencias : [];
+                
+                const linkComprovante = isRecursoPhase ? resposta.linkComprovanteRecurso : resposta.linkComprovante;
+                
+                if (evidencias.length > 0 || linkComprovante) {
+                    evidencesHTML += `<div class="evidence-section"><h5>Evidências Fornecidas:</h5><ul class="evidence-list">`;
+                    if (linkComprovante) {
+                        const labelComprovante = isRecursoPhase ? ' (Comprovante do Recurso)' : ' (Automático)';
+                        evidencesHTML += `<li class="evidence-item"><a href="${linkComprovante}" target="_blank">${linkComprovante}</a>${labelComprovante}</li>`;
+                    }
+                    evidencias.forEach(ev => { 
+                        evidencesHTML += `<li class="evidence-item"><a href="${ev.url}" target="_blank">${ev.url}</a></li>`; 
+                    });
+                    evidencesHTML += `</ul></div>`;
+                }
+
+                let commentHTML = '';
+                if (resposta.comentarioSecretaria) {
+                    commentHTML = `<div class="comment-section"><h5>Seu Comentário Original:</h5><p>"${resposta.comentarioSecretaria}"</p></div>`;
+                }
+                
+                let adminFeedbackHTML = '';
+                const mostrarAnaliseSCGE = avaliacaoCompleta.status === 'FINALIZADA' || 
+                                        avaliacaoCompleta.status === 'AGUARDANDO_RECURSO' ||
+                                        avaliacaoCompleta.status === 'EM_ANALISE_DE_RECURSO';
+
+                if (mostrarAnaliseSCGE) {
+                    const houveDivergencia = (resposta.atende !== (resposta.statusValidacao === 'aprovado'));
+                    let statusTexto;
+                    let statusClass;
+                    
+                    if (avaliacaoCompleta.status === 'EM_ANALISE_DE_RECURSO') {
+                        statusTexto = 'Em Análise'; 
+                        statusClass = 'status-pendente';
                     } else {
-                        if (resposta.atende) { pontuacaoAlcancada += pontuacaoTotalRequisito; }
-                    }
-                });
-                scoreValue.textContent = `${pontuacaoAlcancada} / ${pontuacaoTotal}`;
-
-                const isRecursoPhase = avaliacao.status === 'AGUARDANDO_RECURSO';
-
-                respostasContainer.innerHTML = avaliacao.respostas.map(resposta => {
-                    const isSplit = resposta.atendeDisponibilidade !== null || resposta.atendeSerieHistorica !== null;
-                    
-                    let answerHTML = '';
-                    if (isSplit) {
-                        const dispClasse = resposta.atendeDisponibilidade ? 'atende-sim' : 'atende-nao';
-                        const dispTexto = resposta.atendeDisponibilidade ? 'Sim' : 'Não';
-                        const serieClasse = resposta.atendeSerieHistorica ? 'atende-sim' : 'atende-nao';
-                        const serieTexto = resposta.atendeSerieHistorica ? 'Sim' : 'Não';
-                        answerHTML = `<div class="resposta-status"><span style="margin-right: 15px;"><strong>Disponibilidade:</strong> <span class="atende-badge ${dispClasse}">${dispTexto}</span></span><span><strong>Série Histórica:</strong> <span class="atende-badge ${serieClasse}">${serieTexto}</span></span></div>`;
-                    } else {
-                        const atendeClasse = resposta.atende ? 'atende-sim' : 'atende-nao';
-                        const atendeTexto = resposta.atende ? 'Sim' : 'Não';
-                        answerHTML = `<div class="resposta-status"><span class="atende-badge ${atendeClasse}">${atendeTexto}</span></div>`;
+                        statusTexto = !resposta.statusValidacao || resposta.statusValidacao === 'pendente' ? 'Pendente' : (houveDivergencia ? 'Alterado' : 'Mantido');
+                        statusClass = `status-${resposta.statusValidacao || 'pendente'}`;
                     }
                     
-                    let evidencesHTML = '';
-                    // --- BLOCO DE SEGURANÇA #2 ---
-                    if (resposta.linkComprovante || (Array.isArray(resposta.evidencias) && resposta.evidencias.length > 0)) {
-                        evidencesHTML += `<div class="evidence-section"><h4>Evidências Fornecidas:</h4><ul class="evidence-list">`;
-                        if (resposta.linkComprovante) {
-                             evidencesHTML += `<li class="evidence-item"><a href="${resposta.linkComprovante}" target="_blank">${resposta.linkComprovante}</a> (Automático)</li>`;
-                        }
-                        if (Array.isArray(resposta.evidencias)) {
-                            resposta.evidencias.forEach(ev => {
-                                evidencesHTML += `<li class="evidence-item"><a href="${ev.url}" target="_blank">${ev.url}</a></li>`;
-                            });
-                        }
-                        evidencesHTML += `</ul></div>`;
-                    }
+                    adminFeedbackHTML = `
+                        <div class="info-block analise-scge-destaque">
+                            <h5>Análise da SCGE</h5>
+                            <p><strong>Resultado:</strong> <span class="status-validacao ${statusClass}">${statusTexto}</span></p>
+                            ${resposta.comentarioAdmin ? `
+                                <div class="comentario-analista-destaque">
+                                    <strong>Comentário do Analista:</strong>
+                                    <p>"${resposta.comentarioAdmin}"</p>
+                                </div>
+                            ` : `
+                                <p style="text-align: center; color: #6c757d; font-style: italic; margin-top: 15px;">
+                                    Nenhum comentário foi adicionado pelo analista.
+                                </p>
+                            `}
+                        </div>`;
+                } else if (avaliacaoCompleta.status === 'EM_ANALISE_SCGE') {
+                    adminFeedbackHTML = `
+                        <div class="info-block analise-scge-destaque">
+                            <h5>Análise da SCGE</h5>
+                            <p><strong>Status:</strong> <span class="status-validacao status-pendente">Em Análise</span></p>
+                            <p style="text-align: center; color: #6c757d; font-style: italic; margin-top: 15px;">
+                                Esta avaliação está sendo analisada pela Controladoria Geral do Estado.
+                            </p>
+                        </div>`;
+                }
 
-                    let commentHTML = '';
-                    if (resposta.comentarioSecretaria) {
-                        commentHTML = `<div class="comment-section"><h4>Seu Comentário Original:</h4><p>"${resposta.comentarioSecretaria}"</p></div>`;
-                    }
+                let recursoInfoHTML = '';
+                if (resposta.recursoEnviado) {
+                    const atendeRecurso = resposta.atendeRecurso !== undefined ? resposta.atendeRecurso : resposta.atende;
                     
-                    let adminFeedbackHTML = '';
-                    if (avaliacao.status !== 'PENDENTE_SECRETARIA' && avaliacao.status !== 'EM_ANALISE_SCGE') {
-                        adminFeedbackHTML = `<div class="admin-feedback-box"><h4>Análise da SCGE</h4><p><strong>Status:</strong> <span class="status-validacao status-${resposta.statusValidacao}">${resposta.statusValidacao}</span></p>${resposta.comentarioAdmin ? `<p><strong>Comentário do Analista:</strong> "${resposta.comentarioAdmin}"</p>` : ''}</div>`;
-                    }
+                    recursoInfoHTML = `
+                        <div class="recurso-info-card">
+                            <h4>Recurso Enviado</h4>
+                            <p><strong>Sua Decisão no Recurso:</strong> <span class="recurso-decisao ${atendeRecurso ? 'decisao-atende' : 'decisao-nao-atende'}">${atendeRecurso ? 'Atende' : 'Não atende'}</span></p>
+                            ${resposta.comentarioRecurso ? `
+                                <div class="info-block">
+                                    <h5>Seu Comentário no Recurso</h5>
+                                    <p>"${resposta.comentarioRecurso}"</p>
+                                </div>
+                            ` : ''}
+                        </div>`;
+                }
 
-                    let recursoHTML = '';
-                    if (isRecursoPhase && resposta.statusValidacao === 'rejeitado') {
+                // Evidências do Recurso
+                let recursoEvidencesHTML = '';
+                const evidenciasRecurso = Array.isArray(resposta.evidencias) ? 
+                    resposta.evidencias.filter(ev => ev.tipo === 'recurso') : [];
+                if (evidenciasRecurso.length > 0) {
+                    recursoEvidencesHTML = `<div class="evidence-section"><h5>Evidências do Recurso:</h5><ul class="evidence-list">`;
+                    evidenciasRecurso.forEach(ev => { 
+                        recursoEvidencesHTML += `<li class="evidence-item"><a href="${ev.url}" target="_blank">${ev.url}</a></li>`; 
+                    });
+                    recursoEvidencesHTML += `</ul></div>`;
+                }
+
+                // Botão para editar decisão (se aplicável)
+                let editarDecisaoHTML = '';
+                const usuarioMarcouNaoAtende = !resposta.atende;
+                const scgeConfirmouNaoAtende = resposta.statusValidacao === 'rejeitado';
+
+                if (usuarioMarcouNaoAtende && scgeConfirmouNaoAtende && isRecursoPhase && !resposta.recursoEnviado) {
+                    editarDecisaoHTML = `
+                        <div class="info-block" style="margin-top: 20px;">
+                            <button class="btn-editar-decisao" data-resposta-id="${resposta.id}">
+                                Editar Decisão
+                            </button>
+                        </div>`;
+                }
+
+                modalBody.innerHTML = `
+                    <div class="info-block">
+                        <h4>${resposta.requisito.texto}</h4>
+                        ${answerHTML}
+                        ${commentHTML} 
+                        ${evidencesHTML}
+                    </div>
+                    ${adminFeedbackHTML}
+                    ${recursoInfoHTML}
+                    ${recursoEvidencesHTML}
+                    ${editarDecisaoHTML}
+                `;
+                
+                modalOverlay.style.display = 'flex';
+                setTimeout(() => {
+                    modalContent.focus();
+                }, 100);
+            }
+
+            // FUNÇÃO: Fechar modal
+            function fecharModal() {
+                modalOverlay.style.display = 'none';
+                currentModalRespostaId = null;
+            }
+
+            // FUNÇÃO: Criar HTML do recurso (SIMPLIFICADA)
+            function criarRecursoHTML(container, resposta, isRecursoPhase, showRecurso, recursoEnviado) {
+                console.log('=== CRIANDO HTML DO RECURSO SIMPLIFICADO ===');
+                
+                let recursoHTML = '';
+
+                if (showRecurso && isRecursoPhase && !recursoEnviado) {
+                    const foiRejeitado = resposta.statusValidacao === 'rejeitado';
+                    const foiAprovado = resposta.statusValidacao === 'aprovado';
+
+                    console.log(`Requisito normal - Status: ${resposta.statusValidacao}`);
+
+                    if (foiRejeitado) {
                         recursoHTML = `
                             <div class="recurso-box" data-is-editable="true">
                                 <h4>Área de Recurso</h4>
-                                <p>Sua resposta foi avaliada como "rejeitado". Se desejar, altere sua resposta e forneça novas evidências abaixo.</p>
+                                <p>Você pode alterar sua decisão para este requisito abaixo:</p>
                                 <div class="requisito-actions">
                                     <span>Sua nova resposta:</span>
-                                    <button class="btn-toggle" data-action="sim-recurso">Sim</button>
-                                    <button class="btn-toggle active" data-action="nao-recurso">Não</button>
+                                    <button class="btn-toggle" data-action="sim-recurso" title="Ao clicar em atende você afirma que a secretaria atende ao requisito">Atende</button>
+                                    <button class="btn-toggle active" data-action="nao-recurso" title="Ao clicar em não atende afirma que a secretaria não atende ao requisito">Não atende</button>
                                 </div>
                                 <div class="link-comprovante-wrapper">
                                     <div class="evidence-container">
                                         <ul class="evidence-list-recurso evidence-list"></ul>
                                         <div class="add-evidence-buttons">
-                                            <button class="btn-add-evidence add-link-btn" data-target-list="recurso">+ Adicionar Link</button>
+                                            <button class="btn-add-evidence add-link-btn" title="Adicionar nova evidência para comprovar o atendimento ao requisito">+ Adicionar Link</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="comment-container">
+                                    <textarea class="recurso-comment" placeholder="Adicionar justificativa para a alteração (opcional)..."></textarea>
+                                </div>
+                            </div>`;
+                    } else if (foiAprovado) {
+                        recursoHTML = `
+                            <div class="recurso-box" data-is-editable="false">
+                                <h4>Análise da SCGE</h4>
+                                <div class="validacao-scge-completa">
+                                    <p>✅ Este requisito foi validado como "Atende" pela Controladoria Geral do Estado.</p>
+                                    <p style="font-size: 0.9em; color: #666; margin-top: 10px;">
+                                        Não é necessário enviar recurso para este requisito.
+                                    </p>
+                                </div>
+                            </div>`;
+                    }
+                    
+                    container.innerHTML = recursoHTML;
+                }
+            }
+
+            function calcularPontuacaoRecurso() {
+                console.log('=== CALCULANDO PONTUAÇÃO COM AUTOAVALIAÇÃO ORIGINAL ===');
+
+                let pontuacaoSecretariaOriginal = 0; 
+                let pontuacaoAdmin = 0;
+                let pontuacaoTotal = 0;
+
+                if (!avaliacaoCompleta || !Array.isArray(avaliacaoCompleta.respostas)) {
+                    return { pontuacaoSecretaria: 0, pontuacaoAdmin: 0, pontuacaoTotal: 0 }; 
+                }
+
+                avaliacaoCompleta.respostas.forEach(resposta => {
+                    const pontuacaoRequisito = resposta.requisito?.pontuacao || 0;
+                    pontuacaoTotal += pontuacaoRequisito;
+
+                    if (resposta.atendeOriginal === true) { 
+                        pontuacaoSecretariaOriginal += pontuacaoRequisito;
+                    }
+
+                    if (resposta.statusValidacao === 'aprovado') {
+                        pontuacaoAdmin += pontuacaoRequisito;
+                    }
+                });
+
+                console.log('Pontuação recurso - Autoavaliação Original:', pontuacaoSecretariaOriginal, 'Admin:', pontuacaoAdmin, 'Total:', pontuacaoTotal);
+                return { pontuacaoSecretaria: Math.round(pontuacaoSecretariaOriginal), pontuacaoAdmin: Math.round(pontuacaoAdmin), pontuacaoTotal };
+            }
+
+            function renderizarCardsDeResposta() {
+                if (!avaliacaoCompleta || !Array.isArray(avaliacaoCompleta.respostas)) {
+                    respostasContainer.innerHTML = '<p>Nenhuma resposta encontrada.</p>';
+                    return;
+                }
+
+                const isRecursoPhase = avaliacaoCompleta.status === 'AGUARDANDO_RECURSO';
+                const isBloqueado = avaliacaoCompleta.status === 'EM_ANALISE_SCGE' || avaliacaoCompleta.status === 'EM_ANALISE_DE_RECURSO';
+
+                if (avaliacaoCompleta.status !== 'FINALIZADA' && avaliacaoCompleta.status !== 'AGUARDANDO_RECURSO') {
+                    document.getElementById('score-wrapper').style.display = 'none';
+                } else {
+                    document.getElementById('score-wrapper').style.display = 'block';
+                }
+
+                if (isRecursoPhase && prazoExpirado) {
+                    respostasContainer.innerHTML = `
+                        <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 8px; margin: 20px 0;">
+                            <h3 style="color: #dc3545;">Prazo Expirado</h3>
+                            <p>O prazo para envio de recursos expirou. Não é mais possível modificar as respostas.</p>
+                            <p style="font-size: 0.9em; color: #6c757d;">Entre em contato com a Controladoria Geral do Estado para mais informações.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                if (isRecursoPhase && avaliacaoCompleta.respostas.some(r => r.recursoEnviado)) {
+                    const requisitosComRecurso = avaliacaoCompleta.respostas.filter(r => r.recursoEnviado).length;
+                    respostasContainer.innerHTML = `
+                        <div class="recurso-info-card" style="margin-bottom: 25px;">
+                            <h4>📤 Recurso Enviado para Análise</h4>
+                            <p>Seu recurso foi enviado com sucesso e está em análise pela Controladoria Geral do Estado.</p>
+                            <p><strong>Requisitos com recurso:</strong> ${requisitosComRecurso} de ${avaliacaoCompleta.respostas.length}</p>
+                            <p style="font-size: 0.9em; color: #6c757d; margin-top: 10px;">
+                                ⏳ O prazo estimado para análise é de 10 dias úteis.
+                            </p>
+                        </div>
+                    `;
+                }
+
+                respostasContainer.innerHTML = avaliacaoCompleta.respostas.map(resposta => {
+                    let cardClass = '';
+                    let statusTexto = '';
+                    let statusClass = '';
+                    let showRecurso = false;
+                    let recursoEnviado = resposta.recursoEnviado;
+
+                    if (resposta.recursoEnviado) {
+                        cardClass = 'card-com-recurso';
+                        statusTexto = 'RECURSO ENVIADO';
+                        statusClass = 'summary-status-recurso';
+                    }
+                    else if (avaliacaoCompleta.status === 'PENDENTE_SECRETARIA' || avaliacaoCompleta.status === 'EM_ANALISE_SCGE') {
+                        statusTexto = 'PENDENTE';
+                        statusClass = 'summary-status-pendente';
+                        
+                        const atende = resposta.atende;
+                        cardClass = atende ? 'card-mantido-sim' : 'card-mantido-nao';
+                    } 
+                    else if (isRecursoPhase) {
+                        if (recursoEnviado) {
+                            const atendeFinal = resposta.atende;
+                            
+                            if (atendeFinal) {
+                                cardClass = 'card-mantido-sim';
+                                statusTexto = 'ATENDE';
+                                statusClass = 'summary-status-atende';
+                            } else {
+                                cardClass = 'card-mantido-nao'; 
+                                statusTexto = 'NÃO ATENDE';
+                                statusClass = 'summary-status-nao-atende';
+                            }
+                            
+                            cardClass += ' tem-recurso-enviado';
+                        } else {
+                            const isDivergent = resposta.atende !== (resposta.statusValidacao === 'aprovado');
+
+                            if (isDivergent) {
+                                if (resposta.atende) {
+                                    cardClass = 'card-alterado-rejeitado';
+                                    statusTexto = 'NÃO ATENDE';
+                                    statusClass = 'summary-status-nao-atende';
+                                    showRecurso = true;
+                                } else {
+                                    cardClass = 'card-alterado-aprovado';
+                                    statusTexto = 'ATENDE';
+                                    statusClass = 'summary-status-atende';
+                                    
+                                    const usuarioMarcouNaoAtende = !resposta.atende;
+                                    const scgeValidouComoAtende = resposta.statusValidacao === 'aprovado';
+
+                                    if (usuarioMarcouNaoAtende && scgeValidouComoAtende && isRecursoPhase && !recursoEnviado) {
+                                        showRecurso = false; 
+                                    } else {
+                                        showRecurso = false;
+                                    }
+                                }
+                            } else {
+                                cardClass = resposta.atende ? 'card-mantido-sim' : 'card-mantido-nao';
+                                statusTexto = resposta.atende ? 'MANTIDO' : 'NÃO ATENDE';
+                                statusClass = resposta.atende ? 'summary-status-mantido' : 'summary-status-nao-atende';
+                            }
+                        }
+                    }
+                    else if (avaliacaoCompleta.status === 'FINALIZADA') {
+                        const atende = resposta.statusValidacao === 'aprovado';
+                        cardClass = atende ? 'card-mantido-sim' : 'card-mantido-nao';
+                        statusTexto = atende ? 'ATENDE' : 'NÃO ATENDE';
+                        statusClass = atende ? 'summary-status-atende' : 'summary-status-nao-atende';
+                    }
+
+                    let recursoHTML = '';
+
+                    const usuarioMarcouNaoAtende = !resposta.atende;
+                    const scgeValidouComoAtende = resposta.statusValidacao === 'aprovado';
+
+                    const ehCasoCardVerde = usuarioMarcouNaoAtende && scgeValidouComoAtende && isRecursoPhase && !recursoEnviado;
+
+                    if (showRecurso && isRecursoPhase && !recursoEnviado && !ehCasoCardVerde) {
+                        const mensagem = resposta.atende ? 
+                            'Sua resposta "Atende" foi avaliada como "Não atende" após validação. Se desejar, corrija e forneça novas evidências abaixo.' : 
+                            'Sua resposta "Não atende" foi avaliada como "Atende" após validação. Se desejar, corrija e forneça novas evidências abaixo.';
+                        
+                        recursoHTML = `
+                            <div class="recurso-box" data-is-editable="true">
+                                <h4>Área de Recurso</h4>
+                                <p>${mensagem}</p>
+                                <div class="requisito-actions">
+                                    <span>Sua nova resposta:</span>
+                                    <button class="btn-toggle" data-action="sim-recurso" title="Ao clicar em atende você afirma que a secretaria atende ao requisito">Atende</button>
+                                    <button class="btn-toggle active" data-action="nao-recurso" title="Ao clicar em não atende afirma que a secretaria não atende ao requisito">Não atende</button>
+                                </div>
+                                <div class="link-comprovante-wrapper">
+                                    <div class="evidence-container">
+                                        <ul class="evidence-list-recurso evidence-list"></ul>
+                                        <div class="add-evidence-buttons">
+                                            <button class="btn-add-evidence add-link-btn" title="Adicionar nova evidência para comprovar o atendimento ao requisito">+ Adicionar Link</button>
                                         </div>
                                     </div>
                                 </div>
@@ -215,70 +1475,566 @@
                             </div>`;
                     }
 
-                    return `
-                        <div class="resposta-card" data-resposta-id="${resposta.id}">
-                            <div class="resposta-header"><strong>${resposta.requisito.texto}</strong></div>
-                            <div class="resposta-body">
-                                ${answerHTML}
-                                ${evidencesHTML}
-                                ${commentHTML}
-                                ${adminFeedbackHTML}
-                                ${recursoHTML}
-                            </div>
-                        </div>`;
+                    let alertaRecursoHTML = ''; 
+
+                    if (usuarioMarcouNaoAtende && scgeValidouComoAtende && isRecursoPhase && !recursoEnviado) {
+                        alertaRecursoHTML = `
+                            <div class="recurso-alerta" style="background-color: #f0fff4; border: 2px solid #28a745; color: #2d5016;">
+                                Esse requisito foi alterado de "Não atende" para "Atende".
+                            </div>`;
+                    } 
+                    else if (showRecurso && isRecursoPhase && !recursoEnviado) {
+                        alertaRecursoHTML = `<div class="recurso-alerta">Este requisito foi alterado na análise. CLIQUE AQUI e veja a análise e comentários feito pela SCGE e, se desejar, envie um recurso.</div>`;
+                    }
+
+                    const cardContent = `
+                        <div class="resposta-body">
+                            ${recursoHTML}
+                        </div>
+                    `;
+
+                    // ⭐⭐ NOVO: Aplicar bloqueio se necessário
+                    let cardExtraClass = '';
+                    let headerExtraClass = '';
+                    let cursorStyle = '';
+                    
+                    if (isBloqueado) {
+                        cardExtraClass = 'card-bloqueado';
+                        headerExtraClass = 'summary-header-bloqueado';
+                        cursorStyle = 'style="cursor: default;"';
+                    }
+
+                    if ((showRecurso && isRecursoPhase && !recursoEnviado) || recursoEnviado || (usuarioMarcouNaoAtende && scgeValidouComoAtende && isRecursoPhase && !recursoEnviado)) {
+
+                        let detalhesRecursoHTML = '';
+                        
+                        // SE RECURSO FOI ENVIADO, mostrar detalhes
+                        if (recursoEnviado) {
+                            const respostaOriginal = resposta.atendeOriginal ? 'Atende' : 'Não atende';
+                            const respostaRecurso = resposta.atende ? 'Atende' : 'Não atende';
+                            
+                            detalhesRecursoHTML = `
+                                <div class="detalhes-recurso">
+                                    <h5>📋 Detalhes do Recurso Enviado</h5>
+                                    <div class="info-recurso">
+                                        <div class="info-item">
+                                            <strong>Resposta Original</strong>
+                                            ${respostaOriginal}
+                                        </div>
+                                        <div class="info-item">
+                                            <strong>Resposta no Recurso</strong>
+                                            ${respostaRecurso}
+                                        </div>
+                                    </div>
+                                    ${resposta.comentarioRecurso ? `
+                                        <div class="info-item" style="grid-column: 1 / -1;">
+                                            <strong>Seu Comentário</strong>
+                                            "${resposta.comentarioRecurso}"
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `;
+                        }
+                        
+                        return `
+                            <div class="resposta-card ${cardClass} ${cardExtraClass}" data-resposta-id="${resposta.id}" ${cursorStyle}>
+                                ${alertaRecursoHTML}
+                                <div class="resposta-header ${headerExtraClass}">
+                                    <strong>${resposta.requisito.texto}</strong>
+                                    <span class="summary-status-badge ${statusClass}">${statusTexto}</span>
+                                </div>
+                                ${detalhesRecursoHTML}
+                                ${cardContent}
+                            </div>`;
+                    } else {
+                        const respostaData = JSON.stringify(resposta).replace(/"/g, '&quot;');
+                        return `
+                            <div class="resposta-card ${cardClass} ${cardExtraClass}" data-resposta-id="${resposta.id}" data-resposta='${respostaData}' role="article" ${cursorStyle}>
+                                <div class="summary-header ${headerExtraClass}" tabindex="0" role="button" aria-expanded="false">
+                                    <strong>${resposta.requisito.texto}</strong>
+                                    <span class="summary-status-badge ${statusClass}">${statusTexto}</span>
+                                </div>
+                            </div>`;
+                    }
                 }).join('');
+
+                setTimeout(() => {
+                    inicializarBotoesRecursoAutomatico();
+                    carregarRascunhoRecurso();
+                }, 200);
+            }
+
+            function adicionarEventListeners() {
+                console.log('=== ADICIONANDO EVENT LISTENERS ===');
+
+                respostasContainer.addEventListener('click', (event) => {
+                    const isBloqueado = avaliacaoCompleta.status === 'EM_ANALISE_SCGE' || avaliacaoCompleta.status === 'EM_ANALISE_DE_RECURSO';
+                    
+                    const target = event.target;
+                    
+                    const summaryHeader = target.closest('.summary-header');
+                    if (summaryHeader) {
+                        const card = summaryHeader.closest('.resposta-card');
+                        let resposta;
+                        
+                        if (card.dataset.resposta) {
+                            resposta = JSON.parse(card.dataset.resposta.replace(/&quot;/g, '"'));
+                        } 
+                        else if (card.dataset.respostaId) {
+                            const respostaId = parseInt(card.dataset.respostaId);
+                            resposta = avaliacaoCompleta.respostas.find(r => r.id === respostaId);
+                        }
+                        
+                        if (resposta) {
+                            abrirModal(resposta);
+                            return; 
+                        }
+                    }
+
+                    if (target.closest('.recurso-alerta')) {
+                        const card = target.closest('.resposta-card');
+                        const respostaId = parseInt(card.dataset.respostaId);
+                        const resposta = avaliacaoCompleta.respostas.find(r => r.id === respostaId);
+                        if (resposta) {
+                            abrirModal(resposta);
+                            return; 
+                        }
+                    }
+
+                    if (isBloqueado) {
+                        if (target.closest('.recurso-box') || 
+                            target.closest('.btn-toggle') || 
+                            target.closest('.btn-editar-decisao') ||
+                            target.closest('.add-link-btn')) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            
+                            Swal.fire({
+                                title: 'Avaliação em Análise',
+                                text: 'Esta avaliação está sendo analisada pela Controladoria Geral do Estado. Não é possível fazer alterações no momento.',
+                                icon: 'info',
+                                confirmButtonColor: 'var(--azul-gov-principal)'
+                            });
+                            return;
+                        }
+                    }
+                });
+
+                modalBody.addEventListener('click', (event) => {
+                    const target = event.target;
+                    const isBloqueado = avaliacaoCompleta.status === 'EM_ANALISE_SCGE' || avaliacaoCompleta.status === 'EM_ANALISE_DE_RECURSO';
+
+                    if (target.classList.contains('btn-editar-decisao')) {
+                        if (isBloqueado) {
+                            Swal.fire({
+                                title: 'Avaliação em Análise',
+                                text: 'Esta avaliação está sendo analisada pela Controladoria Geral do Estado. Não é possível fazer alterações no momento.',
+                                icon: 'info',
+                                confirmButtonColor: 'var(--azul-gov-principal)'
+                            });
+                            return;
+                        }
+
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        const respostaId = parseInt(target.dataset.respostaId);
+                        fecharModal();
+
+                        setTimeout(() => {
+                            const card = document.querySelector(`.resposta-card[data-resposta-id="${respostaId}"]`);
+                            if (card) {
+                                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                                card.style.transition = 'all 0.5s ease';
+                                card.style.boxShadow = '0 0 0 3px var(--amarelo-gov-detalhe)';
+                                setTimeout(() => { card.style.boxShadow = ''; }, 2000);
+
+                                let recursoBox = card.querySelector('.recurso-box');
+                                let respostaBody = card.querySelector('.resposta-body');
+
+                                if (!recursoBox) {
+                                    const resposta = avaliacaoCompleta.respostas.find(r => r.id === respostaId);
+                                    if (resposta) {
+                                        if (!respostaBody) {
+                                            respostaBody = document.createElement('div');
+                                            respostaBody.className = 'resposta-body';
+                                            card.appendChild(respostaBody);
+                                        } else {
+                                            if (!respostaBody.querySelector('.recurso-box')) {
+                                                respostaBody.innerHTML = '';
+                                            }
+                                        }
+
+                                        const isRecursoPhase = avaliacaoCompleta.status === 'AGUARDANDO_RECURSO';
+                                        const recursoEnviado = resposta.recursoEnviado || false;
+                                        const showRecurso = true;
+
+                                        criarRecursoHTML(respostaBody, resposta, isRecursoPhase, showRecurso, recursoEnviado);
+                                        recursoBox = respostaBody.querySelector('.recurso-box');
+
+                                        if (recursoBox) {
+                                            const rascunhoSalvo = localStorage.getItem(`rascunho_recurso_${avaliacaoId}`);
+                                            const rascunhoGeral = rascunhoSalvo ? JSON.parse(rascunhoSalvo) : {};
+                                            const dadosRascunho = rascunhoGeral[respostaId];
+
+                                            aplicarEstadoRascunhoAoBox(recursoBox, dadosRascunho);
+                                            adicionarListenersAoBox(recursoBox);
+                                        }
+                                    }
+                                } else {
+                                    recursoBox.style.display = 'block';
+                                }
+
+                                if (recursoBox) {
+                                    setTimeout(() => {
+                                        const primeiroCampo = recursoBox.querySelector('.btn-toggle, .recurso-comment');
+                                        if (primeiroCampo) { primeiroCampo.focus(); }
+                                        Swal.fire({
+                                            toast: true,
+                                            position: 'top-end',
+                                            icon: 'success',
+                                            title: 'Área de recurso aberta!',
+                                            showConfirmButton: false,
+                                            timer: 2000
+                                        });
+                                    }, 100);
+                                }
+                            } else {
+                                console.error(`Card para resposta ${respostaId} não encontrado após fechar modal.`);
+                            }
+                        }, 300);
+                    }
+                });
+
+                modalCloseBtn.addEventListener('click', fecharModal);
+                modalOverlay.addEventListener('click', (event) => {
+                    if (event.target === modalOverlay) { 
+                        fecharModal(); 
+                    }
+                });
                 
-                if(isRecursoPhase) {
-                    recursoActionsContainer.innerHTML = `<button id="enviar-recurso-btn" class="btn">Enviar Recurso para Reanálise</button>`;
-                    const enviarRecursoBtn = document.getElementById('enviar-recurso-btn');
-                    // (Lógica de clique para enviar recurso virá aqui, em um próximo passo)
+                document.addEventListener('keydown', (event) => {
+                    if (event.key === 'Escape' && modalOverlay.style.display === 'flex') {
+                        fecharModal();
+                    }
+                });
+            }
+
+            // FUNÇÃO: Enviar recurso (SIMPLIFICADA - USE A QUE EU TE ENVIEI ANTERIORMENTE)
+            async function enviarRecurso() {
+                if (prazoExpirado) {
+                    Swal.fire({
+                        title: 'Prazo Expirado',
+                        text: 'O prazo para envio de recurso já expirou.',
+                        icon: 'warning',
+                        confirmButtonColor: 'var(--azul-gov-principal)'
+                    });
+                    return;
                 }
+                
+                console.log('=== INICIANDO ENVIO DE RECURSO CORRIGIDO ===');
+                salvarRascunhoRecurso();
+                
+                const respostasDoRecurso = [];
+                let formValido = true;
+
+                for (const card of document.querySelectorAll('.recurso-box[data-is-editable="true"]')) {
+                    const respostaCard = card.closest('.resposta-card');
+                    const respostaId = parseInt(respostaCard.dataset.respostaId);
+                    const resposta = avaliacaoCompleta.respostas.find(r => r.id === respostaId);
+
+                    console.log(`Processando resposta ${respostaId}`);
+                    console.log('Resposta original:', resposta);
+
+                    const recursoAtende = card.querySelector('[data-action="sim-recurso"]')?.classList.contains('active') || false;
+                    
+                    let respostaPayload = { 
+                        respostaId: respostaId,
+                        comentarioRecurso: card.querySelector('.recurso-comment')?.value.trim() || '',
+                        recursoAtende: recursoAtende, 
+                        atende: recursoAtende 
+                    };
+
+                    const evidencias = [];
+                    card.querySelectorAll('.evidence-item').forEach(item => {
+                        if (item.dataset.link) {
+                            evidencias.push({ 
+                                tipo: 'recurso', 
+                                url: item.dataset.link 
+                            });
+                        }
+                    });
+                    respostaPayload.evidencias = evidencias;
+
+                    console.log(`Recurso enviado - Original: ${resposta.atendeOriginal}, Recurso: ${recursoAtende}`);
+
+                    if (recursoAtende && evidencias.length === 0) {
+                        Swal.fire({ 
+                            icon: 'warning', 
+                            title: 'Evidência Faltando', 
+                            text: `O requisito "${respostaCard.querySelector('strong').textContent}" foi marcado como 'Atende' no recurso, mas nenhuma evidência foi adicionada.` 
+                        });
+                        formValido = false;
+                        break;
+                    }
+                    
+                    respostasDoRecurso.push(respostaPayload);
+                }
+
+                if (!formValido) return;
+
+                console.log('Dados do recurso preparados (CORRIGIDOS):', respostasDoRecurso);
+
+                if (respostasDoRecurso.length === 0) {
+                    Swal.fire({ 
+                        icon: 'info', 
+                        title: 'Nenhuma Alteração', 
+                        text: 'Não há recursos para enviar. Faça alterações nos requisitos antes de enviar.' 
+                    });
+                    return;
+                }
+
+
+                // Confirmação antes do envio
+                Swal.fire({
+                    title: 'Confirmar Envio do Recurso?',
+                    html: `
+                        <div style="text-align: left;">
+                            <p><strong>Você está prestes a enviar recurso para ${respostasDoRecurso.length} requisito(s):</strong></p>
+                            <ul style="text-align: left; margin-left: 20px;">
+                                ${respostasDoRecurso.map(r => {
+                                    const resposta = avaliacaoCompleta.respostas.find(resp => resp.id === r.respostaId);
+                                    return `<li>${resposta?.requisito.texto || 'Requisito'}</li>`;
+                                }).join('')}
+                            </ul>
+                            <p style="margin-top: 15px; color: #dc3545; font-weight: bold;">
+                                ⚠️ Após o envio, não será possível editar o recurso.
+                            </p>
+                        </div>
+                    `,
+                    icon: 'warning',
+                    iconColor: 'var(--amarelo-gov-detalhe)',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sim, Enviar!',
+                    cancelButtonText: 'Cancelar',
+                    cancelButtonColor: 'var(--vermelho-destaque)',
+                    confirmButtonColor: 'var(--azul-gov-principal)',
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        try {
+                            const response = await fetch(`/api/avaliacoes/${avaliacaoId}/recurso`, {
+                                method: 'POST',
+                                headers: { 
+                                    'Content-Type': 'application/json', 
+                                    'Authorization': `Bearer ${authToken}` 
+                                },
+                                body: JSON.stringify({ 
+                                    respostas: respostasDoRecurso,
+                                    avaliacaoId: avaliacaoId
+                                })
+                            });
+
+                            if (!response.ok) {
+                                const errorData = await response.json().catch(() => ({}));
+                                throw new Error(errorData.error || "Falha ao enviar recurso.");
+                            }
+
+                            // Tentar notificar a controladoria (opcional)
+                            try {
+                                const notificacaoResponse = await fetch(`/api/avaliacoes/${avaliacaoId}/notificar-recurso`, {
+                                    method: 'POST',
+                                    headers: { 
+                                        'Content-Type': 'application/json', 
+                                        'Authorization': `Bearer ${authToken}` 
+                                    }
+                                });
+
+                                if (!notificacaoResponse.ok) {
+                                    console.warn('Recurso enviado, mas notificação por email falhou');
+                                } else {
+                                    console.log('Controladoria notificada sobre o recurso');
+                                }
+                            } catch (emailError) {
+                                console.warn('Erro na notificação por email:', emailError);
+                            }
+
+                            const resultData = await response.json();
+                            console.log('Recurso enviado com sucesso:', resultData);
+                            
+                            await Swal.fire({
+                                title: 'Recurso Enviado!',
+                                html: `
+                                    <p>A SCGE foi notificada e em breve você terá a análise do recurso.</p>
+                                    <p><strong>Requisitos com recurso:</strong> ${respostasDoRecurso.length}</p>
+                                `,
+                                icon: 'success',
+                                confirmButtonColor: 'var(--azul-gov-principal)'
+                            });
+                            
+                            // Limpar rascunho e redirecionar
+                            localStorage.removeItem(`rascunho_recurso_${avaliacaoId}`);
+                            window.location.href = '/dashboard';
+                            
+                        } catch (error) {
+                            console.error('Erro ao enviar recurso:', error);
+                            Swal.fire({
+                                title: 'Erro!', 
+                                text: error.message, 
+                                icon: 'error',
+                                confirmButtonColor: 'var(--vermelho-destaque)'
+                            });
+                        }
+                    }
+                });
+            }
+
+            function iniciarVerificacaoPeriodica() {
+                if (avaliacaoCompleta.status === 'AGUARDANDO_RECURSO') {
+                    console.log('Iniciando verificação periódica do prazo...');
+                    
+                    const intervalo = setInterval(async () => {
+                        if (prazoInfo && prazoInfo.dentroDoPrazo && !prazoExpirado) {
+                            prazoInfo.segundosRestantes = Math.max(0, prazoInfo.segundosRestantes - 1);
+                            const segundos = prazoInfo.segundosRestantes;
+
+                            if (segundos <= 0) {
+                                prazoExpirado = true; 
+                                clearInterval(intervalo); 
+                                console.log('Prazo expirou! Recarregando página...');
+                                Swal.fire({
+                                    title: 'Prazo Expirado!',
+                                    text: 'O prazo para recurso expirou. A página será atualizada.',
+                                    icon: 'warning',
+                                    confirmButtonColor: 'var(--azul-gov-principal)',
+                                    allowOutsideClick: false
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            }
+
+                            else if (segundos <= 60 && !warned1min) {
+                                warned1min = true;
+                                warned5min = true; 
+                                warned10min = true;
+                                Swal.fire({
+                                    toast: true, position: 'top-end', icon: 'error',
+                                    title: 'ALERTA DE PRAZO!',
+                                    text: 'Resta apenas 1 minuto para enviar o recurso.',
+                                    showConfirmButton: false, timer: 5000, timerProgressBar: true
+                                });
+                            }
+                            else if (segundos <= 300 && !warned5min) {
+                                warned5min = true;
+                                warned10min = true; 
+                                Swal.fire({
+                                    toast: true, position: 'top-end', icon: 'warning',
+                                    title: 'Aviso de Prazo',
+                                    text: 'Restam apenas 5 minutos para enviar o recurso.',
+                                    showConfirmButton: false, timer: 5000, timerProgressBar: true
+                                });
+                            }
+                            else if (segundos <= 600 && !warned10min) {
+                                warned10min = true;
+                                Swal.fire({
+                                    toast: true, position: 'top-end', icon: 'info',
+                                    title: 'Aviso de Prazo',
+                                    text: 'Restam 10 minutos para enviar o recurso.',
+                                    showConfirmButton: false, timer: 5000, timerProgressBar: true
+                                });
+                            }
+
+                            exibirInformacoesPrazo();
+                            
+                            if (segundos % 10 === 0) {
+                                console.log('Sincronizando prazo com o servidor...');
+                                await verificarPrazoRecurso();
+                                if (prazoInfo.recursoExpirado || !prazoInfo.dentroDoPrazo) {
+                                    console.log('Servidor confirmou expiração do prazo.');
+                                    prazoExpirado = true;
+                                }
+                            }
+                        } else if (prazoExpirado) {
+                            clearInterval(intervalo);
+                        }
+                    }, 1000); 
+                }
+            }
+
+            try {
+                console.log('=== CARREGANDO DADOS DA AVALIAÇÃO ===');
+                const response = await fetch(`/api/my-avaliacoes/${avaliacaoId}`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                if (!response.ok) throw new Error('Não foi possível carregar os dados desta avaliação.');
+                avaliacaoCompleta = await response.json();
+                
+                await verificarPrazoRecurso();
+                exibirInformacoesPrazo();
+
+                console.log('Dados da avaliação carregados:', avaliacaoCompleta);
+                console.log('Prazo expirado?', prazoExpirado);
+
+                if (!avaliacaoCompleta.respostas || !Array.isArray(avaliacaoCompleta.respostas)) { 
+                    avaliacaoCompleta.respostas = []; 
+                }
+
+                const dataFormatada = new Date(avaliacaoCompleta.createdAt).toLocaleString('pt-BR');                
+                summaryContainer.innerHTML = `
+                    <h1>Detalhes da Autoavaliação</h1>
+                    <div class="report-summary">
+                        <span><strong>Órgão:</strong> ${avaliacaoCompleta.secretaria.nome}</span>
+                        <span><strong>Ciclo:</strong> ${avaliacaoCompleta.ciclo}</span>
+                        <span><strong>Enviado por:</strong> ${avaliacaoCompleta.nomeResponsavel || 'Não informado'}</span>
+                        <span><strong>Enviado em:</strong> ${dataFormatada}</span>
+                    </div>
+                `;
+
+                // CALCULAR E EXIBIR PONTUAÇÕES
+                const pontuacoes = calcularPontuacaoRecurso();
+                scoreSecretariaEl.textContent = `${pontuacoes.pontuacaoSecretaria} / ${pontuacoes.pontuacaoTotal}`;
+                scoreAdminEl.textContent = `${pontuacoes.pontuacaoAdmin} / ${pontuacoes.pontuacaoTotal}`;
+
+                renderizarCardsDeResposta();
+                adicionarEventListeners();
+
+                // CONFIGURAR BOTÕES DE AÇÃO
+                if(avaliacaoCompleta.status === 'AGUARDANDO_RECURSO' && !prazoExpirado) {
+                    recursoActionsContainer.innerHTML = `
+                        <button id="enviar-recurso-btn" class="btn">Enviar Recurso para Reanálise</button>
+                    `;
+                    
+                    document.getElementById('enviar-recurso-btn').addEventListener('click', enviarRecurso);
+                } else if (avaliacaoCompleta.status === 'AGUARDANDO_RECURSO' && prazoExpirado) {
+                    recursoActionsContainer.innerHTML = `
+                        <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px; margin-top: 20px;">
+                            <h4 style="color: #dc3545; margin-bottom: 10px;">Prazo Expirado</h4>
+                            <p style="color: #6c757d; margin-bottom: 15px;">O prazo para envio de recursos expirou.</p>
+                            <p style="font-size: 0.9em; color: #495057;">
+                                <strong>Status:</strong> Aguardando análise final da SCGE
+                            </p>
+                        </div>
+                    `;
+                } else if (avaliacaoCompleta.status === 'EM_ANALISE_DE_RECURSO') {
+                    recursoActionsContainer.innerHTML = `
+                        <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px; margin-top: 20px;">
+                            <h4 style="color: #6f42c1; margin-bottom: 10px;">Recurso Enviado</h4>
+                            <p style="color: #6c757d; margin-bottom: 15px;">Seu recurso está em análise pela Controladoria Geral do Estado.</p>
+                            <p style="font-size: 0.9em; color: #495057;">
+                                <strong>Status:</strong> Em análise de recurso
+                            </p>
+                        </div>
+                    `;
+                }
+                
+                iniciarVerificacaoPeriodica();
 
             } catch (error) {
                 console.error("Erro detalhado:", error);
                 summaryContainer.innerHTML = `<h1>Erro ao Carregar Relatório</h1><p>${error.message}</p>`;
             }
-
-            // --- LÓGICA DE INTERAÇÃO PARA A ÁREA DE RECURSO ---
-            respostasContainer.addEventListener('click', (event) => {
-                const target = event.target;
-                const action = target.dataset.action;
-                const recursoBox = target.closest('.recurso-box');
-                if (!recursoBox) return;
-
-                if (action === 'sim-recurso' || action === 'nao-recurso') {
-                    const simBtn = target.parentElement.querySelector('[data-action="sim-recurso"]');
-                    const naoBtn = target.parentElement.querySelector('[data-action="nao-recurso"]');
-                    const evidenceWrapper = recursoBox.querySelector('.link-comprovante-wrapper');
-                    if (action === 'sim-recurso') {
-                        simBtn.classList.add('active');
-                        naoBtn.classList.remove('active');
-                        if (evidenceWrapper) evidenceWrapper.classList.add('show');
-                    } else {
-                        naoBtn.classList.add('active');
-                        simBtn.classList.remove('active');
-                        if (evidenceWrapper) evidenceWrapper.classList.remove('show');
-                    }
-                }
-
-                if (target.matches('.recurso-box .add-link-btn')) {
-                    const url = prompt("Por favor, insira a URL da nova evidência:");
-                    if (url && url.trim() !== '') {
-                        const evidenceList = recursoBox.querySelector('.evidence-list-recurso');
-                        const newItem = document.createElement('li');
-                        newItem.className = 'evidence-item';
-                        newItem.dataset.link = url;
-                        newItem.innerHTML = `<a href="${url}" target="_blank" title="${url}">${url}</a><button class="remove-evidence-btn" title="Remover Evidência">&times;</button>`;
-                        evidenceList.appendChild(newItem);
-                    }
-                }
-
-                if (target.matches('.recurso-box .remove-evidence-btn')) {
-                    target.closest('.evidence-item').remove();
-                }
-            });
         });
     </script>
-    <script src="/public/global.js"></script>
+    <script src="/global.js"></script>
 </body>
 </html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <title>Detalhes da Avaliação - Análise PE</title>
+    <title>Análise de Avaliação - Análise PE</title>
     <style>
         :root {
             --azul-gov-principal: #002776;
@@ -16,7 +16,7 @@
             --vermelho-destaque: #dc3545;
             --cinza-borda: #ddd;
         }
-        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--cinza-fundo); color: var(--cinza-texto); line-height: 1.6; }
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--cinza-fundo); color: var(--cinza-texto); line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
         .main-header { background-color: var(--branco); box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 0 5%; position: sticky; top: 0; z-index: 1000; }
         .main-nav { display: flex; justify-content: space-between; align-items: center; height: 70px; max-width: 1200px; margin: 0 auto; }
         .logo a { text-decoration: none; display: flex; align-items: center; gap: 12px; }
@@ -26,22 +26,81 @@
         .main-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; }
         .main-nav a { text-decoration: none; color: var(--cinza-texto); font-weight: 600; padding: 10px; border-bottom: 2px solid transparent; transition: all 0.3s ease; }
         .main-nav a:hover, .main-nav a.active { color: var(--azul-gov-principal); border-bottom-color: var(--amarelo-gov-detalhe); }
-        .main-footer { text-align: center; padding: 20px; margin-top: 40px; background-color: var(--branco); font-size: 0.9em; position: relative; height: 60px; }
+        .main-footer { text-align: center; padding: 20px; margin-top: auto; background-color: var(--branco); font-size: 0.9em; position: relative; height: 60px; box-sizing: content-box; }
         .main-footer .footer-content { display: flex; justify-content: center; align-items: center; height: 100%; }
         .main-footer img { height: 110px; width: auto; position: absolute; right: 5%; top: 50%; transform: translateY(-50%); }
-        main { padding: 40px 5%; min-height: calc(100vh - 190px); box-sizing: border-box; }
+        .main-footer p a { color: var(--cinza-texto); font-weight: 600; text-decoration: none; }
+        main { padding: 40px 5%; }
         .report-container { max-width: 900px; margin: 0 auto; }
         .report-header { background: var(--branco); padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 30px; }
         .report-header h1 { margin: 0 0 10px 0; color: var(--azul-gov-principal); }
         .report-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9em; color: #555; }
-        .score-container { text-align: center; background-color: var(--azul-gov-principal); color: var(--branco); padding: 20px; border-radius: 8px; margin-bottom: 30px; }
-        .score-container h2 { margin: 0 0 5px 0; text-transform: uppercase; font-size: 1.2em; }
-        .score-container .score-value { font-size: 2.5em; font-weight: bold; }
-        .resposta-card { background-color: var(--branco); border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .resposta-header { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-        .resposta-header strong { flex-grow: 1; }
+        .score-container { 
+            text-align: center; 
+            background-color: var(--azul-gov-principal); 
+            color: var(--branco); 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin-bottom: 30px; 
+            display: flex;
+            gap: 20px;
+            position: sticky;
+            top: 80px;
+            z-index: 999;
+        }
+        .score-box {
+            flex: 1;
+            text-align: center;
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .score-box:last-child {
+            border-right: none;
+        }
+        .score-box h2 { 
+            margin: 0 0 5px 0; 
+            text-transform: uppercase; 
+            font-size: 1em; 
+            opacity: 0.8; 
+        }
+        .score-box .score-value { 
+            font-size: 2.2em; 
+            font-weight: bold; 
+        }
+        .resposta-card { 
+            background-color: var(--branco); 
+            border-radius: 8px; 
+            margin-bottom: 15px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+            position: relative;
+        }
+        .resposta-card.aprovado {
+            border-left: 5px solid var(--verde-sucesso);
+        }
+        .resposta-card.rejeitado {
+            border-left: 5px solid var(--vermelho-destaque);
+        }
+        .resposta-card.pendente {
+            border-left: 5px solid #ffc107;
+        }
+        .resposta-header { 
+            padding: 15px; 
+            border-bottom: 1px solid #eee; 
+            display: flex; 
+            justify-content: flex-start; 
+            align-items: center; 
+            flex-wrap: wrap; 
+            gap: 15px; 
+        }
+        .resposta-header strong {
+            flex-grow: 1;
+        }
         .resposta-body { padding: 15px; }
-        .resposta-status { display: flex; gap: 20px; flex-wrap: wrap; }
+        .resposta-body > :first-child {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
+        }
+        .resposta-status { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
         .atende-badge { font-weight: bold; padding: 5px 10px; border-radius: 20px; color: var(--branco); font-size: 0.9em; }
         .atende-sim { background-color: var(--verde-sucesso); }
         .atende-nao { background-color: var(--vermelho-destaque); }
@@ -51,51 +110,126 @@
         .evidence-item { display: flex; justify-content: space-between; align-items: center; background-color: #f8f9fa; padding: 8px 12px; border-radius: 6px; margin-bottom: 5px; font-size: 0.9em; }
         .evidence-item a { word-break: break-all; }
         .comment-section p { margin: 0; font-style: italic; color: #555; }
-        .admin-feedback-box { margin-top: 15px; padding: 15px; background-color: #e9eef5; border-left: 4px solid var(--azul-gov-principal); border-radius: 4px; }
-        .admin-feedback-box h4 { margin: 0 0 10px 0; color: var(--azul-gov-principal); }
-        .admin-feedback-box p { margin: 0; font-style: italic; }
-        .status-validacao { font-weight: bold; padding: 3px 8px; border-radius: 4px; font-size: 0.8em; text-transform: uppercase; color: var(--branco); }
+        .validation-section { margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--cinza-borda); }
+        .admin-comment { 
+            width: 100%; 
+            box-sizing: border-box; 
+            padding: 10px; 
+            border: 1px solid var(--cinza-borda); 
+            border-radius: 6px; 
+            font-size: 0.9em; 
+            min-height: 80px; 
+            margin-bottom: 10px; 
+            resize: none;
+        }
+        .validation-actions { display: flex; justify-content: flex-end; align-items: center; gap: 10px; }
+        .btn { 
+            padding: 12px 25px; 
+            background-color: var(--azul-gov-principal); 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 1em; 
+            font-weight: bold; 
+            transition: background-color .3s; 
+        }
+        .btn:hover { background-color: #001a4d; }
+        
+        /* NOVO ESTILO PARA BOTÕES DE VALIDAÇÃO - PADRÃO FORMULARIO.HTML */
+        .btn-validation { 
+            padding: 8px 16px; 
+            border: 1px solid var(--cinza-borda); 
+            background-color: var(--branco); 
+            border-radius: 20px; 
+            cursor: pointer; 
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: var(--cinza-texto);
+        }
+        .btn-validation.atende.active { 
+            background-color: var(--verde-sucesso); 
+            color: var(--branco); 
+            border-color: var(--verde-sucesso); 
+        }
+        .btn-validation.nao-atende.active { 
+            background-color: var(--vermelho-destaque); 
+            color: var(--branco); 
+            border-color: var(--vermelho-destaque); 
+        }
+        
+        .status-validacao, .sub-status-badge { 
+            font-weight: bold; 
+            padding: 3px 8px; 
+            border-radius: 4px; 
+            font-size: 0.8em; 
+            text-transform: uppercase; 
+            color: var(--branco); 
+            margin-right: auto; 
+            position: relative;
+            cursor: help;
+        }
+        .status-pendente { background-color: #ffc107; color: #333; }
         .status-aprovado { background-color: var(--verde-sucesso); }
         .status-rejeitado { background-color: var(--vermelho-destaque); }
-        .validation-section { margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--cinza-borda); }
-        .admin-comment { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid var(--cinza-borda); border-radius: 6px; font-size: 0.9em; min-height: 80px; margin-bottom: 10px; }
-        .validation-actions { display: flex; justify-content: flex-end; gap: 10px; }
-        .btn-validation { padding: 8px 20px; border: none; border-radius: 6px; color: var(--branco); font-weight: bold; cursor: pointer; }
-        .btn-validation.atende { background-color: var(--verde-sucesso); }
-        .btn-validation.nao-atende { background-color: var(--vermelho-destaque); }
-
-        /* Estilo para o botão de ação principal */
-        .btn {
-            padding: 12px 25px;
-            background-color: var(--azul-gov-principal);
-            color: white;
-            border: none;
-            border-radius: 6px;
+        .sub-validation-container { 
+            margin-top: 15px; 
+            padding-top: 15px; 
+            border-top: 1px solid #f0f0f0; 
+            margin-bottom: 15px;
+        }
+        .sub-validation-container:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+        .sub-validation-container h4 { margin-top: 0; margin-bottom: 10px; font-size: 1em; color: var(--azul-gov-principal); }
+        #logout-btn {
             cursor: pointer;
-            font-size: 1em;
-            font-weight: bold;
-            transition: background-color .3s;
         }
-        .btn:hover {
-            background-color: #001a4d;
+        
+        /* Tooltip styles */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8em;
+            font-weight: normal;
+            text-transform: none;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
         }
 
-        /* --- NOVOS ESTILOS PARA SUB-VALIDAÇÃO --- */
-        .sub-validation-container {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #f0f0f0;
+        /* NOVO: Estilo para exibição correta dos requisitos divididos */
+        .split-requisito-display {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
-        .sub-validation-container:first-of-type {
-            margin-top: 0;
-            padding-top: 0;
-            border-top: none;
+        .split-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 8px 0;
         }
-        .sub-validation-container h4 {
-            margin-top: 0;
-            margin-bottom: 10px;
-            font-size: 1em;
-            color: var(--azul-gov-principal);
+        .split-label {
+            font-weight: 600;
+            min-width: 120px;
         }
     </style>
 </head>
@@ -106,106 +240,115 @@
             <ul id="nav-links"></ul>
         </nav>
     </header>
-
     <main>
         <div class="report-container">
             <div id="summary-container" class="report-header"><p>Carregando dados...</p></div>
-            <div id="score-container" class="score-container">
-                <h2>Pontuação Parcial</h2>
-                <div id="score-value" class="score-value">-- / --</div>
+            <div class="score-container">
+                <div class="score-box">
+                    <h2>Nota da Autoavaliação</h2>
+                    <div id="score-secretaria" class="score-value">-- / --</div>
+                </div>
+                <div class="score-box">
+                    <h2>Nota Pós-Análise (SCGE)</h2>
+                    <div id="score-admin" class="score-value">-- / --</div>
+                </div>
             </div>
             <div id="respostas-container"></div>
             <div id="actions-container" style="text-align: right; margin-top: 30px;"></div>
         </div>
     </main>
-
     <footer class="main-footer">
         <div class="footer-content">
-            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. | <a href="/admin" id="admin-footer-link" style="display: none;">Área Administrativa</a></p>
+            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a href="/admin" id="admin-footer-link" style="display: none;">Área Administrativa</a></p>
             <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
         </div>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            // --- Seleção de Elementos ---
             const avaliacaoId = window.location.pathname.split('/').pop();
             const summaryContainer = document.getElementById('summary-container');
-            const scoreValue = document.getElementById('score-value');
+            const scoreSecretariaEl = document.getElementById('score-secretaria');
+            const scoreAdminEl = document.getElementById('score-admin');            
             const respostasContainer = document.getElementById('respostas-container');
-            const reportContainer = document.querySelector('.report-container');
-            const actionsContainer = document.getElementById('actions-container'); // Container para o botão final
+            const actionsContainer = document.getElementById('actions-container');
             const authToken = localStorage.getItem('authToken');
+
+            let avaliacaoCompleta = null;
+
+            console.log('=== INICIANDO APLICAÇÃO ===');
+            console.log('Avaliação ID:', avaliacaoId);
 
             if (!avaliacaoId) {
                 summaryContainer.innerHTML = '<h1>Erro: ID da Avaliação não encontrado na URL.</h1>';
                 return;
             }
 
-            try {
-                // --- CARREGAMENTO INICIAL DOS DADOS ---
-                const response = await fetch(`/api/avaliacoes/${avaliacaoId}`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-                if (!response.ok) throw new Error('Não foi possível carregar os dados desta avaliação. Verifique se você está logado como administrador.');
-                const avaliacao = await response.json();
+            function recalcularEExibirPontuacoes() {
+                if (!avaliacaoCompleta || !Array.isArray(avaliacaoCompleta.respostas)) return;
 
-                // Bloco de Segurança para 'respostas'
-                if (!Array.isArray(avaliacao.respostas)) {
-                    avaliacao.respostas = [];
+                let pontuacaoSecretaria = 0;
+                let pontuacaoAdmin = 0;
+                let pontuacaoTotal = 0;
+
+                avaliacaoCompleta.respostas.forEach(resposta => {
+                    const pontuacaoRequisito = resposta.requisito?.pontuacao || 0;
+                    pontuacaoTotal += pontuacaoRequisito;
+
+                    if (resposta.atende === true) { 
+                        pontuacaoSecretaria += pontuacaoRequisito;
+                    }
+
+                    if (resposta.statusValidacao === 'aprovado') {
+                        pontuacaoAdmin += pontuacaoRequisito;
+                    }
+                });
+
+                console.log(`Pontuações recalculadas: Secretaria=${pontuacaoSecretaria}, Admin=${pontuacaoAdmin}, Total=${pontuacaoTotal}`);
+                scoreSecretariaEl.textContent = `${Math.round(pontuacaoSecretaria)} / ${pontuacaoTotal}`;
+                scoreAdminEl.textContent = `${Math.round(pontuacaoAdmin)} / ${pontuacaoTotal}`;
+            }
+
+            try {
+                const response = await fetch(`/api/avaliacoes/${avaliacaoId}`, { 
+                    headers: { 'Authorization': `Bearer ${authToken}` } 
+                });
+                if (!response.ok) throw new Error('Não foi possível carregar os dados desta avaliação.');
+                avaliacaoCompleta = await response.json();
+                
+                console.log("DADOS RECEBIDOS DO SERVIDOR:", avaliacaoCompleta);
+                if (!Array.isArray(avaliacaoCompleta.respostas)) { 
+                    avaliacaoCompleta.respostas = []; 
                 }
                 
-                // Preenche o cabeçalho do relatório
-                const dataFormatada = new Date(avaliacao.createdAt).toLocaleString('pt-BR');
-                summaryContainer.innerHTML = `<h1>${avaliacao.secretaria.nome} (${avaliacao.secretaria.sigla})</h1><div class="report-summary"><span><strong>URL Avaliada:</strong> ${avaliacao.urlSecretaria}</span><span><strong>Enviado em:</strong> ${dataFormatada}</span><span><strong>Responsável:</strong> ${avaliacao.nomeResponsavel}</span></div>`;
-                
-                // Calcula a pontuação
-                let pontuacaoAlcancada = 0;
-                let pontuacaoTotal = 0;
-                avaliacao.respostas.forEach(resposta => {
-                    const pontuacaoTotalRequisito = resposta.requisito.pontuacao;
-                    pontuacaoTotal += pontuacaoTotalRequisito;
-                    const isSplit = resposta.atendeDisponibilidade !== null || resposta.atendeSerieHistorica !== null;
-                    if (isSplit) {
-                        if (resposta.atendeDisponibilidade) pontuacaoAlcancada += pontuacaoTotalRequisito / 2;
-                        if (resposta.atendeSerieHistorica) pontuacaoAlcancada += pontuacaoTotalRequisito / 2;
-                    } else {
-                        if (resposta.atende) pontuacaoAlcancada += pontuacaoTotalRequisito;
-                    }
-                });
-                scoreValue.textContent = `${pontuacaoAlcancada} / ${pontuacaoTotal}`;
+                const dataFormatada = new Date(avaliacaoCompleta.createdAt).toLocaleString('pt-BR');
+                summaryContainer.innerHTML = `
+                    <h1>${avaliacaoCompleta.secretaria.nome} (${avaliacaoCompleta.secretaria.sigla})</h1>
+                    <div class="report-summary">
+                        <span><strong>URL Avaliada:</strong> ${avaliacaoCompleta.urlSecretaria}</span>
+                        <span><strong>Enviado em:</strong> ${dataFormatada}</span>
+                        <span><strong>Responsável:</strong> ${avaliacaoCompleta.nomeResponsavel}</span>
+                    </div>
+                `;
 
-                // Renderiza cada uma das respostas
-                respostasContainer.innerHTML = avaliacao.respostas.map(resposta => {
-                    const isSplit = resposta.atendeDisponibilidade !== null || resposta.atendeSerieHistorica !== null;
-                    
-                    let answerHTML = '';
-                    if (isSplit) {
-                        const dispClasse = resposta.atendeDisponibilidade ? 'atende-sim' : 'atende-nao';
-                        const dispTexto = resposta.atendeDisponibilidade ? 'Sim' : 'Não';
-                        const serieClasse = resposta.atendeSerieHistorica ? 'atende-sim' : 'atende-nao';
-                        const serieTexto = resposta.atendeSerieHistorica ? 'Sim' : 'Não';
-                        answerHTML = `
-                            <div class="resposta-status">
-                                <span style="margin-right: 15px;"><strong>Disponibilidade:</strong> <span class="atende-badge ${dispClasse}">${dispTexto}</span></span>
-                                <span><strong>Série Histórica:</strong> <span class="atende-badge ${serieClasse}">${serieTexto}</span></span>
-                            </div>
-                        `;
-                    } else {
-                        const atendeClasse = resposta.atende ? 'atende-sim' : 'atende-nao';
-                        const atendeTexto = resposta.atende ? 'Sim' : 'Não';
-                        const automaticoBadge = resposta.foiAutomatico ? '<span class="automatico"> ✔️ Automático</span>' : '';
-                        answerHTML = `<div class="resposta-status"><span class="atende-badge ${atendeClasse}">${atendeTexto}</span>${automaticoBadge}</div>`;
-                    }
+                recalcularEExibirPontuacoes();
+
+                respostasContainer.innerHTML = avaliacaoCompleta.respostas.map(resposta => {
+            
+                    const atendeClasse = resposta.atende ? 'atende-sim' : 'atende-nao';
+                    const atendeTexto = resposta.atende ? 'Atende' : 'Não atende';
+                    const answerHTML = `<div class="resposta-status"><span class="atende-badge ${atendeClasse}">${atendeTexto}</span></div>`;
 
                     let evidencesHTML = '';
-                    if ((resposta.evidencias && resposta.evidencias.length > 0) || resposta.linkComprovante) {
-                        evidencesHTML += `<div class="evidence-section"><h4>Evidências Originais:</h4><ul class="evidence-list">`;
+                    const evidencias = Array.isArray(resposta.evidencias) ? resposta.evidencias : [];
+                    if (evidencias.length > 0 || resposta.linkComprovante) {
+                        evidencesHTML += `<div class="evidence-section"><h4>Evidências Fornecidas:</h4><ul class="evidence-list">`;
                         if (resposta.linkComprovante) {
                             evidencesHTML += `<li class="evidence-item"><a href="${resposta.linkComprovante}" target="_blank">${resposta.linkComprovante}</a> (Automático)</li>`;
                         }
-                        resposta.evidencias.forEach(ev => {
-                            evidencesHTML += `<li class="evidence-item"><a href="${ev.url}" target="_blank">${ev.url}</a></li>`;
+                        evidencias.forEach(ev => {
+                            const url = typeof ev === 'object' ? ev.url : ev;
+                            evidencesHTML += `<li class="evidence-item"><a href="${url}" target="_blank">${url}</a></li>`;
                         });
                         evidencesHTML += `</ul></div>`;
                     }
@@ -215,75 +358,118 @@
                         commentHTML = `<div class="comment-section"><h4>Comentário da Secretaria:</h4><p>"${resposta.comentarioSecretaria}"</p></div>`;
                     }
 
-                    let validationHTML = '';
-                    if (isSplit) {
-                        // NOVA INTERFACE PARA VALIDAR REQUISITOS SUBDIVIDIDOS
-                        validationHTML = `
-                            <div class="sub-validation-container">
-                                <h4>Análise de Disponibilidade</h4>
-                                <textarea class="admin-comment-disponibilidade" placeholder="Adicionar comentário sobre a Disponibilidade...">${resposta.comentarioDisponibilidade || ''}</textarea>
-                                <div class="validation-actions">
-                                    <button class="btn-validation nao-atende" data-validation-type="disponibilidade">Não Atende</button>
-                                    <button class="btn-validation atende" data-validation-type="disponibilidade">Atende</button>
-                                </div>
-                            </div>
-                            <div class="sub-validation-container">
-                                <h4>Análise de Série Histórica</h4>
-                                <textarea class="admin-comment-serie" placeholder="Adicionar comentário sobre a Série Histórica...">${resposta.comentarioSerieHistorica || ''}</textarea>
-                                <div class="validation-actions">
-                                    <button class="btn-validation nao-atende" data-validation-type="serie">Não Atende</button>
-                                    <button class="btn-validation atende" data-validation-type="serie">Atende</button>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        // Interface para requisitos normais
-                        validationHTML = `
+                    let adminInterfaceHTML = '';
+                    const isEmAnalise = avaliacaoCompleta.status === 'EM_ANALISE_SCGE' || avaliacaoCompleta.status === 'EM_ANALISE_DE_RECURSO';
+                    let cardClass = ''; 
+
+                    if (isEmAnalise) {
+                        cardClass = resposta.statusValidacao || 'pendente'; 
+                        
+                        const houveDivergencia = (resposta.atende !== (resposta.statusValidacao === 'aprovado'));
+                        const statusTexto = !resposta.statusValidacao || resposta.statusValidacao === 'pendente' ? 'Pendente' : (houveDivergencia ? 'Alterado' : 'Mantido');
+                        
+                        let tooltipTexto = "";
+                        if (!resposta.statusValidacao || resposta.statusValidacao === 'pendente') {
+                            tooltipTexto = "Requisito pendente de análise";
+                        } else if (houveDivergencia) {
+                            tooltipTexto = "A sua avaliação divergiu com a decisão da secretaria";
+                        } else {
+                            tooltipTexto = "A sua avaliação manteve a decisão da secretaria";
+                        }
+                        
+                        adminInterfaceHTML = `
                             <div class="validation-section">
                                 <textarea class="admin-comment" placeholder="Adicionar comentário da análise...">${resposta.comentarioAdmin || ''}</textarea>
                                 <div class="validation-actions">
-                                    <button class="btn-validation nao-atende" data-validation-type="normal">Não Atende</button>
-                                    <button class="btn-validation atende" data-validation-type="normal">Atende</button>
+                                    <span class="tooltip status-validacao status-${resposta.statusValidacao || 'pendente'}">
+                                        ${statusTexto}
+                                        <span class="tooltiptext">${tooltipTexto}</span>
+                                    </span>
+                                    <button class="btn-validation nao-atende ${resposta.statusValidacao === 'rejeitado' ? 'active' : ''}" data-validation-type="normal" title="Ao clicar em não atende você afirma que a secretaria não atende ao requisito">Não atende</button>
+                                    <button class="btn-validation atende ${resposta.statusValidacao === 'aprovado' ? 'active' : ''}" data-validation-type="normal" title="Ao clicar em atende você afirma que a secretaria atende ao requisito">Atende</button>
                                 </div>
-                            </div>
-                        `;
+                            </div>`;
+                    } else { 
+                        cardClass = resposta.statusValidacao || 'pendente';
+                        
+                        const houveDivergencia = (resposta.atende !== (resposta.statusValidacao === 'aprovado'));
+                        const statusTexto = !resposta.statusValidacao || resposta.statusValidacao === 'pendente' ? 'Pendente' : (houveDivergencia ? 'Alterado' : 'Mantido');
+
+                        adminInterfaceHTML = `
+                            <div class="admin-feedback-box">
+                                <h4>Sua Análise (Enviada)</h4>
+                                <p><strong>Resultado:</strong> <span class="status-validacao status-${resposta.statusValidacao || 'pendente'}">${statusTexto}</span></p>
+                                ${(resposta.comentarioAdmin && resposta.comentarioAdmin.trim() !== "") ?
+                                    `<p><strong>Seu Comentário:</strong> "${resposta.comentarioAdmin}"</p>` :
+                                    ''
+                                }
+                            </div>`;
                     }
 
                     return `
-                        <div class="resposta-card" data-resposta-id="${resposta.id}" data-is-split="${isSplit}">
+                        <div class="resposta-card ${cardClass}" data-resposta-id="${resposta.id}">
                             <div class="resposta-header">
                                 <strong>${resposta.requisito.texto}</strong>
+                                ${answerHTML}
                             </div>
                             <div class="resposta-body">
-                                ${answerHTML}
                                 ${evidencesHTML}
                                 ${commentHTML}
-                                ${validationHTML}
+                                ${adminInterfaceHTML}
                             </div>
                         </div>`;
                 }).join('');
-                    
-
-                // --- LÓGICA ADICIONADA PARA O BOTÃO PRINCIPAL ---
-                const isInitialAnalysisPhase = avaliacao.status === 'EM_ANALISE_SCGE';
-                const isRecursoAnalysisPhase = avaliacao.status === 'EM_ANALISE_DE_RECURSO';
-
+                
+                const isInitialAnalysisPhase = avaliacaoCompleta.status === 'EM_ANALISE_SCGE';
+                const isRecursoAnalysisPhase = avaliacaoCompleta.status === 'EM_ANALISE_DE_RECURSO';
+                
                 if (isInitialAnalysisPhase || isRecursoAnalysisPhase) {
                     const buttonText = isRecursoAnalysisPhase ? 'Encerrar Avaliação e Publicar Nota Final' : 'Finalizar Análise e Devolver para Secretaria';
                     const buttonId = isRecursoAnalysisPhase ? 'finalizar-btn' : 'devolver-btn';
                     actionsContainer.innerHTML = `<button id="${buttonId}" class="btn">${buttonText}</button>`;
-
                     const actionBtn = document.getElementById(buttonId);
+                    
                     actionBtn.addEventListener('click', () => {
+                        // VALIDAÇÃO: Verificar se todos os requisitos foram analisados
+                        const requisitosPendentes = [];
+                        avaliacaoCompleta.respostas.forEach(resposta => {
+                            if (!resposta.statusValidacao || resposta.statusValidacao === 'pendente') {
+                                requisitosPendentes.push(resposta.requisito.texto);
+                            }
+                        });
+
+                        if (requisitosPendentes.length > 0) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Análise Incompleta',
+                                html: `Você não pode devolver a avaliação, pois os seguintes requisitos ainda não foram validados:<br><br><ul style="text-align: left; list-style-position: inside;">${requisitosPendentes.map(r => `<li>${r}</li>`).join('')}</ul>`,
+                                confirmButtonColor: 'var(--azul-gov-principal)'
+                            });
+                            return; 
+                        }
+                        
                         const actionEndpoint = isRecursoAnalysisPhase ? 'finalizar' : 'devolver';
                         const swalConfig = isRecursoAnalysisPhase ? 
-                            { title: 'Encerrar Avaliação?', text: "A nota final será calculada e o processo será concluído. Esta ação é definitiva.", confirmButtonText: 'Sim, encerrar!' } :
-                            { title: 'Devolver para Secretaria?', text: "O status será alterado para 'Aguardando Recurso'.", confirmButtonText: 'Sim, devolver!' };
+                            { 
+                                title: 'Encerrar Avaliação?', 
+                                text: "A nota final será calculada e o processo será concluído. Esta ação é definitiva.", 
+                                confirmButtonText: 'Sim, encerrar!' 
+                            } :
+                            { 
+                                title: 'Devolver para Secretaria?', 
+                                text: "O status será alterado para 'Aguardando Recurso'.", 
+                                confirmButtonText: 'Sim, devolver!' 
+                            };
 
                         Swal.fire({
-                            title: swalConfig.title, text: swalConfig.text, icon: 'warning',
-                            showCancelButton: true, confirmButtonColor: '#002776', cancelButtonColor: '#6c757d',
-                            confirmButtonText: swalConfig.confirmButtonText, cancelButtonText: 'Cancelar'
+                            title: swalConfig.title,
+                            text: swalConfig.text,
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#002776',
+                            cancelButtonColor: '#6c757d',
+                            confirmButtonText: swalConfig.confirmButtonText,
+                            cancelButtonText: 'Cancelar'
                         }).then(async (result) => {
                             if (result.isConfirmed) {
                                 try {
@@ -292,6 +478,19 @@
                                         headers: { 'Authorization': `Bearer ${authToken}` }
                                     });
                                     if (!response.ok) throw new Error(`Falha ao ${actionEndpoint} a avaliação.`);
+                                    
+                                    if (!isRecursoAnalysisPhase) {
+                                        try {
+                                            await fetch(`/api/avaliacoes/${avaliacaoId}/notificar-devolucao-recurso`, {
+                                                method: 'POST',
+                                                headers: { 'Authorization': `Bearer ${authToken}` }
+                                            });
+                                            console.log('✅ Email de devolução enviado para a secretaria');
+                                        } catch (emailError) {
+                                            console.warn('⚠️ Não foi possível enviar email de notificação:', emailError);
+                                        }
+                                    }
+                                    
                                     await Swal.fire('Sucesso!', 'A avaliação foi processada com sucesso.', 'success');
                                     window.location.href = '/admin';
                                 } catch (error) {
@@ -301,36 +500,51 @@
                         });
                     });
                 }
-                // --- FIM DA LÓGICA ADICIONADA ---
 
-            } catch (error) {
+            } catch (error) { 
                 console.error("Erro detalhado:", error);
-                summaryContainer.innerHTML = `<h1>Erro ao Carregar Relatório</h1><p>${error.message}</p>`;
+                summaryContainer.innerHTML = '<h1>Erro ao Carregar Avaliação</h1><p>' + error.message + '</p>';
             }
 
             respostasContainer.addEventListener('click', async (event) => {
                 const target = event.target;
                 if (target.matches('.btn-validation')) {
                     const card = target.closest('.resposta-card');
-                    const respostaId = card.dataset.respostaId;
-                    const isSplit = card.dataset.isSplit === 'true';
+                    const respostaId = parseInt(card.dataset.respostaId);
+
+                    console.log("=== DEBUG SALVAMENTO ===");
+                    console.log("Resposta ID:", respostaId);
+                    console.log("Requisito:", card.querySelector('strong').textContent);
+                    console.log("Botão clicado:", target.classList.contains('atende') ? 'Atende' : 'Não Atende');
                     
                     let payload = {};
                     const novoStatus = target.classList.contains('atende') ? 'aprovado' : 'rejeitado';
 
-                    if (isSplit) {
-                        const validationType = target.dataset.validationType;
-                        if (validationType === 'disponibilidade') {
-                            payload.validacaoDisponibilidade = novoStatus;
-                            payload.comentarioDisponibilidade = card.querySelector('.admin-comment-disponibilidade').value;
-                        } else { // 'serie'
-                            payload.validacaoSerieHistorica = novoStatus;
-                            payload.comentarioSerieHistorica = card.querySelector('.admin-comment-serie').value;
-                        }
-                    } else { // Requisito normal
-                        payload.statusValidacao = novoStatus;
-                        payload.comentarioAdmin = card.querySelector('.admin-comment').value;
+                    const parentContainer = target.closest('.validation-actions');
+                    const allButtons = parentContainer.querySelectorAll('.btn-validation');
+                    allButtons.forEach(btn => btn.classList.remove('active'));
+                    target.classList.add('active');
+
+                    const comentarioGeral = card.querySelector('.admin-comment').value;
+                    
+                    console.log("Tipo: normal");
+                    console.log("Comentário digitado:", comentarioGeral);
+                    
+                    payload.statusValidacao = novoStatus;
+                    payload.comentarioAdmin = comentarioGeral;
+
+                    if (novoStatus === 'aprovado') {
+                        payload.recursoAtende = true;
+                        console.log("   Preenchendo recursoAtende como true (aprovado pela SCGE)");
+                    } else {
+                        const respostaOriginal = avaliacaoCompleta.respostas.find(r => r.id === respostaId);
+                        payload.recursoAtende = respostaOriginal.atende; 
+                        payload.recursoAtende = (novoStatus === 'aprovado'); 
+                        console.log(`   Definindo recursoAtende como ${payload.recursoAtende} (rejeitado pela SCGE)`);
                     }
+                    
+                    console.log("Payload a ser enviado:", payload);
+                    console.log("===================");
 
                     target.disabled = true;
                     try {
@@ -339,16 +553,104 @@
                             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
                             body: JSON.stringify(payload)
                         });
+                        
                         if (!response.ok) {
-                            const errData = await response.json();
-                            throw new Error(errData.error || 'Falha ao salvar a validação.');
+                            const errorText = await response.text();
+                            console.error("Erro da API:", errorText);
+                            throw new Error('Falha ao salvar a validação.');
                         }
-                        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Salvo!', showConfirmButton: false, timer: 1500 });
+                        
+                        const respostaAtualizada = await response.json();
+                        
+                        console.log("Dados retornados:", respostaAtualizada);
+                        
+                        const index = avaliacaoCompleta.respostas.findIndex(r => r.id === respostaId);
+                        if (index !== -1) {
+                            avaliacaoCompleta.respostas[index] = { ...avaliacaoCompleta.respostas[index], ...respostaAtualizada };
+                        }
+
+                        recalcularEExibirPontuacoes(); 
+
+                        const respostaOriginal = avaliacaoCompleta.respostas.find(r => r.id === respostaId);
+                        const badge = card.querySelector('.status-validacao');
+                        const houveDivergencia = (respostaOriginal.atende !== (novoStatus === 'aprovado'));
+
+                        badge.textContent = houveDivergencia ? 'Alterado' : 'Mantido';
+                        badge.className = `status-validacao status-${novoStatus}`;
+                        
+                        const tooltip = badge.querySelector('.tooltiptext');
+                        if (tooltip) {
+                            tooltip.textContent = houveDivergencia ? 
+                                "A sua avaliação divergiu com a decisão da secretaria" : 
+                                "A sua avaliação manteve a decisão da secretaria";
+                        }
+                        
+                        card.className = 'resposta-card'; 
+                        card.classList.add(novoStatus); 
+
+                        Swal.fire({ 
+                            toast: true, position: 'top-end', icon: 'success', 
+                            title: 'Salvo!', showConfirmButton: false, timer: 1500 
+                        });    
                     } catch (error) {
+                        console.error("Erro completo:", error);
                         Swal.fire('Erro!', `Erro: ${error.message}`, 'error');
+
                     } finally {
                         target.disabled = false;
                     }
+                }
+            });
+
+            let timeoutId;
+            respostasContainer.addEventListener('input', async (event) => {
+                if (event.target.matches('.admin-comment')) {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(async () => {
+                        const card = event.target.closest('.resposta-card');
+                        const respostaId = parseInt(card.dataset.respostaId);
+                        
+                        console.log("=== SALVAMENTO AUTOMÁTICO (COMENTÁRIO) ===");
+                        console.log("Resposta ID:", respostaId);
+                        
+                        let payload = {
+                            comentarioAdmin: event.target.value
+                        };
+
+                        console.log("Payload automático:", payload);
+
+                        try {
+                            const response = await fetch(`/api/respostas/${respostaId}`, {
+                                method: 'PATCH',
+                                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+                                body: JSON.stringify(payload)
+                            });
+                            
+                            console.log("Status da resposta automática:", response.status);
+                            
+                            if (response.ok) {
+                                const respostaAtualizada = await response.json();
+                                console.log("✅ Comentário salvo automaticamente para resposta:", respostaId);
+                                
+                                const index = avaliacaoCompleta.respostas.findIndex(r => r.id === respostaId);
+                                if (index !== -1) {
+                                    avaliacaoCompleta.respostas[index].comentarioAdmin = respostaAtualizada.comentarioAdmin;
+                                }
+
+                                Swal.fire({ 
+                                    toast: true, position: 'top-end', icon: 'success', 
+                                    title: 'Salvo!', showConfirmButton: false, timer: 1500 
+                                });
+                            } else {
+                                const errorText = await response.text();
+                                console.error("❌ Erro ao salvar comentário automaticamente:", errorText);
+                            }
+                        } catch (error) {
+                            console.error("❌ Erro ao salvar comentário:", error);
+                        }
+                        
+                        console.log("===================");
+                    }, 500); 
                 }
             });
         });

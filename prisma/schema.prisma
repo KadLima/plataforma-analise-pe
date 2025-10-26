@@ -53,31 +53,48 @@ model Avaliacao {
   emailResponsavel String
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @default(now()) @updatedAt
+  prazoRecurso         DateTime?  
+  recursoExpirado      Boolean   @default(false)
   status           AvaliacaoStatus   @default(PENDENTE_SECRETARIA) 
   ciclo            Int               @default(2025)
   pontuacaoFinal   Float?  
   secretaria       Secretaria        @relation(fields: [secretariaId], references: [id])
   secretariaId     Int
   respostas        Resposta[]
+
+  pontuacaoAutoavaliacao  Float? 
+  pontuacaoPrimeiraAnalise Float? 
+  pontuacaoPosRecurso      Float? 
+  pontuacaoTotal           Float? 
+  dataFinalizacao          DateTime?
 }
 
 model Resposta {
-  id              Int      @id @default(autoincrement())
-  atende          Boolean
-  foiAutomatico   Boolean  @default(false)
-  validacaoDisponibilidade String?  
-  validacaoSerieHistorica  String? 
-  comentarioDisponibilidade String? 
-  comentarioSerieHistorica  String?
-  comentarioSecretaria String?  
-  comentarioRecurso       String? 
-  atendeDisponibilidade Boolean? 
-  atendeSerieHistorica  Boolean? 
-  requisito       Requisito @relation(fields: [requisitoId], references: [id])
-  requisitoId     Int
-  avaliacao       Avaliacao @relation(fields: [avaliacaoId], references: [id], onDelete: Cascade)
-  avaliacaoId     Int
-  evidencias    Evidencia[] 
+  id                        Int      @id @default(autoincrement())
+  atende                    Boolean
+  foiAutomatico             Boolean  @default(false)
+  linkComprovante String?
+  linkComprovanteRecurso String?
+  
+  
+  comentarioAdmin           String?
+  comentarioSecretaria      String?
+  comentarioRecurso         String?
+ 
+
+  statusRecurso             String?
+  statusValidacao           String   @default("pendente")
+  statusValidacaoPosRecurso           String?
+
+  recursoAtende             Boolean?
+  analiseFinal              Json?
+  atendeOriginal            Boolean? 
+
+  requisito                 Requisito @relation(fields: [requisitoId], references: [id])
+  requisitoId               Int
+  avaliacao                 Avaliacao @relation(fields: [avaliacaoId], references: [id], onDelete: Cascade)
+  avaliacaoId               Int
+  evidencias                Evidencia[]
 }
 
 model Secretaria {
@@ -100,6 +117,18 @@ model User {
   secretariaId Int
 }
 
+model CodigoVerificacao {
+  id        Int      @id @default(autoincrement())
+  email     String
+  codigo    String
+  tipo      String   
+  expiraEm  DateTime
+  usado     Boolean  @default(false)
+  createdAt DateTime @default(now())
+  
+  @@index([email, tipo])
+}
+
 enum AvaliacaoStatus {
   PENDENTE_SECRETARIA
   EM_ANALISE_SCGE
@@ -110,8 +139,8 @@ enum AvaliacaoStatus {
 
 model Evidencia {
   id          Int      @id @default(autoincrement())
-  tipo        String   // Será 'link' ou 'imagem'
-  url         String   // O link ou o caminho para a imagem
+  tipo       String   @default("original")
+  url         String   
   createdAt   DateTime @default(now())
   resposta    Resposta @relation(fields: [respostaId], references: [id], onDelete: Cascade)
   respostaId  Int

@@ -1,0 +1,2071 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise Final - Análise PE</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --azul-gov-principal: #002776;
+            --amarelo-gov-detalhe: #FFD700;
+            --cinza-texto: #333333;
+            --cinza-fundo: #f4f4f4;
+            --branco: #ffffff;
+            --verde-sucesso: #28a745;
+            --vermelho-destaque: #dc3545;
+            --cinza-borda: #ddd;
+            --roxo-recurso: #6f42c1; 
+        }
+
+        .recurso-badge {
+            background-color: var(--roxo-recurso);
+            color: var(--branco);
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        .score-container-quatro-notas {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .score-box-quatro {
+            background-color: var(--azul-gov-principal);
+            color: var(--branco);
+            padding: 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .score-box-quatro::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--amarelo-gov-detalhe) 0%, transparent 100%);
+        }
+
+        .score-box-quatro:hover {
+            background-color: #001a4d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 39, 118, 0.3);
+        }
+
+        .score-box-quatro h2 {
+            margin: 0 0 5px 0;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .score-box-quatro .score-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .score-box-quatro .score-descricao {
+            font-size: 0.8em;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--cinza-fundo);
+            color: var(--cinza-texto);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-header {
+            background-color: var(--branco);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 0 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .main-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo a {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo img {
+            height: 45px;
+            filter: drop-shadow(1px 1px 1.2px rgba(0, 0, 0, 0.5));
+        }
+
+        .logo .site-title {
+            color: var(--azul-gov-principal);
+            font-size: 1.2em;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .logo .site-subtitle {
+            color: var(--cinza-texto);
+            font-size: 0.8em;
+            display: block;
+        }
+
+        .main-nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 20px;
+        }
+
+        .main-nav a {
+            text-decoration: none;
+            color: var(--cinza-texto);
+            font-weight: 600;
+            padding: 10px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: var(--azul-gov-principal);
+            border-bottom-color: var(--amarelo-gov-detalhe);
+        }
+
+        .main-footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+            background-color: var(--branco);
+            font-size: 0.9em;
+            position: relative;
+            height: 60px;
+            box-sizing: content-box;
+        }
+
+        .main-footer .footer-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .main-footer img {
+            height: 110px;
+            width: auto;
+            position: absolute;
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .main-footer p a {
+            color: var(--cinza-texto);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        main {
+            padding: 40px 5%;
+        }
+
+        .report-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .report-header {
+            background: var(--branco);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .report-header h1 {
+            margin: 0 0 10px 0;
+            color: var(--azul-gov-principal);
+        }
+
+        .report-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .card-mantido-sim:hover {
+            box-shadow: 0 4px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .card-mantido-nao:hover {
+            box-shadow: 0 4px 20px rgba(220, 53, 69, 0.3);
+        }
+
+        .card-alterado-aprovado:hover {
+            box-shadow: 0 4px 20px rgba(0, 39, 118, 0.3);
+        }
+
+        .card-alterado-rejeitado:hover {
+            box-shadow: 0 4px 20px rgba(255, 193, 7, 0.3);
+        }
+
+        .resposta-card.card-com-recurso-indicador:hover {
+             box-shadow: 0 4px 20px rgba(111, 66, 193, 0.3);
+        }
+
+        .resposta-card {
+            background-color: var(--branco);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative; 
+        }
+
+        .resposta-card.card-com-recurso-indicador {
+             border-right: 5px solid var(--roxo-recurso); 
+        }
+
+
+        .summary-status-alterado-aprovado {
+            background-color: var(--verde-sucesso);
+        }
+
+        .summary-status-alterado-rejeitado {
+            background-color: var(--vermelho-destaque);
+        }
+
+        .card-mantido-sim {
+            border-left: 5px solid var(--verde-sucesso);
+        }
+
+        .card-mantido-nao {
+            border-left: 5px solid var(--vermelho-destaque);
+        }
+
+        .card-alterado-rejeitado {
+            border-left: 5px solid var(--amarelo-gov-detalhe);
+        }
+
+        .card-alterado-aprovado {
+            border-left: 5px solid var(--azul-gov-principal);
+        }
+
+        .resposta-header {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .resposta-body {
+            padding: 15px;
+        }
+
+        .summary-header {
+            cursor: pointer;
+            font-weight: normal;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .summary-header strong {
+            font-weight: bold;
+            margin-right: auto; 
+            padding-right: 15px; 
+        }
+
+        .summary-status-container { 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+
+        .summary-status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            color: var(--branco);
+
+        }
+
+        .summary-status-mantido {
+            background-color: var(--verde-sucesso);
+        }
+
+        .summary-status-nao-atende {
+            background-color: var(--vermelho-destaque);
+        }
+
+        .summary-status-recurso { 
+            background-color: #6f42c1;
+        }
+
+        .summary-status-alterado-aprovado {
+            background-color: var(--azul-gov-principal);
+        }
+
+        .summary-status-alterado-rejeitado {
+            background-color: var(--amarelo-gov-detalhe);
+            color: #333;
+        }
+
+        .info-block {
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+
+        .resposta-body > .info-block:first-child,
+        .modal-body > .info-block:first-child {
+            border-top: none;
+            padding-top: 0;
+            margin-top: 0;
+        }
+
+        .info-block h4,
+        .info-block h5,
+        .info-block h6 {
+            margin: 0 0 10px 0;
+            background-color: #e9eef5;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 1em;
+            color: var(--azul-gov-principal);
+            font-weight: 600;
+        }
+
+        .info-block p {
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+
+        .highlight-answer {
+            font-weight: bold;
+            background-color: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .atende-badge {
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 20px;
+            color: var(--branco);
+            font-size: 0.85em;
+            display: inline-block;
+        }
+
+        .atende-sim {
+            background-color: var(--verde-sucesso);
+        }
+
+        .atende-nao {
+            background-color: var(--vermelho-destaque);
+        }
+
+        .status-validacao {
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            color: var(--branco);
+        }
+
+        .status-aprovado {
+            background-color: var(--verde-sucesso);
+        }
+
+        .status-rejeitado {
+            background-color: var(--vermelho-destaque);
+        }
+
+        .status-pendente {
+            background-color: #ffc107;
+            color: #333;
+        }
+        .status-mantido {
+            background-color: var(--verde-sucesso);
+        }
+         .status-alterado {
+            background-color: var(--vermelho-destaque);
+        }
+
+
+        .evidence-section,
+        .comment-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .evidence-section h4,
+        .comment-section h4 {
+            font-size: 1em;
+            color: #555;
+            margin: 0 0 10px 0;
+        }
+
+        .evidence-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .evidence-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .evidence-item a {
+            word-break: break-all;
+        }
+
+        .comment-section p {
+            margin: 0;
+            font-style: italic;
+            color: #555;
+        }
+
+        .admin-feedback-box {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e9eef5;
+            border-left: 4px solid var(--azul-gov-principal);
+            border-radius: 4px;
+        }
+
+        .admin-feedback-box h4 {
+            margin: 0 0 10px 0;
+            color: var(--azul-gov-principal);
+        }
+
+        .swal2-container {
+            z-index: 3000 !important;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: var(--azul-gov-principal);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #001a4d;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 39, 118, 0.3);
+        }
+        .btn:disabled { 
+             opacity: 0.6;
+             cursor: not-allowed;
+             background-color: #6c757d;
+             transform: none;
+             box-shadow: none;
+        }
+
+        .btn-toggle {
+            padding: 8px 16px;
+            border: 1px solid var(--cinza-borda);
+            background-color: var(--branco);
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: var(--cinza-texto);
+        }
+
+        .btn-toggle:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-toggle.active {
+            background-color: var(--verde-sucesso);
+            color: var(--branco);
+            border-color: var(--verde-sucesso);
+        }
+
+        .btn-toggle[data-action*="nao"].active {
+            background-color: var(--vermelho-destaque);
+            border-color: var(--vermelho-destaque);
+            color: var(--branco);
+        }
+
+        .btn-toggle:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .validation-section {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid var(--amarelo-gov-detalhe);
+            background-color: #fffaf0;
+            border-radius: 8px;
+        }
+
+        .validation-section h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: var(--azul-gov-principal);
+        }
+
+        .requisito-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .admin-comment {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            border: 1px solid var(--cinza-borda);
+            border-radius: 6px;
+            font-size: 0.9em;
+            min-height: 80px;
+            margin-bottom: 10px;
+            resize: none;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .validation-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .analise-scge-destaque {
+            background: linear-gradient(135deg, #e9eef5 0%, #f8f9fa 100%);
+            border: 2px solid var(--azul-gov-principal);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 39, 118, 0.1);
+        }
+
+        .analise-scge-destaque h5 {
+            background-color: var(--azul-gov-principal) !important;
+            color: var(--branco) !important;
+            padding: 8px 16px !important;
+            margin: -20px -20px 15px -20px !important;
+            border-radius: 8px 8px 0 0;
+            font-size: 1em !important;
+            font-weight: 700 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .analise-scge-destaque p {
+            font-size: 0.95em;
+            margin: 12px 0;
+            line-height: 1.5;
+        }
+
+        .analise-scge-destaque .status-validacao {
+            font-size: 0.85em;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+
+        .comentario-analista-destaque {
+            background-color: #fff3cd;
+            border-left: 4px solid var(--amarelo-gov-detalhe);
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0 0 0;
+            font-style: normal !important;
+        }
+
+        .comentario-analista-destaque strong {
+            color: var(--azul-gov-principal);
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .comentario-analista-destaque p {
+            margin: 0;
+            color: #856404 !important; 
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .analise-final-destaque {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0fff0 100%);
+            border: 2px solid var(--verde-sucesso);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.1);
+        }
+
+        .analise-final-destaque.rejeitado {
+            background: linear-gradient(135deg, #fde8e8 0%, #fff0f0 100%);
+            border-color: var(--vermelho-destaque);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.1);
+        }
+
+        .analise-final-destaque h5 {
+            background-color: var(--verde-sucesso) !important;
+            color: var(--branco) !important;
+            padding: 8px 16px !important;
+            margin: -20px -20px 15px -20px !important;
+            border-radius: 8px 8px 0 0;
+            font-size: 1em !important;
+            font-weight: 700 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .analise-final-destaque.rejeitado h5 {
+            background-color: var(--vermelho-destaque) !important;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: var(--branco);
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 2.5em;
+            line-height: 1;
+            color: #aaa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close-btn:hover {
+            color: #333;
+            transform: scale(1.1);
+        }
+
+        #logout-btn {
+            cursor: pointer;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8em;
+            font-weight: normal;
+            text-transform: none;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <nav class="main-nav">
+            <div class="logo">
+                <a href="/">
+                    <img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco">
+                    <div>
+                        <span class="site-title">Análise de Sites</span>
+                        <span class="site-subtitle">Portal da Transparência</span>
+                    </div>
+                </a>
+            </div>
+            <ul id="nav-links">
+                 </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="report-container">
+            <div id="summary-container" class="report-header"><p>Carregando dados...</p></div>
+
+            <div id="score-container-quatro-notas" class="score-container-quatro-notas" style="display: none;">
+                <div class="score-box-quatro">
+                    <h2>Nota da Autoavaliação</h2>
+                    <div id="score-autoavaliacao" class="score-value">-- / --</div>
+                    <div class="score-descricao">Enviada pela secretaria</div>
+                </div>
+                <div class="score-box-quatro">
+                    <h2>Nota da 1ª Validação</h2>
+                    <div id="score-primeira-analise" class="score-value">-- / --</div>
+                    <div class="score-descricao">Validada pela SCGE</div>
+                </div>
+                <div class="score-box-quatro">
+                    <h2>Nota do Recurso</h2>
+                    <div id="score-pos-recurso" class="score-value">-- / --</div>
+                    <div class="score-descricao">Após análise dos recursos</div>
+                </div>
+                <div class="score-box-quatro">
+                    <h2>Nota Final</h2>
+                    <div id="score-final" class="score-value">-- / --</div>
+                    <div class="score-descricao">Resultado definitivo</div>
+                </div>
+            </div>
+
+            <div id="respostas-container"></div>
+            <div id="actions-container" style="text-align: right; margin-top: 30px;"></div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a href="/admin" id="admin-footer-link">Área Administrativa</a></p>
+            <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+        </div>
+    </footer>
+
+    <div id="modal-overlay" class="modal-overlay" style="display: none;" aria-hidden="true">
+        <div id="modal-content" class="modal-content" tabindex="-1">
+            <button id="modal-close-btn" class="modal-close-btn" aria-label="Fechar modal">&times;</button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const avaliacaoId = window.location.pathname.split('/').pop();
+            const summaryContainer = document.getElementById('summary-container');
+            const scoreContainerQuatroNotas = document.getElementById('score-container-quatro-notas');
+            const scoreAutoavaliacaoEl = document.getElementById('score-autoavaliacao');
+            const scorePrimeiraAnaliseEl = document.getElementById('score-primeira-analise');
+            const scorePosRecursoEl = document.getElementById('score-pos-recurso');
+            const scoreFinalEl = document.getElementById('score-final');
+            const respostasContainer = document.getElementById('respostas-container');
+            const actionsContainer = document.getElementById('actions-container');
+            const modalOverlay = document.getElementById('modal-overlay');
+            const modalContent = document.getElementById('modal-content');
+            const modalBody = document.getElementById('modal-body');
+            const modalCloseBtn = document.getElementById('modal-close-btn');
+            const navLinks = document.getElementById('nav-links');
+            const logoutBtn = document.getElementById('logout-btn');
+            const adminFooterLink = document.getElementById('admin-footer-link');
+            const authToken = localStorage.getItem('authToken');
+
+            let avaliacaoCompleta = null;
+            let currentModalRespostaId = null;
+            let isModalEditing = false;
+            let modalHasChanges = false;
+
+            function normalizarDadosResposta(resposta) {
+                resposta.atendeOriginal = resposta.atendeOriginal !== undefined ? resposta.atendeOriginal : resposta.atende;
+                return resposta;
+            }
+
+            function calcularQuatroNotas() {
+                if (!avaliacaoCompleta || !Array.isArray(avaliacaoCompleta.respostas)) {
+                    console.warn("[Calcular Notas] Tentativa de calcular notas sem dados de avaliação válidos.");
+                    return { autoavaliacao: 0, primeiraAnalise: 0, posRecurso: 0, final: 0, total: 0 };
+                }
+
+                let pontuacaoAutoavaliacao = 0;
+                let pontuacaoPrimeiraAnalise = 0;
+                let pontuacaoPosRecurso = 0;
+                let pontuacaoFinal = 0;
+                let pontuacaoTotal = 0;
+
+                avaliacaoCompleta.respostas.forEach(resposta => {
+                    const pontuacaoRequisito = resposta.requisito?.pontuacao || 0;
+                    if (!resposta.requisito) {
+                         console.warn(`[Calcular Notas] Requisito não encontrado para resposta ID ${resposta.id}`);
+                    }
+                    pontuacaoTotal += pontuacaoRequisito;
+
+                    if (resposta.atendeOriginal === true) {
+                        pontuacaoAutoavaliacao += pontuacaoRequisito;
+                    }
+
+                    if (resposta.statusValidacao === 'aprovado') {
+                        pontuacaoPrimeiraAnalise += pontuacaoRequisito;
+                    }
+
+                    let pontuacaoRequisitoPosRecurso = 0;
+                    const teveRecurso = resposta.recursoAtende !== null || 
+                                        resposta.comentarioRecurso ||
+                                        (Array.isArray(resposta.evidencias) && resposta.evidencias.some(e => e.tipo === 'recurso'));
+
+                    if (teveRecurso) {
+                        if (resposta.recursoAtende === true) { 
+                            pontuacaoRequisitoPosRecurso = pontuacaoRequisito;
+                        }
+                    } else {
+                        if (resposta.statusValidacao === 'aprovado') {
+                            pontuacaoRequisitoPosRecurso = pontuacaoRequisito;
+                        }
+                    }
+                    pontuacaoPosRecurso += pontuacaoRequisitoPosRecurso;
+     
+                    const statusFinalConsiderado = resposta.analiseFinal?.statusValidacaoPosRecurso || resposta.statusValidacao;
+                    if (statusFinalConsiderado === 'aprovado') {
+                        pontuacaoFinal += pontuacaoRequisito;
+                    }
+                });
+
+                return {
+                    autoavaliacao: Math.round(pontuacaoAutoavaliacao),
+                    primeiraAnalise: Math.round(pontuacaoPrimeiraAnalise),
+                    posRecurso: Math.round(pontuacaoPosRecurso), 
+                    final: Math.round(pontuacaoFinal),
+                    total: pontuacaoTotal
+                };
+            }
+
+            function exibirQuatroNotas() {
+                const notas = calcularQuatroNotas();
+
+                scoreAutoavaliacaoEl.textContent = `${notas.autoavaliacao} / ${notas.total}`;
+                scorePrimeiraAnaliseEl.textContent = `${notas.primeiraAnalise} / ${notas.total}`;
+                scorePosRecursoEl.textContent = `${notas.posRecurso} / ${notas.total}`;
+                scoreFinalEl.textContent = `${notas.final} / ${notas.total}`;
+
+                scoreContainerQuatroNotas.style.display = 'grid';
+            }
+
+            function construirInterfaceValidacaoModal(resposta) {
+                const analiseFinal = resposta.analiseFinal || {};
+                const statusFinalAtual = analiseFinal.statusValidacaoPosRecurso || resposta.statusValidacao || 'pendente';
+
+                return `
+                    <div class="validation-section">
+                        <h4>Análise Final (Pós-Recurso)</h4>
+                        <textarea id="modal-analise-final-comment" class="admin-comment" placeholder="Adicionar comentário da análise final...">${analiseFinal.comentario || ''}</textarea>
+                        <div class="validation-actions">
+                             <span class="status-validacao status-${determinarStatusRecurso(resposta, statusFinalAtual)}">
+                                ${determinarTextoStatusRecurso(resposta, statusFinalAtual)}
+                            </span>
+                             <button class="btn-toggle ${statusFinalAtual === 'rejeitado' ? 'active' : ''}"
+                                    data-action="nao-atende-final" data-validation-type="normal">Não Atende</button>
+                            <button class="btn-toggle ${statusFinalAtual === 'aprovado' ? 'active' : ''}"
+                                    data-action="atende-final" data-validation-type="normal">Atende</button>
+                        </div>
+                        <div class="validation-actions" style="justify-content: space-between; margin-top: 15px;">
+                            <button id="cancelar-edicao-btn" class="btn" style="background-color: #6c757d;">Cancelar</button>
+                            <button id="salvar-analise-final-btn" class="btn">Salvar Análise Final</button>
+                        </div>
+                    </div>`;
+            }
+
+
+            // FUNÇÃO: Determinar texto do status em relação ao recurso
+             function determinarTextoStatusRecurso(resposta, statusFinal) {
+                if (!statusFinal || statusFinal === 'pendente') {
+                    return 'Pendente';
+                }
+
+                const teveRecurso = resposta.atende !== resposta.atendeOriginal ||
+                                    resposta.comentarioRecurso ||
+                                    (resposta.evidencias && resposta.evidencias.some(e => e.tipo === 'recurso'));
+
+                if (!teveRecurso) {
+                    return statusFinal === 'aprovado' ? 'Aprovado' : 'Rejeitado';
+                }
+
+                const respostaRecursoAtende = resposta.atende; 
+                const analiseFinalAtende = statusFinal === 'aprovado';
+
+                return respostaRecursoAtende === analiseFinalAtende ? 'Mantido' : 'Alterado';
+            }
+
+            // FUNÇÃO: Determinar cor do status em relação ao recurso (simplificada e corrigida)
+            function determinarStatusRecurso(resposta, statusFinal) {
+                if (!statusFinal || statusFinal === 'pendente') {
+                    return 'pendente';
+                }
+
+                return statusFinal === 'aprovado' ? 'aprovado' : 'rejeitado';
+
+                /* Lógica anterior (mantida caso prefira cor baseada em Mantido/Alterado):
+                const textoStatus = determinarTextoStatusRecurso(resposta, statusFinal);
+
+                if (textoStatus === 'Mantido') {
+                    // Mantido pode ser verde (aprovado) ou vermelho (rejeitado) dependendo do status final
+                    return statusFinal;
+                } else if (textoStatus === 'Alterado') {
+                    // Alterado também pode ser verde ou vermelho dependendo do status final
+                    return statusFinal; // Ou talvez sempre uma cor de alerta como 'alterado'?
+                } else { // Caso de Aprovado/Rejeitado (sem recurso)
+                    return statusFinal;
+                }
+                */
+            }
+
+            function configurarNavegacao() {
+                const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+                const adminFooterLink = document.getElementById('admin-footer-link');
+
+                if (adminFooterLink) {
+                    if (userData.role === 'ADMIN') {
+                        adminFooterLink.style.display = 'inline';
+                    } else {
+                        adminFooterLink.style.display = 'none'; 
+                    }
+                }
+            }
+
+            if (!avaliacaoId) {
+                summaryContainer.innerHTML = '<h1>Erro: ID da Avaliação não encontrado na URL.</h1>';
+                return;
+            }
+
+            if (!authToken) {
+                Swal.fire('Erro de Autenticação', 'Token de autenticação não encontrado. Faça login novamente.', 'error');
+                window.location.href = '/login';
+                return;
+            }
+
+            function recalcularEExibirPontuacoes() {
+                exibirQuatroNotas();
+            }
+
+            // FUNÇÃO: Abrir modal com detalhes da resposta
+            function abrirModal(resposta) {
+                currentModalRespostaId = resposta.id;
+                const analiseFinal = resposta.analiseFinal || {};
+                const statusFinalConsiderado = analiseFinal.statusValidacaoPosRecurso || resposta.statusValidacao || 'pendente';
+
+                let originalAnswerHTML = `
+                    <p><strong>Resposta:</strong>
+                        <span class="atende-badge ${resposta.atendeOriginal ? 'atende-sim' : 'atende-nao'}">
+                            ${resposta.atendeOriginal ? 'Atende' : 'Não Atende'}
+                        </span>
+                    </p>`;
+
+                const evidenciasOriginais = Array.isArray(resposta.evidencias) ? resposta.evidencias.filter(e => e.tipo === 'original') : [];
+                let originalEvidencesHTML = '';
+                if (resposta.linkComprovante || evidenciasOriginais.length > 0) {
+                    originalEvidencesHTML = `<div class="evidence-section"><h5>Evidências Originais:</h5><ul class="evidence-list">`;
+                    if (resposta.linkComprovante) {
+                        originalEvidencesHTML += `<li class="evidence-item"><a href="${resposta.linkComprovante}" target="_blank">${resposta.linkComprovante}</a> (Link Comprovante)</li>`;
+                    }
+                    evidenciasOriginais.forEach(ev => {
+                        originalEvidencesHTML += `<li class="evidence-item"><a href="${ev.url}" target="_blank">${ev.url}</a></li>`;
+                    });
+                    originalEvidencesHTML += `</ul></div>`;
+                }
+
+                const statusPrimeiraAnalise = resposta.statusValidacao || 'pendente';
+                const statusTextoPrimeiraAnalise = statusPrimeiraAnalise === 'pendente' ? 'Pendente' :
+                    (resposta.atendeOriginal === (statusPrimeiraAnalise === 'aprovado') ? 'Mantido' : 'Alterado');
+                const statusClassePrimeiraAnalise = statusPrimeiraAnalise === 'pendente' ? 'pendente' : (statusPrimeiraAnalise === 'aprovado' ? 'aprovado' : 'rejeitado');
+
+
+                let primeiraAnaliseHTML = `
+                    <div class="info-block analise-scge-destaque">
+                        <h5>1ª Análise da SCGE</h5>
+                        <p><strong>Resultado:</strong>
+                             <span class="status-validacao status-${statusClassePrimeiraAnalise}">${statusTextoPrimeiraAnalise}</span>
+                        </p>
+                        ${resposta.comentarioAdmin ? `
+                            <div class="comentario-analista-destaque">
+                                <strong>Comentário da 1ª análise:</strong>
+                                <p>"${resposta.comentarioAdmin}"</p>
+                            </div>
+                        ` : '<p><em>Nenhum comentário na 1ª análise.</em></p>'}
+                    </div>`;
+
+                let recursoHTML = '';
+                const teveRecurso = resposta.atende !== resposta.atendeOriginal ||
+                                    resposta.comentarioRecurso ||
+                                    (Array.isArray(resposta.evidencias) && resposta.evidencias.some(e => e.tipo === 'recurso'));
+
+
+                if (teveRecurso) {
+                    let recursoAnswerHTML = `
+                        <p><strong>Nova Resposta (Recurso):</strong>
+                            <span class="atende-badge ${resposta.atende ? 'atende-sim' : 'atende-nao'}">
+                                ${resposta.atende ? 'Atende' : 'Não Atende'}
+                            </span>
+                        </p>`;
+
+                    const evidenciasRecurso = Array.isArray(resposta.evidencias) ? resposta.evidencias.filter(e => e.tipo === 'recurso') : [];
+                    let recursoEvidencesHTML = '';
+                    if (evidenciasRecurso.length > 0 || resposta.linkComprovanteRecurso) {
+                        recursoEvidencesHTML = `<div class="evidence-section"><h5>Evidências do Recurso:</h5><ul class="evidence-list">`;
+                        if (resposta.linkComprovanteRecurso) {
+                            recursoEvidencesHTML += `<li class="evidence-item"><a href="${resposta.linkComprovanteRecurso}" target="_blank">${resposta.linkComprovanteRecurso}</a> (Comprovante Recurso)</li>`;
+                        }
+                        evidenciasRecurso.forEach(ev => {
+                            recursoEvidencesHTML += `<li class="evidence-item"><a href="${ev.url}" target="_blank">${ev.url}</a></li>`;
+                        });
+                        recursoEvidencesHTML += `</ul></div>`;
+                    }
+
+                    recursoHTML = `
+                        <div class="info-block">
+                            <h5>Recurso Submetido pela Secretaria</h5>
+                            ${recursoAnswerHTML}
+                            ${resposta.comentarioRecurso ? `<p><strong>Justificativa do Recurso:</strong> "${resposta.comentarioRecurso}"</p>` : ''}
+                            ${recursoEvidencesHTML}
+                        </div>`;
+                }
+
+                let analiseFinalHTML = '';
+                const temAnaliseFinalRealizada = analiseFinal.statusValidacaoPosRecurso && analiseFinal.statusValidacaoPosRecurso !== 'pendente';
+
+
+                if (temAnaliseFinalRealizada) {
+                    const resultadoFinalTexto = determinarTextoStatusRecurso(resposta, analiseFinal.statusValidacaoPosRecurso); 
+                    const resultadoFinalClasseCor = determinarStatusRecurso(resposta, analiseFinal.statusValidacaoPosRecurso); 
+                    const aprovadoOuRejeitadoTexto = analiseFinal.statusValidacaoPosRecurso === 'aprovado' ? 'Aprovado' : 'Rejeitado'; 
+
+
+                    analiseFinalHTML = `
+                         <div class="analise-final-destaque ${resultadoFinalClasseCor === 'rejeitado' ? 'rejeitado' : ''}">
+                             <h5>Análise Final da SCGE (Pós-Recurso)</h5>
+                            <p><strong>Resultado:</strong>
+                                 <span class="status-validacao status-${resultadoFinalClasseCor}">
+                                     ${resultadoFinalTexto} (${aprovadoOuRejeitadoTexto})
+                                </span>
+                            </p>
+                            ${analiseFinal.comentario ? `
+                                <div class="comentario-analista-destaque">
+                                    <strong>Comentário Final:</strong>
+                                    <p>"${analiseFinal.comentario}"</p>
+                                </div>
+                            ` : ''}
+                        </div>`;
+                }
+
+                modalBody.innerHTML = `
+                    <div class="info-block">
+                        <h4>${resposta.requisito.texto}</h4>
+                        <h5>Resposta Original da Secretaria</h5>
+                        ${originalAnswerHTML}
+                        ${resposta.comentarioSecretaria ? `<p><strong>Comentário Original:</strong> "${resposta.comentarioSecretaria}"</p>` : ''}
+                        ${originalEvidencesHTML}
+                    </div>
+                    ${primeiraAnaliseHTML}
+                    ${recursoHTML}
+                    ${analiseFinalHTML}
+                    <div id="modal-validation-wrapper" style="margin-top: 30px;">
+                        <button id="editar-analise-final-btn" class="btn" aria-label="Editar análise final deste requisito">
+                            ${temAnaliseFinalRealizada ? 'Alterar Análise' : 'Realizar Análise Final'}
+                        </button>
+                        <div id="modal-validation-interface" style="display: none; margin-top: 20px;">
+                            ${construirInterfaceValidacaoModal(resposta)}
+                        </div>
+                    </div>
+                `;
+
+                modalOverlay.style.display = 'flex';
+                setTimeout(() => modalContent.focus(), 100);
+
+                configurarModalListeners();
+            }
+
+
+            //FUNÇÃO: Configurar listeners do modal 
+            function configurarModalListeners() {
+                const editarBtn = document.getElementById('editar-analise-final-btn');
+                const validationInterface = document.getElementById('modal-validation-interface');
+                const cancelarBtn = document.getElementById('cancelar-edicao-btn');
+                const salvarBtn = document.getElementById('salvar-analise-final-btn');
+
+                if (editarBtn) {
+                    editarBtn.onclick = () => {
+                        const resposta = avaliacaoCompleta.respostas.find(r => r.id === currentModalRespostaId);
+                        const isInterfaceAberta = validationInterface.style.display === 'block';
+
+                        if (!isInterfaceAberta) {
+                            validationInterface.innerHTML = construirInterfaceValidacaoModal(resposta);
+                            configurarListenersInternosModal();
+                            validationInterface.style.display = 'block';
+                            editarBtn.textContent = 'Fechar Edição';
+                            isModalEditing = true;
+                            modalHasChanges = false;
+                        } else {
+                            if (modalHasChanges) {
+                                Swal.fire({
+                                    title: 'Descartar Alterações?',
+                                    text: 'Você tem alterações não salvas na análise final. Deseja descartá-las e fechar a edição?',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Sim, descartar',
+                                    cancelButtonText: 'Continuar editando',
+                                    confirmButtonColor: 'var(--vermelho-destaque)', 
+                                    cancelButtonColor: 'var(--azul-gov-principal)'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        validationInterface.style.display = 'none'; 
+                                        const mainEditBtn = document.getElementById('editar-analise-final-btn');
+                                        const resposta = avaliacaoCompleta.respostas.find(r => r.id === currentModalRespostaId);
+                                        if(mainEditBtn && resposta) {
+                                            mainEditBtn.textContent = (resposta.analiseFinal?.statusValidacaoPosRecurso && resposta.analiseFinal?.statusValidacaoPosRecurso !== 'pendente')
+                                                                       ? 'Alterar Análise'
+                                                                       : 'Realizar Análise Final';
+                                        }
+                                        isModalEditing = false;
+                                        modalHasChanges = false; 
+
+                                    }
+                                });
+                            } else {
+                                validationInterface.style.display = 'none';
+                                const mainEditBtn = document.getElementById('editar-analise-final-btn');
+                                const resposta = avaliacaoCompleta.respostas.find(r => r.id === currentModalRespostaId);
+                                if(mainEditBtn && resposta) {
+                                     mainEditBtn.textContent = (resposta.analiseFinal?.statusValidacaoPosRecurso && resposta.analiseFinal?.statusValidacaoPosRecurso !== 'pendente')
+                                                              ? 'Alterar Análise'
+                                                              : 'Realizar Análise Final';
+                                }
+                                isModalEditing = false;
+                                modalHasChanges = false;
+                            }
+                        }
+                    };
+                }
+
+                // Função separada para configurar listeners dos botões internos e textarea
+                function configurarListenersInternosModal() {
+                    const cancelarBtnInterno = document.getElementById('cancelar-edicao-btn');
+                    const salvarBtnInterno = document.getElementById('salvar-analise-final-btn');
+                    const botoesValidacaoInternos = modalBody.querySelectorAll('.btn-toggle');
+                    const comentarioTextareaInterno = document.getElementById('modal-analise-final-comment');
+
+                    if (cancelarBtnInterno) {
+                    cancelarBtnInterno.onclick = () => {
+                            if (modalHasChanges) {
+                            Swal.fire({
+                                title: 'Cancelar Edição?',
+                                text: 'Todas as alterações não salvas na análise final serão perdidas.',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonText: 'Sim, cancelar',
+                                cancelButtonText: 'Continuar editando',
+                                confirmButtonColor: 'var(--vermelho-destaque)',
+                                cancelButtonColor: 'var(--azul-gov-principal)'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    validationInterface.style.display = 'none'; 
+                                    const editarBtn = document.getElementById('editar-analise-final-btn');
+                                    const resposta = avaliacaoCompleta.respostas.find(r => r.id === currentModalRespostaId);
+                                    if(editarBtn && resposta) {
+                                            editarBtn.textContent = (resposta.analiseFinal?.statusValidacaoPosRecurso && resposta.analiseFinal?.statusValidacaoPosRecurso !== 'pendente')
+                                                                ? 'Alterar Análise'
+                                                                : 'Realizar Análise Final';
+                                    }
+                                    isModalEditing = false; 
+                                    modalHasChanges = false; 
+                                }
+                            });
+                            } else {
+                                validationInterface.style.display = 'none';
+                                const editarBtn = document.getElementById('editar-analise-final-btn');
+                                const resposta = avaliacaoCompleta.respostas.find(r => r.id === currentModalRespostaId);
+                                if(editarBtn && resposta) {
+                                    editarBtn.textContent = (resposta.analiseFinal?.statusValidacaoPosRecurso && resposta.analiseFinal?.statusValidacaoPosRecurso !== 'pendente')
+                                                        ? 'Alterar Análise'
+                                                        : 'Realizar Análise Final';
+                                }
+                                isModalEditing = false;
+                                modalHasChanges = false;
+                            }
+                        };
+                    }
+                    
+                    if (salvarBtnInterno) { salvarBtnInterno.onclick = salvarAnaliseFinal; }
+
+                    botoesValidacaoInternos.forEach(botao => {
+                    botao.onclick = (e) => {
+                        modalHasChanges = true;
+                        const action = e.target.getAttribute('data-action');
+                        const validationType = e.target.getAttribute('data-validation-type');
+                        const grupoBotoes = modalBody.querySelectorAll(`[data-validation-type="${validationType}"]`);
+                        grupoBotoes.forEach(btn => btn.classList.remove('active'));
+                        e.target.classList.add('active');
+                        atualizarBadgeStatusModal(validationType, action.includes('atende'));
+                    };
+                    });
+
+                    if (comentarioTextareaInterno) {
+                        comentarioTextareaInterno.oninput = () => { modalHasChanges = true; };
+                    }
+                }
+
+                configurarListenersInternosModal();
+            }
+
+
+            function atualizarBadgeStatusModal(validationType, atende) {
+                const statusFinalProvisorio = atende ? 'aprovado' : 'rejeitado';
+                const badge = modalBody.querySelector('.status-validacao'); 
+                const resposta = avaliacaoCompleta.respostas.find(r => r.id === currentModalRespostaId);
+
+                if (badge && resposta) {
+                    const textoStatus = statusFinalProvisorio === 'aprovado' ? 'Aprovado' : 'Rejeitado';
+                    const corStatus = determinarStatusRecurso(resposta, statusFinalProvisorio);
+
+                    badge.textContent = textoStatus; 
+                    badge.className = `status-validacao status-${corStatus}`; 
+                }    
+            }
+
+            async function salvarAnaliseFinal() {
+                const respostaId = currentModalRespostaId;
+                const resposta = avaliacaoCompleta.respostas.find(r => r.id === respostaId);
+                if (!resposta) return;
+
+                try {
+                    const btnNaoAtende = modalBody.querySelector('.btn-toggle[data-action="nao-atende-final"]');
+                    const btnAtende = modalBody.querySelector('.btn-toggle[data-action="atende-final"]');
+
+                    let decisaoFinal = 'pendente'; 
+                    if (btnNaoAtende && btnNaoAtende.classList.contains('active')) {
+                        decisaoFinal = 'rejeitado';
+                    } else if (btnAtende && btnAtende.classList.contains('active')) {
+                        decisaoFinal = 'aprovado';
+                    } else {
+                        decisaoFinal = resposta.analiseFinal?.statusValidacaoPosRecurso || resposta.statusValidacao || 'pendente';
+                        console.warn(`[Salvar Modal - Revisado] Nenhum botão ativo detectado para ${respostaId}. Usando status fallback: ${decisaoFinal}`);
+                    }
+
+                    let payload = {
+                        analiseFinal: {
+                            comentario: document.getElementById('modal-analise-final-comment')?.value || '',
+                            statusValidacaoPosRecurso: decisaoFinal 
+                        },
+                        atende: (decisaoFinal === 'aprovado')
+                    };
+
+                    console.log('Enviando análise final (REVISADO):', JSON.stringify(payload));
+
+                    const statusBadge = modalBody.querySelector('.validation-actions .status-validacao');
+                    let originalBadgeText = '';
+                    let originalBadgeClass = '';
+                    if(statusBadge) {
+                        originalBadgeText = statusBadge.textContent;
+                        originalBadgeClass = statusBadge.className;
+                        statusBadge.textContent = 'Salvando...';
+                        statusBadge.className = 'status-validacao status-pendente'; 
+                    }
+
+
+                    const response = await fetch(`/api/respostas/${respostaId}/analise-final`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        if(statusBadge) {
+                            statusBadge.textContent = originalBadgeText;
+                            statusBadge.className = originalBadgeClass;
+                        }
+                        throw new Error(errorData.error || 'Falha ao salvar a análise final.');
+                    }
+
+                    const respostaAtualizada = await response.json();
+                    console.log('✅ Resposta do backend:', respostaAtualizada);
+
+                    const index = avaliacaoCompleta.respostas.findIndex(r => r.id === respostaId);
+                    if (index !== -1) {
+                        avaliacaoCompleta.respostas[index] = {
+                            ...avaliacaoCompleta.respostas[index],
+                            analiseFinal: respostaAtualizada.analiseFinal || {}, 
+                            atende: respostaAtualizada.atende, 
+                            statusValidacaoPosRecurso: respostaAtualizada.analiseFinal?.statusValidacaoPosRecurso 
+                        };
+                        avaliacaoCompleta.respostas[index].atendeOriginal = resposta.atendeOriginal;
+                        console.log(`[Salvar Modal - Revisado] Dados locais atualizados para ${respostaId}: atende=${respostaAtualizada.atende}, statusFinal=${respostaAtualizada.analiseFinal?.statusValidacaoPosRecurso}`);
+                    }
+
+                    recalcularEExibirPontuacoes(); 
+
+                    Swal.fire({
+                        toast: true, position: 'top-end', icon: 'success',
+                        title: 'Análise Final Salva!', showConfirmButton: false, timer: 1500
+                    });
+
+                    document.getElementById('modal-validation-interface').style.display = 'none';
+                    const editarBtn = document.getElementById('editar-analise-final-btn');
+                    if(editarBtn) editarBtn.textContent = 'Alterar Análise Final'; 
+                    isModalEditing = false;
+                    modalHasChanges = false;
+
+                    abrirModal(avaliacaoCompleta.respostas.find(r => r.id === respostaId));
+                    renderizarCardsDeResposta();
+                    configurarBotaoFinal();
+
+                } catch (error) {
+                    console.error('❌ Erro ao salvar análise final:', error);
+                    const statusBadgeOnError = modalBody.querySelector('.validation-actions .status-validacao');
+                    if(statusBadgeOnError) {
+                        const statusAnterior = resposta.analiseFinal?.statusValidacaoPosRecurso || resposta.statusValidacao || 'pendente';
+                        atualizarBadgeStatusModal('normal', statusAnterior === 'aprovado'); 
+                    }
+
+                    Swal.fire({
+                        title: 'Erro!',
+                        text: error.message || 'Não foi possível salvar a análise final.',
+                        icon: 'error',
+                        confirmButtonColor: 'var(--vermelho-destaque)'
+                    });
+                }
+            }
+
+
+            // FUNÇÃO: Fechar modal
+            function fecharModal() {
+                if (isModalEditing && modalHasChanges) {
+                    Swal.fire({
+                        title: 'Sair sem salvar?',
+                        text: 'Você tem alterações não salvas na análise final. Deseja fechar mesmo assim?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Sim, fechar',
+                        cancelButtonText: 'Continuar editando',
+                        confirmButtonColor: 'var(--vermelho-destaque)', 
+                        cancelButtonColor: 'var(--azul-gov-principal)'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            modalOverlay.style.display = 'none'; 
+                            currentModalRespostaId = null; 
+                            isModalEditing = false; 
+                            modalHasChanges = false;
+                        }
+                    });
+                } else {
+                    modalOverlay.style.display = 'none';
+                    currentModalRespostaId = null;
+                    isModalEditing = false;
+                    modalHasChanges = false;
+                }
+            }
+
+            // FUNÇÃO: Construir interface de análise final aberta para requisitos alterados (simplificada)
+            function construirInterfaceAnaliseFinalAberta(resposta) {
+                const analiseFinal = resposta.analiseFinal || {};
+                const statusFinalAtual = analiseFinal.statusValidacaoPosRecurso || resposta.statusValidacao || 'pendente';
+
+
+                 let originalAnswerHTML = `
+                    <p><strong>Resposta:</strong>
+                        <span class="atende-badge ${resposta.atendeOriginal ? 'atende-sim' : 'atende-nao'}">
+                            ${resposta.atendeOriginal ? 'Atende' : 'Não Atende'}
+                        </span>
+                    </p>`;
+
+                const evidenciasOriginais = Array.isArray(resposta.evidencias) ? resposta.evidencias.filter(e => e.tipo === 'original') : [];
+                let originalEvidencesHTML = '';
+                if (resposta.linkComprovante || evidenciasOriginais.length > 0) {
+                    originalEvidencesHTML = `<div class="evidence-section"><h5>Evidências Originais:</h5><ul class="evidence-list">`;
+                    if (resposta.linkComprovante) {
+                        originalEvidencesHTML += `<li class="evidence-item"><a href="${resposta.linkComprovante}" target="_blank">${resposta.linkComprovante}</a> (Link Comprovante)</li>`;
+                    }
+                    evidenciasOriginais.forEach(ev => {
+                        originalEvidencesHTML += `<li class="evidence-item"><a href="${ev.url}" target="_blank">${ev.url}</a></li>`;
+                    });
+                    originalEvidencesHTML += `</ul></div>`;
+                }
+
+                const statusPrimeiraAnalise = resposta.statusValidacao || 'pendente';
+                const statusTextoPrimeiraAnalise = statusPrimeiraAnalise === 'pendente' ? 'Pendente' :
+                    (resposta.atendeOriginal === (statusPrimeiraAnalise === 'aprovado') ? 'Mantido' : 'Alterado');
+                 const statusClassePrimeiraAnalise = statusPrimeiraAnalise === 'pendente' ? 'pendente' : (statusPrimeiraAnalise === 'aprovado' ? 'aprovado' : 'rejeitado');
+
+
+                let primeiraAnaliseHTML = `
+                    <div class="info-block">
+                        <h5>1ª Análise da SCGE</h5>
+                        <p><strong>Resultado:</strong>
+                            <span class="status-validacao status-${statusClassePrimeiraAnalise}">${statusTextoPrimeiraAnalise}</span>
+                        </p>
+                        ${resposta.comentarioAdmin ? `
+                            <p><strong>Comentário da 1ª análise:</strong> "${resposta.comentarioAdmin}"</p>
+                        ` : ''}
+                    </div>`;
+
+                let recursoHTML = '';
+                const teveRecurso = resposta.atende !== resposta.atendeOriginal ||
+                                    resposta.comentarioRecurso ||
+                                    (Array.isArray(resposta.evidencias) && resposta.evidencias.some(e => e.tipo === 'recurso'));
+
+
+                if (teveRecurso) {
+                    let recursoAnswerHTML = `
+                        <p><strong>Nova Resposta (Recurso):</strong>
+                            <span class="atende-badge ${resposta.atende ? 'atende-sim' : 'atende-nao'}">
+                                ${resposta.atende ? 'Atende' : 'Não Atende'}
+                            </span>
+                        </p>`;
+
+                    const evidenciasRecurso = Array.isArray(resposta.evidencias) ? resposta.evidencias.filter(e => e.tipo === 'recurso') : [];
+                    let recursoEvidencesHTML = '';
+                    if (evidenciasRecurso.length > 0 || resposta.linkComprovanteRecurso) {
+                        recursoEvidencesHTML = `<div class="evidence-section"><h5>Evidências do Recurso:</h5><ul class="evidence-list">`;
+                        if (resposta.linkComprovanteRecurso) {
+                            recursoEvidencesHTML += `<li class="evidence-item"><a href="${resposta.linkComprovanteRecurso}" target="_blank">${resposta.linkComprovanteRecurso}</a> (Comprovante Recurso)</li>`;
+                        }
+                        evidenciasRecurso.forEach(ev => {
+                            recursoEvidencesHTML += `<li class="evidence-item"><a href="${ev.url}" target="_blank">${ev.url}</a></li>`;
+                        });
+                        recursoEvidencesHTML += `</ul></div>`;
+                    }
+
+                    recursoHTML = `
+                        <div class="info-block">
+                            <h5>Recurso Submetido pela Secretaria</h5>
+                            ${recursoAnswerHTML}
+                            ${resposta.comentarioRecurso ? `<p><strong>Justificativa do Recurso:</strong> "${resposta.comentarioRecurso}"</p>` : ''}
+                            ${recursoEvidencesHTML}
+                        </div>`;
+                }
+
+                let analiseFinalInterface = `
+                    <div class="validation-section">
+                        <h4>Análise Final (Pós-Recurso)</h4>
+                        <p style="margin-bottom: 15px; color: #666;">Realize ou ajuste a análise final abaixo:</p>
+
+                        <textarea class="admin-comment analise-final-comment" data-resposta-id="${resposta.id}"
+                                placeholder="Adicionar comentário final para o requisito...">${analiseFinal.comentario || ''}</textarea>
+
+                        <div class="validation-actions">
+                             <span class="status-validacao status-${determinarStatusRecurso(resposta, statusFinalAtual)}">
+                                ${determinarTextoStatusRecurso(resposta, statusFinalAtual)} (${statusFinalAtual === 'aprovado' ? 'Aprovado' : statusFinalAtual === 'rejeitado' ? 'Rejeitado' : 'Pendente'})
+                             </span>
+                             <button class="btn-toggle ${statusFinalAtual === 'rejeitado' ? 'active' : ''}"
+                                    data-action="nao-atende-final" data-validation-type="normal">Não Atende</button>
+                            <button class="btn-toggle ${statusFinalAtual === 'aprovado' ? 'active' : ''}"
+                                    data-action="atende-final" data-validation-type="normal">Atende</button>
+                        </div>
+                    </div>`;
+
+
+                return `
+                    <div class="info-block">
+                        <h5>Resposta Original da Secretaria</h5>
+                        ${originalAnswerHTML}
+                        ${resposta.comentarioSecretaria ? `<p><strong>Comentário Original:</strong> "${resposta.comentarioSecretaria}"</p>` : ''}
+                        ${originalEvidencesHTML}
+                    </div>
+                    ${primeiraAnaliseHTML}
+                    ${recursoHTML}
+                    ${analiseFinalInterface}
+                `;
+            }
+
+            function renderizarCardsDeResposta() {
+                if (!avaliacaoCompleta || !Array.isArray(avaliacaoCompleta.respostas)) {
+                    respostasContainer.innerHTML = '<p>Nenhuma resposta encontrada.</p>';
+                    return;
+                }
+
+                respostasContainer.innerHTML = avaliacaoCompleta.respostas.map(resposta => {
+                    const analiseFinal = resposta.analiseFinal || {};
+                    let cardClass = '';
+                    let statusTexto = '';
+                    let statusClass = '';
+                    let tooltipTexto = '';
+                    let deveFicarAberto = false;
+                    let badgeRecursoHTML = ''; 
+
+                    const statusPrimeiraAnalise = resposta.statusValidacao || 'pendente';
+                    const statusFinal = analiseFinal.statusValidacaoPosRecurso || statusPrimeiraAnalise;
+
+
+                    const secretariaAtende = resposta.atendeOriginal === true; 
+                    const scgePrimeiraAnaliseAtende = statusPrimeiraAnalise === 'aprovado';
+                    const scgeFinalAtende = statusFinal === 'aprovado';
+
+                    const houveAlteracaoPrimeiraAnalise = secretariaAtende !== scgePrimeiraAnaliseAtende;
+                    const temAnaliseFinal = statusFinal !== 'pendente';
+
+                    const teveRecurso = resposta.atende !== resposta.atendeOriginal ||
+                                        resposta.comentarioRecurso ||
+                                        (Array.isArray(resposta.evidencias) && resposta.evidencias.some(e => e.tipo === 'recurso'));
+
+                     if (teveRecurso) {
+                         badgeRecursoHTML = '<span class="recurso-badge">Recurso</span>';
+                     }
+
+
+                    if (temAnaliseFinal) {
+                        if (scgeFinalAtende) {
+                            cardClass = 'card-mantido-sim'; 
+                            statusTexto = 'ATENDE';
+                            statusClass = 'summary-status-mantido';
+                            tooltipTexto = 'Requisito aprovado na análise final';
+                        } else {
+                            cardClass = 'card-mantido-nao'; 
+                            statusTexto = 'NÃO ATENDE';
+                            statusClass = 'summary-status-nao-atende';
+                            tooltipTexto = 'Requisito rejeitado na análise final';
+                        }
+                        deveFicarAberto = false;
+                    }
+                    else if (houveAlteracaoPrimeiraAnalise) {
+                        if (scgePrimeiraAnaliseAtende) { 
+                            cardClass = 'card-alterado-aprovado'; 
+                            statusTexto = 'ALTERADO (SCGE: Atende)';
+                            statusClass = 'summary-status-alterado-aprovado';
+                            tooltipTexto = 'Requisito alterado de "Não Atende" para "Atende" (1ª Análise)';
+                            deveFicarAberto = false; 
+                        } else { 
+                            cardClass = 'card-alterado-rejeitado'; 
+                            statusTexto = 'PENDENTE ANÁLISE FINAL';
+                            statusClass = 'summary-status-alterado-rejeitado';
+                            tooltipTexto = 'Requisito alterado de "Atende" para "Não Atende" - Aguardando análise final';
+                            deveFicarAberto = true; 
+                        }
+                    } else { 
+                        if (scgePrimeiraAnaliseAtende) { 
+                            cardClass = 'card-mantido-sim'; 
+                            statusTexto = 'MANTIDO (Atende)';
+                            statusClass = 'summary-status-mantido';
+                            tooltipTexto = 'Resposta mantida como "Atende"';
+                            deveFicarAberto = false; 
+                        } else { 
+                            cardClass = 'card-mantido-nao'; 
+                            statusTexto = 'MANTIDO (Não Atende)';
+                            statusClass = 'summary-status-nao-atende';
+                            tooltipTexto = 'Resposta mantida como "Não Atende"';
+                            deveFicarAberto = false; 
+                        }
+                        if (teveRecurso && !temAnaliseFinal) {
+                            statusTexto = 'PENDENTE ANÁLISE FINAL';
+                            tooltipTexto += ' - Houve recurso, aguardando análise final';
+                            statusClass = scgePrimeiraAnaliseAtende ? 'summary-status-mantido' : 'summary-status-nao-atende'; 
+                            deveFicarAberto = true;
+                        }
+                    }
+
+
+                    const respostaData = JSON.stringify(resposta).replace(/"/g, '&quot;');
+
+                    const classeRecursoIndicador = teveRecurso ? 'card-com-recurso-indicador' : '';
+
+                    if (deveFicarAberto) {
+                        let analiseFinalInterface = construirInterfaceAnaliseFinalAberta(resposta);
+                        return `
+                            <div class="resposta-card ${cardClass} ${classeRecursoIndicador}" data-resposta-id="${resposta.id}" data-resposta='${respostaData}' role="article">
+                                <div class="resposta-header">
+                                    <strong>${resposta.requisito.texto}</strong>
+                                     <div class="summary-status-container"> 
+                                        <span class="tooltip summary-status-badge ${statusClass}" title="${tooltipTexto}">
+                                            ${statusTexto}
+                                        </span>
+                                        ${badgeRecursoHTML} 
+                                     </div>
+                                </div>
+                                <div class="resposta-body">
+                                    ${analiseFinalInterface}
+                                </div>
+                            </div>`;
+                    } else {
+                        return `
+                            <div class="resposta-card ${cardClass} ${classeRecursoIndicador}" data-resposta='${respostaData}' role="article">
+                                <div class="summary-header" tabindex="0" role="button" aria-expanded="false">
+                                    <strong>${resposta.requisito.texto}</strong>
+                                     <div class="summary-status-container"> 
+                                        <span class="tooltip summary-status-badge ${statusClass}" title="${tooltipTexto}">
+                                            ${statusTexto}
+                                        </span>
+                                         ${badgeRecursoHTML} 
+                                     </div>
+                                </div>
+                            </div>`;
+                    }
+                }).join('');
+
+                configurarListenersSalvarAutomatico();
+            }
+
+            // FUNÇÃO: Configurar botão de finalizar (COM VERIFICAÇÃO DE PENDÊNCIAS NO CLIQUE)
+            function configurarBotaoFinal() {
+                function precisaAnaliseFinal(resposta) {
+                    const statusPrimeiraAnalise = resposta.statusValidacao || 'pendente';
+                    const secretariaAtende = resposta.atendeOriginal === true;
+                    const scgePrimeiraAnaliseAtende = statusPrimeiraAnalise === 'aprovado';
+                    const secretariaAtendeSCGENaoAtende = secretariaAtende && !scgePrimeiraAnaliseAtende; 
+
+                    const teveRecurso = resposta.atende !== resposta.atendeOriginal ||
+                                        resposta.comentarioRecurso ||
+                                        (Array.isArray(resposta.evidencias) && resposta.evidencias.some(e => e.tipo === 'recurso'));
+
+                    return secretariaAtendeSCGENaoAtende || teveRecurso;
+                }
+
+                actionsContainer.innerHTML = `<button id="finalizar-btn" class="btn">Encerrar e Publicar Nota Final</button>`;
+                const finalizarBtn = document.getElementById('finalizar-btn');
+
+                finalizarBtn.addEventListener('click', async () => {
+                    let pendentes = [];
+                    if (avaliacaoCompleta && Array.isArray(avaliacaoCompleta.respostas)) {
+                        pendentes = avaliacaoCompleta.respostas.filter(resposta => {
+                            const necessita = precisaAnaliseFinal(resposta); 
+                            const analiseFinal = resposta.analiseFinal || {};
+                            const temAnalise = analiseFinal.statusValidacaoPosRecurso && analiseFinal.statusValidacaoPosRecurso !== 'pendente'; 
+
+                            return necessita && !temAnalise;
+                        });
+                    }
+
+                    if (pendentes.length > 0) {
+                        const listaHtml = pendentes.map(p => {
+                            const reqIdentifier = p.requisito?.numero ? `Requisito ${p.requisito.numero}` : (p.requisito?.texto?.substring(0, 50) + '...' || `ID ${p.id}`);
+                            return `<li>${reqIdentifier}</li>`;
+                        }).join('');
+
+                        Swal.fire({
+                            title: 'Análises Pendentes',
+                            html: `Não é possível finalizar a avaliação pois a análise final dos seguintes requisitos ainda está pendente:
+                                <ul style="text-align: left; margin-top: 15px; max-height: 200px; overflow-y: auto;">${listaHtml}</ul>
+                                Por favor, revise e salve a análise final para cada um deles.`,
+                            icon: 'warning',
+                            confirmButtonText: 'Entendido',
+                            confirmButtonColor: 'var(--azul-gov-principal)'
+                        });
+                        return; 
+                    }
+
+                    Swal.fire({
+                        title: 'Encerrar Avaliação?',
+                        text: "A nota final será calculada e publicada para a secretaria. Esta ação é definitiva.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Sim, Encerrar e Publicar!',
+                        cancelButtonText: 'Cancelar',
+                        confirmButtonColor: 'var(--azul-gov-principal)',
+                        cancelButtonColor: '#6c757d'
+                    }).then(async (result) => {
+                        if (result.isConfirmed) {
+                            finalizarBtn.disabled = true;
+                            finalizarBtn.textContent = 'Finalizando...';
+
+                            try {
+                                const response = await fetch(`/api/avaliacoes/${avaliacaoId}/finalizar`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Authorization': `Bearer ${authToken}`,
+                                        'Content-Type': 'application/json'
+                                    }
+                                });
+
+                                if (!response.ok) {
+                                    const errorData = await response.json().catch(() => ({}));
+                                    throw new Error(errorData.error || errorData.message || 'Falha ao finalizar a avaliação.');
+                                }
+
+                                const responseData = await response.json();
+                                console.log('Avaliação finalizada com sucesso:', responseData);
+
+                                await Swal.fire({
+                                    title: 'Sucesso!',
+                                    text: 'A avaliação foi finalizada e a nota publicada com sucesso.',
+                                    icon: 'success',
+                                    confirmButtonColor: 'var(--azul-gov-principal)'
+                                });
+
+                                window.location.href = `/nota-final/${avaliacaoId}`; 
+
+                            } catch (error) {
+                                console.error('Erro ao finalizar:', error);
+                                Swal.fire({
+                                    title: 'Erro!',
+                                    text: error.message || 'Erro desconhecido ao finalizar a avaliação.',
+                                    icon: 'error',
+                                    confirmButtonColor: 'var(--vermelho-destaque)'
+                                });
+                                finalizarBtn.disabled = false; 
+                                finalizarBtn.textContent = 'Encerrar e Publicar Nota Final';
+                            }
+                        }
+                    });
+                });
+            }
+
+            function adicionarEventListeners() {
+                respostasContainer.addEventListener('click', (event) => {
+                    if (event.target.closest('.validation-section') || event.target.closest('a')) {
+                        return;
+                    }
+
+                    const card = event.target.closest('.resposta-card');
+                    if (card && card.dataset.resposta) { 
+                        try {
+                            const resposta = JSON.parse(card.dataset.resposta.replace(/&quot;/g, '"'));
+                            abrirModal(resposta);
+                        } catch (e) {
+                            console.error('Erro ao parsear resposta no listener do card:', e);
+                        }
+                    }
+                });
+
+                configurarListenersSalvarAutomatico(); 
+
+                document.addEventListener('keydown', (event) => {
+                    if (event.key === 'Escape' && modalOverlay.style.display === 'flex') {
+                        fecharModal();
+                    }
+                });
+                modalOverlay.addEventListener('click', (event) => {
+                    if (event.target === modalOverlay) {
+                        fecharModal();
+                    }
+                });
+                modalCloseBtn.addEventListener('click', fecharModal);
+            }
+
+            function configurarListenersSalvarAutomatico() {
+                respostasContainer.querySelectorAll('.resposta-card .btn-toggle[data-action]').forEach(botao => {
+                    const novoBotao = botao.cloneNode(true);
+                    botao.parentNode.replaceChild(novoBotao, botao);
+
+                    novoBotao.addEventListener('click', (event) => {
+                        const card = event.target.closest('.resposta-card');
+                        const respostaId = parseInt(card.dataset.respostaId);
+                         if (!isNaN(respostaId)) {
+                            const action = event.target.getAttribute('data-action');
+                            const validationType = event.target.getAttribute('data-validation-type');
+                            const container = event.target.closest('.sub-validation-container') || event.target.closest('.validation-actions');
+                            const grupoBotoes = container.querySelectorAll(`[data-validation-type="${validationType}"]`);
+                            grupoBotoes.forEach(btn => btn.classList.remove('active'));
+                            event.target.classList.add('active');
+
+                            salvarAnaliseFinalAberta(respostaId); 
+                        }
+                    });
+                });
+
+                respostasContainer.querySelectorAll('.resposta-card .analise-final-comment').forEach(textarea => {
+                    const novoTextarea = textarea.cloneNode(true);
+                    textarea.parentNode.replaceChild(novoTextarea, textarea);
+
+                    let debounceTimeout;
+                    novoTextarea.addEventListener('input', (event) => { 
+                        clearTimeout(debounceTimeout);
+                        debounceTimeout = setTimeout(() => {
+                            const card = event.target.closest('.resposta-card');
+                            const respostaId = parseInt(card.dataset.respostaId);
+                            if (!isNaN(respostaId)) {
+                                salvarAnaliseFinalAberta(respostaId);
+                            }
+                        }, 750); 
+                    });
+                });
+            }
+
+            function atualizarBadgeStatusAberto(card, statusFinal) {
+                if (!card) return;
+                const badge = card.querySelector('.validation-actions .status-validacao');
+                const respostaId = parseInt(card.dataset.respostaId);
+                const resposta = avaliacaoCompleta.respostas.find(r => r.id === respostaId);
+
+                if (badge && resposta) {
+                    const textoStatus = statusFinal === 'aprovado' ? 'Aprovado' : 'Rejeitado';
+                    const corStatus = determinarStatusRecurso(resposta, statusFinal); 
+
+                    badge.textContent = textoStatus; 
+                    badge.className = `status-validacao status-${corStatus}`; 
+                }
+            }
+
+            // FUNÇÃO para salvar análise final da interface ABERTA 
+            async function salvarAnaliseFinalAberta(respostaId) {
+                const resposta = avaliacaoCompleta.respostas.find(r => r.id === respostaId);
+                if (!resposta) {
+                    console.error('❌ Resposta não encontrada para salvar:', respostaId);
+                    return;
+                }
+
+                const card = document.querySelector(`.resposta-card[data-resposta-id="${respostaId}"]`);
+                if (!card) {
+                    console.error('❌ Card não encontrado para salvar:', respostaId);
+                    return;
+                }
+
+                try {
+                    const btnNaoAtende = card.querySelector('.btn-toggle[data-action="nao-atende-final"]');
+                    const btnAtende = card.querySelector('.btn-toggle[data-action="atende-final"]');
+
+                    let decisaoFinal = 'pendente'; 
+                    if (btnNaoAtende && btnNaoAtende.classList.contains('active')) {
+                        decisaoFinal = 'rejeitado';
+                    } else if (btnAtende && btnAtende.classList.contains('active')) {
+                        decisaoFinal = 'aprovado';
+                    } else {
+                        decisaoFinal = resposta.analiseFinal?.statusValidacaoPosRecurso || resposta.statusValidacao || 'pendente';
+                        console.warn(`[Salvar Aberto - Revisado] Nenhum botão ativo detectado para ${respostaId}. Usando status fallback: ${decisaoFinal}`);
+                    }
+
+                    let payload = {
+                        analiseFinal: {
+                            comentario: card.querySelector('.analise-final-comment')?.value || '',
+                            statusValidacaoPosRecurso: decisaoFinal 
+                        },
+                        atende: (decisaoFinal === 'aprovado')
+                    };
+
+                    console.log('📤 Salvando análise final aberta (REVISADO):', JSON.stringify(payload));
+
+                    const statusBadge = card.querySelector('.validation-actions .status-validacao');
+                    let originalBadgeText = '';
+                    let originalBadgeClass = '';
+                    if(statusBadge) {
+                        originalBadgeText = statusBadge.textContent;
+                        originalBadgeClass = statusBadge.className;
+                        statusBadge.textContent = 'Salvando...';
+                        statusBadge.className = 'status-validacao status-pendente';
+                    }
+
+
+                    const response = await fetch(`/api/respostas/${respostaId}/analise-final`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        if(statusBadge) {
+                            statusBadge.textContent = originalBadgeText;
+                            statusBadge.className = originalBadgeClass;
+                        }
+                        throw new Error(errorData.error || 'Falha ao salvar a análise final.');
+                    }
+
+                    const respostaAtualizada = await response.json();
+                    console.log('✅ Resposta do backend (aberto):', respostaAtualizada);
+
+                    const index = avaliacaoCompleta.respostas.findIndex(r => r.id === respostaId);
+                    if (index !== -1) {
+                        avaliacaoCompleta.respostas[index] = {
+                            ...avaliacaoCompleta.respostas[index],
+                            analiseFinal: respostaAtualizada.analiseFinal || {},
+                            atende: respostaAtualizada.atende,
+                            statusValidacaoPosRecurso: respostaAtualizada.analiseFinal?.statusValidacaoPosRecurso
+                        };
+                        avaliacaoCompleta.respostas[index].atendeOriginal = resposta.atendeOriginal;
+                        console.log(`[Salvar Aberto - Revisado] Dados locais atualizados para ${respostaId}: atende=${respostaAtualizada.atende}, statusFinal=${respostaAtualizada.analiseFinal?.statusValidacaoPosRecurso}`);
+                        card.dataset.resposta = JSON.stringify(avaliacaoCompleta.respostas[index]).replace(/"/g, '&quot;');
+                    }
+
+                    recalcularEExibirPontuacoes(); 
+                    configurarBotaoFinal(); 
+
+                    atualizarBadgeStatusAberto(card, payload.analiseFinal.statusValidacaoPosRecurso);
+
+                    Swal.fire({
+                        toast: true, position: 'top-end', icon: 'success',
+                        title: 'Salvo!', showConfirmButton: false, timer: 1000
+                    });
+
+                } catch (error) {
+                    console.error('❌ Erro ao salvar análise final aberta:', error);
+                    const statusBadgeOnError = card.querySelector('.validation-actions .status-validacao');
+                    if(statusBadgeOnError) {
+                        const statusAnterior = resposta.analiseFinal?.statusValidacaoPosRecurso || resposta.statusValidacao || 'pendente';
+                        atualizarBadgeStatusAberto(card, statusAnterior);
+                    }
+
+                    Swal.fire({
+                        toast: true, position: 'top-end', icon: 'error',
+                        title: 'Erro ao salvar!', showConfirmButton: false, timer: 1500
+                    });
+                }
+            }
+
+
+            function atualizarInterfaceAposSalvamento(respostaId) {
+
+                const resposta = avaliacaoCompleta.respostas.find(r => r.id === respostaId);
+                const card = document.querySelector(`[data-resposta-id="${respostaId}"]`);
+                if (!resposta || !card) return;
+
+                const analiseFinal = resposta.analiseFinal || {};
+                const statusFinal = analiseFinal.statusValidacaoPosRecurso || resposta.statusValidacao || 'pendente';
+                const scgeFinalAtende = statusFinal === 'aprovado';
+
+                const summaryBadge = card.querySelector('.summary-status-badge');
+                if (summaryBadge) {
+                    const novoStatusTexto = determinarTextoStatusRecurso(resposta, statusFinal);
+                    const novoStatusClasseCor = determinarStatusRecurso(resposta, statusFinal); 
+                    const aprovadoRejeitadoTexto = statusFinal === 'aprovado' ? 'Aprovado' : statusFinal === 'rejeitado' ? 'Rejeitado' : 'Pendente';
+                    const novoTooltip = `${novoStatusTexto} (${aprovadoRejeitadoTexto})`;
+
+
+                    summaryBadge.textContent = novoStatusTexto; 
+                    summaryBadge.className = `tooltip summary-status-badge summary-status-${novoStatusClasseCor}`; 
+                    summaryBadge.title = novoTooltip; 
+
+
+                    card.className = card.className.replace(/card-mantido-\w+|card-alterado-\w+/g, ''); 
+                    card.classList.add(scgeFinalAtende ? 'card-mantido-sim' : 'card-mantido-nao');
+                }
+
+                const badgeRecurso = card.querySelector('.recurso-badge');
+                const teveRecurso = resposta.atende !== resposta.atendeOriginal ||
+                                    resposta.comentarioRecurso ||
+                                    (Array.isArray(resposta.evidencias) && resposta.evidencias.some(e => e.tipo === 'recurso'));
+                if (teveRecurso && !badgeRecurso) {
+                    card.querySelector('.summary-status-container')?.insertAdjacentHTML('beforeend', '<span class="recurso-badge">Recurso</span>');
+                } else if (!teveRecurso && badgeRecurso) {
+                    badgeRecurso.remove();
+                }
+
+            }
+
+            async function carregarDados() {
+                try {
+                    const response = await fetch(`/api/avaliacoes/${avaliacaoId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.error || errorData.message || 'Não foi possível carregar os dados da avaliação.');
+                    }
+
+                    avaliacaoCompleta = await response.json();
+
+                    if (!Array.isArray(avaliacaoCompleta.respostas)) {
+                        avaliacaoCompleta.respostas = [];
+                    }
+
+                    avaliacaoCompleta.respostas = avaliacaoCompleta.respostas.map(normalizarDadosResposta);
+                    console.log("Dados normalizados:", avaliacaoCompleta.respostas); 
+
+
+                    const dataFormatada = new Date(avaliacaoCompleta.createdAt).toLocaleString('pt-BR');
+                    summaryContainer.innerHTML = `
+                        <h1>Análise Final (Pós-Recurso)</h1>
+                        <h2>${avaliacaoCompleta.secretaria.nome} (${avaliacaoCompleta.secretaria.sigla})</h2>
+                        <div class="report-summary">
+                            <span><strong>URL Avaliada:</strong> ${avaliacaoCompleta.urlSecretaria}</span>
+                            <span><strong>Enviado em:</strong> ${dataFormatada}</span>
+                            <span><strong>Responsável:</strong> ${avaliacaoCompleta.nomeResponsavel}</span>
+                            <span><strong>Status:</strong> ${avaliacaoCompleta.status}</span>
+                        </div>
+                    `;
+
+                    recalcularEExibirPontuacoes(); 
+                    renderizarCardsDeResposta(); 
+                    configurarBotaoFinal(); 
+                    adicionarEventListeners(); 
+                    configurarNavegacao(); 
+
+                } catch (error) {
+                    console.error("Erro ao carregar dados:", error);
+                    summaryContainer.innerHTML = `
+                        <h1>Erro ao Carregar Relatório</h1>
+                        <p>${error.message}</p>
+                        <button onclick="window.location.reload()" class="btn">Tentar Novamente</button>
+                    `;
+                }
+            }
+
+            carregarDados();
+
+        });
+    </script>
+    <script src="/global.js"></script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale-1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minha Área - Análise PE</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -14,93 +14,424 @@
             --branco: #ffffff;
             --verde-sucesso: #28a745;
             --vermelho-destaque: #dc3545;
+            --laranja-alerta: #fd7e14;
             --cinza-borda: #ddd;
         }
-        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--cinza-fundo); color: var(--cinza-texto); line-height: 1.6; }
-        .main-header { background-color: var(--branco); box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 0 5%; position: sticky; top: 0; z-index: 1000; }
-        .main-nav { display: flex; justify-content: space-between; align-items: center; height: 70px; max-width: 1200px; margin: 0 auto; }
-        .logo a { text-decoration: none; display: flex; align-items: center; gap: 12px; }
-        .logo img { height: 45px; filter: drop-shadow(1px 1px 1.2px rgba(0, 0, 0, 0.5)); }
-        .logo .site-title { color: var(--azul-gov-principal); font-size: 1.2em; font-weight: bold; line-height: 1.2; }
-        .logo .site-subtitle { color: var(--cinza-texto); font-size: 0.8em; display: block; }
-        .main-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; }
-        .main-nav a { text-decoration: none; color: var(--cinza-texto); font-weight: 600; padding: 10px; border-bottom: 2px solid transparent; transition: all 0.3s ease; }
-        .main-nav a:hover, .main-nav a.active { color: var(--azul-gov-principal); border-bottom-color: var(--amarelo-gov-detalhe); }
-        .main-footer { text-align: center; padding: 20px; margin-top: auto; background-color: var(--branco); font-size: 0.9em; position: relative; height: 60px; }
-        .main-footer .footer-content { display: flex; justify-content: center; align-items: center; height: 100%; }
-        .main-footer img { height: 110px; width: auto; position: absolute; right: 5%; top: 50%; transform: translateY(-50%); }
-        .main-footer p a { color: var(--cinza-texto); font-weight: 600; text-decoration: none; }
-        main { padding: 40px 5%; min-height: calc(100vh - 190px); box-sizing: border-box; }
-        .container { max-width: 1000px; margin: 0 auto; background: var(--branco); padding: 30px 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h1 { color: var(--azul-gov-principal); border-bottom: 2px solid var(--amarelo-gov-detalhe); padding-bottom: 10px; margin-bottom: 20px; }
-        .btn { padding: 10px 20px; background-color: var(--azul-gov-principal); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9em; font-weight: bold; text-decoration: none; transition: background-color 0.2s; }
-        .btn:disabled { background-color: #ccc; cursor: not-allowed; }
         
-        /* Estilos do Dashboard */
-        .avaliacao-item {
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background-color: var(--cinza-fundo); 
+            color: var(--cinza-texto); 
+            line-height: 1.6; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+        }
+        
+        .main-header { 
+            background-color: var(--branco); 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            padding: 0 5%; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+        }
+        
+        .main-nav { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            height: 70px; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+        }
+        
+        .logo a { 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+        }
+        
+        .logo img { 
+            height: 45px; 
+            filter: drop-shadow(1px 1px 1.2px rgba(0, 0, 0, 0.5)); 
+        }
+        
+        .logo .site-title { 
+            color: var(--azul-gov-principal); 
+            font-size: 1.2em; 
+            font-weight: bold; 
+            line-height: 1.2; 
+        }
+        
+        .logo .site-subtitle { 
+            color: var(--cinza-texto); 
+            font-size: 0.8em; 
+            display: block; 
+        }
+        
+        .main-nav ul { 
+            list-style: none; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            gap: 20px; 
+        }
+        
+        .main-nav a { 
+            text-decoration: none; 
+            color: var(--cinza-texto); 
+            font-weight: 600; 
+            padding: 10px; 
+            border-bottom: 2px solid transparent; 
+            transition: all 0.3s ease; 
+        }
+        
+        .main-nav a:hover, .main-nav a.active { 
+            color: var(--azul-gov-principal); 
+            border-bottom-color: var(--amarelo-gov-detalhe); 
+        }
+        
+        .main-footer { 
+            text-align: center; 
+            padding: 20px; 
+            margin-top: auto; 
+            background-color: var(--branco); 
+            font-size: 0.9em; 
+            position: relative; 
+            height: 60px; 
+            box-sizing: content-box; 
+        }
+        
+        .main-footer .footer-content { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100%; 
+        }
+        
+        .main-footer img { 
+            height: 110px; 
+            width: auto; 
+            position: absolute; 
+            right: 5%; 
+            top: 50%; 
+            transform: translateY(-50%); 
+        }
+        
+        .main-footer p a { 
+            color: var(--cinza-texto); 
+            font-weight: 600; 
+            text-decoration: none; 
+        }
+        
+        main { 
+            padding: 40px 5%; 
+            min-height: calc(100vh - 190px); 
+            box-sizing: border-box; 
+        }
+        
+        .container { 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            background: var(--branco); 
+            padding: 30px 40px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
+        
+        h1 { 
+            color: var(--azul-gov-principal); 
+            border-bottom: 2px solid var(--amarelo-gov-detalhe); 
+            padding-bottom: 10px; 
+            margin-bottom: 20px; 
+        }
+        
+        .btn { 
+            padding: 12px 20px; 
+            background-color: var(--azul-gov-principal); 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 0.95em; 
+            font-weight: 600; 
+            text-decoration: none; 
+            transition: all 0.3s ease; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+            justify-content: center; 
+        }
+        
+        .btn:hover {
+            background-color: #001a4d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .btn:disabled { 
+            background-color: #ccc; 
+            cursor: not-allowed; 
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-success {
+            background-color: var(--verde-sucesso);
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        
+        .btn-warning {
+            background-color: var(--laranja-alerta);
+        }
+        
+        .btn-warning:hover {
+            background-color: #e06c1c;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+
+        /* Estilos dos Cards de Avaliação */
+        .avaliacao-card {
+            background-color: var(--branco);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border-left: 5px solid var(--azul-gov-principal);
+        }
+
+        .avaliacao-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            border: 1px solid var(--cinza-borda);
-            border-radius: 8px;
+            align-items: flex-start;
+            gap: 15px;
             margin-bottom: 15px;
-            background-color: #fdfdfd;
             flex-wrap: wrap;
-            gap: 15px;
         }
-        .avaliacao-info h3 {
-            margin: 0 0 5px 0;
-            color: var(--cinza-texto);
-        }
-        .avaliacao-info p {
-            margin: 0;
-            font-size: 0.9em;
-            color: #666;
-        }
-        .avaliacao-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .avaliacao-status-badge {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            font-weight: 600;
-            text-transform: uppercase;
-            color: var(--branco);
-            text-align: center;
-            min-width: 160px;
-        }
-        /* Cores baseadas nos status do nosso ENUM no schema.prisma */
-        .status-PENDENTE_SECRETARIA { background-color: #6c757d; }
-        .status-EM_ANALISE_SCGE { background-color: #007bff; }
-        .status-AGUARDANDO_RECURSO { background-color: #ffc107; color: #333; }
-        .status-FINALIZADA { background-color: var(--verde-sucesso); }
 
+        .card-header h3 {
+            margin: 0 0 8px 0;
+            color: var(--azul-gov-principal);
+            font-size: 1.3em;
+            flex: 1;
+        }
+
+        .avaliacao-card p {
+            margin: 8px 0;
+            font-size: 0.95em;
+            color: #555;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        /* CORES DAS BARRAS LATERAIS PARA CADA STATUS */
+        .avaliacao-card.status-PENDENTE_SECRETARIA {
+            border-left: 5px solid #6c757d;
+        }
+
+        .avaliacao-card.status-EM_ANALISE_SCGE {
+            border-left: 5px solid var(--azul-gov-principal);
+        }
+
+        .avaliacao-card.status-AGUARDANDO_RECURSO {
+            border-left: 5px solid var(--laranja-alerta);
+        }
+
+        .avaliacao-card.status-EM_ANALISE_DE_RECURSO {
+            border-left: 5px solid var(--amarelo-gov-detalhe);
+        }
+
+        .avaliacao-card.status-FINALIZADA {
+            border-left: 5px solid var(--verde-sucesso);
+        }
+
+        /* ESTILOS DOS BADGES DE STATUS */
+        .avaliacao-status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+            min-width: 180px;
+        }
+
+        /* CORES DOS BADGES PARA CADA STATUS */
+        .avaliacao-status-badge.status-PENDENTE_SECRETARIA { 
+            background-color: #6c757d; 
+            color: var(--branco);
+        }
+
+        .avaliacao-status-badge.status-EM_ANALISE_SCGE { 
+            background-color: var(--azul-gov-principal); 
+            color: var(--branco);
+        }
+
+        .avaliacao-status-badge.status-AGUARDANDO_RECURSO { 
+            background-color: var(--laranja-alerta); 
+            color: var(--branco);
+        }
+
+        .avaliacao-status-badge.status-EM_ANALISE_DE_RECURSO { 
+            background-color: var(--amarelo-gov-detalhe); 
+            color: #333;
+        }
+
+        .avaliacao-status-badge.status-FINALIZADA { 
+            background-color: var(--verde-sucesso); 
+            color: var(--branco);
+        }
+
+        /* Estados da interface */
+        .loading-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--vermelho-destaque);
+            background: #f8d7da;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid var(--vermelho-destaque);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 30px;
+            color: #666;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px dashed #dee2e6;
+        }
+
+        .empty-state a {
+            color: var(--azul-gov-principal);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .empty-state .btn {
+            color: white;
+            background-color: var(--azul-gov-principal);
+        }
+
+        .empty-state .btn:hover {
+            background-color: #001a4d;
+        }
+
+        .empty-state a:hover {
+            text-decoration: underline;
+        }
+
+        .info-message {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--azul-gov-principal);
+        }
+
+        #logout-btn {
+            cursor: pointer;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .avaliacao-status-badge {
+                min-width: 140px;
+                align-self: flex-start;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .card-actions {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
     </style>
 </head>
 <body>
     <header class="main-header">
         <nav class="main-nav">
-            <div class="logo"><a href="/"><img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco"><div><span class="site-title">Análise de Sites</span><span class="site-subtitle">Portal da Transparência</span></div></a></div>
-            <ul id="nav-links"></ul>
+            <div class="logo">
+                <a href="/">
+                    <img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco">
+                    <div>
+                        <span class="site-title">Análise de Sites</span>
+                        <span class="site-subtitle">Portal da Transparência</span>
+                    </div>
+                </a>
+            </div>
+            <ul id="nav-links">
+                <!-- Menu será carregado pelo global.js -->
+            </ul>
         </nav>
     </header>
 
     <main>
         <div class="container">
             <h1>Minha Área</h1>
-            <p>Acompanhe aqui o andamento das suas autoavaliações.</p>
+            
+            <div class="info-message">
+                <strong>Acompanhamento das Avaliações</strong>
+                <p style="margin: 8px 0 0 0; font-size: 0.95em;">
+                    Aqui você pode acompanhar o status de todas as suas autoavaliações submetidas. 
+                    Cada card mostra claramente em qual etapa do processo sua avaliação se encontra.
+                </p>
+            </div>
+            
             <div id="avaliacoes-container">
-                </div>
+                <div class="loading-state">Carregando suas avaliações...</div>
+            </div>
         </div>
     </main>
 
     <footer class="main-footer">
         <div class="footer-content">
-            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a href="/admin" id="admin-footer-link" style="display: none;">Área Administrativa</a></p>
+            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados.</p>
             <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
         </div>
     </footer>
@@ -113,52 +444,139 @@
             // Mapeia os status do backend para textos amigáveis
             const statusMap = {
                 'PENDENTE_SECRETARIA': 'Rascunho (Pendente de Envio)',
-                'EM_ANALISE_SCGE': 'Em Análise (SCGE)',
-                'AGUARDANDO_RECURSO': 'Análise Concluída',
-                'FINALIZADA': 'Finalizada'
+                'EM_ANALISE_SCGE': 'Em Análise pela SCGE',
+                'AGUARDANDO_RECURSO': 'Aguardando Seu Recurso',
+                'EM_ANALISE_DE_RECURSO': 'Recurso em Análise',
+                'FINALIZADA': 'Finalizada - Nota Publicada'
+            };
+
+            // Descrições detalhadas para cada status
+            const statusDescriptions = {
+                'PENDENTE_SECRETARIA': 'Sua avaliação foi salva como rascunho. Envie para iniciar a análise.',
+                'EM_ANALISE_SCGE': 'Sua avaliação está sendo analisada pela Controladoria-Geral do Estado.',
+                'AGUARDANDO_RECURSO': 'A análise foi concluída. Você pode enviar recurso se necessário.',
+                'EM_ANALISE_DE_RECURSO': 'Seu recurso está sendo analisado pela SCGE.',
+                'FINALIZADA': 'Processo concluído. A nota final foi publicada.'
             };
 
             async function loadMinhasAvaliacoes() {
                 try {
-                    avaliacoesContainer.innerHTML = '<p>Carregando suas avaliações...</p>';
+                    // Mostrar estado de carregamento
+                    avaliacoesContainer.innerHTML = '<div class="loading-state">Carregando suas avaliações...</div>';
 
                     const response = await fetch('/api/my-avaliacoes', {
-                        headers: { 'Authorization': `Bearer ${authToken}` }
+                        headers: { 
+                            'Authorization': `Bearer ${authToken}`,
+                            'Content-Type': 'application/json'
+                        }
                     });
 
                     if (!response.ok) {
-                        throw new Error('Não foi possível carregar suas avaliações.');
+                        throw new Error('Não foi possível carregar suas avaliações. Tente novamente.');
                     }
 
                     const avaliacoes = await response.json();
                     console.log("Dados recebidos do servidor:", avaliacoes); 
 
+                    // Verificar se há avaliações
                     if (avaliacoes.length === 0) {
-                        avaliacoesContainer.innerHTML = '<p>Nenhuma avaliação foi iniciada ou enviada ainda. <a href="/formulario">Clique aqui para começar</a>.</p>';
+                        avaliacoesContainer.innerHTML = `
+                            <div class="empty-state">
+                                <h3 style="color: #666; margin-bottom: 15px;">Nenhuma avaliação encontrada</h3>
+                                <p style="margin-bottom: 20px;">Você ainda não iniciou ou enviou nenhuma avaliação.</p>
+                                <a href="/formulario" class="btn">Iniciar Nova Avaliação</a>
+                            </div>
+                        `;
                         return;
                     }
 
+                    // Ordenar avaliações: mais recentes primeiro
+                    avaliacoes.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+                    // Renderizar os cards de avaliação
                     avaliacoesContainer.innerHTML = avaliacoes.map(avaliacao => {
-                        const dataFormatada = new Date(avaliacao.createdAt).toLocaleDateString('pt-BR');
+                        const dataFormatada = new Date(avaliacao.createdAt).toLocaleDateString('pt-BR', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                        
                         const statusText = statusMap[avaliacao.status] || avaliacao.status;
+                        const statusDescription = statusDescriptions[avaliacao.status] || 'Status da avaliação.';
+                        const statusClass = `status-${avaliacao.status}`;
+
+                        // Determinar qual página acessar e texto do botão
+                        let actionPage, actionText, buttonClass = '';
+                        
+                        if (avaliacao.status === 'FINALIZADA') {
+                            actionPage = 'nota-final';
+                            actionText = 'Ver Relatório Final';
+                            buttonClass = 'btn-success';
+                        } else if (avaliacao.status === 'AGUARDANDO_RECURSO') {
+                            actionPage = 'avaliacao-usuario';
+                            actionText = 'Enviar Recurso';
+                            buttonClass = 'btn-warning';
+                        } else if (avaliacao.status === 'EM_ANALISE_DE_RECURSO') {
+                            actionPage = 'avaliacao-usuario';
+                            actionText = 'Acompanhar Recurso';
+                        } else {
+                            actionPage = 'avaliacao-usuario';
+                            actionText = 'Ver Detalhes';
+                        }
 
                         return `
-                            <div class="avaliacao-item">
-                                <div class="avaliacao-info">
-                                    <h3>Autoavaliação - Ciclo ${avaliacao.ciclo}</h3>
-                                    <p>Órgão: ${avaliacao.secretaria.sigla} | Enviado em: ${dataFormatada}</p>
+                            <div class="avaliacao-card ${statusClass}">
+                                <div class="card-header">
+                                    <div style="flex: 1;">
+                                        <h3>Avaliação - ${avaliacao.secretaria?.sigla || 'Secretaria'}</h3>
+                                        <p><strong>URL Avaliada:</strong> ${avaliacao.urlSecretaria}</p>
+                                        <p><strong>Enviado em:</strong> ${dataFormatada}</p>
+                                        <p><strong>Status:</strong> ${statusDescription}</p>
+                                    </div>
+                                    <span class="avaliacao-status-badge ${statusClass}">${statusText}</span>
                                 </div>
-                                <div class="avaliacao-actions">
-                                    <span class="avaliacao-status-badge status-${avaliacao.status}">${statusText}</span>
-                                    <a href="/avaliacao-usuario/${avaliacao.id}" class="btn">Ver Detalhes</a>
+                                <div class="card-actions">
+                                    <a href="/${actionPage}/${avaliacao.id}" class="btn ${buttonClass}">${actionText}</a>
+                                    ${avaliacao.status === 'PENDENTE_SECRETARIA' ? 
+                                        '<a href="/formulario" class="btn btn-secondary">Continuar Edição</a>' : 
+                                        ''
+                                    }
                                 </div>
                             </div>
                         `;
                     }).join('');
 
+                    avaliacoesContainer.addEventListener('click', function(event) {
+                    const linkButton = event.target.closest('.avaliacao-card a.btn');
+
+                    if (linkButton) {
+                        const card = linkButton.closest('.avaliacao-card');
+                        if (card && card.classList.contains('status-EM_ANALISE_DE_RECURSO')) {
+                            event.preventDefault();
+
+                            Swal.fire({
+                                icon: 'info',
+                                iconColor: 'var(--azul-gov-principal)',
+                                title: 'Recurso em Análise',
+                                html: `O recurso que você submeteu para esta avaliação está atualmente sendo analisado pela <strong>SCGE</strong>.<br><br>Por favor, aguarde a conclusão da análise. Você será notificado sobre o resultado final.`,
+                                confirmButtonText: 'Entendido',
+                                confirmButtonColor: 'var(--azul-gov-principal)'
+                            });
+                        }
+                    }
+                });
+
                 } catch (error) {
-                    console.error('Erro:', error);
-                    avaliacoesContainer.innerHTML = `<p style="color: red;">${error.message}</p>`;
+                    console.error('Erro ao carregar avaliações:', error);
+                    avaliacoesContainer.innerHTML = `
+                        <div class="error-state">
+                            <h3 style="margin-top: 0;">Erro ao carregar avaliações</h3>
+                            <p>${error.message}</p>
+                            <button onclick="location.reload()" class="btn" style="margin-top: 15px;">Tentar Novamente</button>
+                        </div>
+                    `;
                 }
             }
 

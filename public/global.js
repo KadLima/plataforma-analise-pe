@@ -15,7 +15,7 @@ function protectPage() {
         }).then(() => {
             window.location.href = '/login';
         });
-        return; // Para a execução aqui
+        return; 
     }
 
     /*const dataLiberacao = new Date('2025-11-14T00:00:00');
@@ -25,7 +25,7 @@ function protectPage() {
     if (path.startsWith('/formulario') && hoje < dataLiberacao) {
         // Precisamos verificar o cargo do usuário antes de bloquear
         // Esta chamada é assíncrona, então precisamos reestruturar um pouco
-        fetch('http://localhost:3000/verify-token', {
+        fetch('/verify-token', {
             headers: { 'Authorization': `Bearer ${token}` }
         })
         .then(res => res.json())
@@ -56,7 +56,7 @@ async function setupDynamicLinks() {
 
     if (token) {
         try {
-            const response = await fetch('http://localhost:3000/verify-token', {
+            const response = await fetch('/verify-token', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (response.ok) {
@@ -68,49 +68,60 @@ async function setupDynamicLinks() {
         } catch (error) { /* Assume deslogado */ }
     }
 
-    if (isLoggedIn) {
-        // --- O usuário ESTÁ logado ---
-        if (isLoggedIn) {
-            if (navLinks) {
-                navLinks.innerHTML = `
-                    <li><a href="/">Início</a></li>
-                    <li><a href="/dashboard">Minha Área</a></li> <li><a href="/scanner">Scanner de Links</a></li>
-                    <li><a href="/formulario">Autoavaliação</a></li>
-                    <li><a id="logout-btn" ...>Sair</a></li>
-                `;
+    if (isLoggedIn && user) {
+        if (navLinks) {
+            // Menu para usuários logados - com Área Administrativa ao lado de Minha Área
+            let menuHTML = `
+                <li><a href="/">Início</a></li>
+                <li><a href="/dashboard">Minha Área</a></li>
+            `;
+            
+            // Adiciona Área Administrativa apenas para ADMIN
+            if (user.role === 'ADMIN') {
+                menuHTML += `<li><a href="/admin">Área Administrativa</a></li>`;
             }
-            const logoutBtn = document.getElementById('logout-btn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    Swal.fire({
-                        icon: 'question',
-                        title: 'Confirmar Saída',
-                        text: 'Você tem certeza que deseja encerrar a sessão?',
-                        showCancelButton: true,
-                        confirmButtonText: 'Sim, Sair',
-                        cancelButtonText: 'Cancelar',
-                        confirmButtonColor: '#dc3545', // CORRIGIDO: de var(--vermelho-destaque)
-                        cancelButtonColor: '#6c757d'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            localStorage.removeItem('authToken');
-                            Swal.fire({
-                                icon: 'info',
-                                iconColor: '#002776', // CORRIGIDO: de var(--azul-gov-principal)
-                                title: 'Você saiu!',
-                                text: 'Sua sessão foi encerrada com sucesso.',
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
-                            setTimeout(() => { window.location.href = '/'; }, 1500);
-                        }
-                    });
+            
+            // Restante do menu
+            menuHTML += `
+                <li><a href="/scanner">Scanner de Links</a></li>
+                <li><a href="/formulario">Autoavaliação</a></li>
+                <li><a id="logout-btn" href="#">Sair</a></li>
+            `;
+            
+            navLinks.innerHTML = menuHTML;
+        }
+        
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+                Swal.fire({
+                    icon: 'question',
+                    iconColor: '#002776', 
+                    title: 'Confirmar Saída',
+                    text: 'Você tem certeza que deseja encerrar a sessão?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sim, Sair',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#dc3545', 
+                    cancelButtonColor: '#6c757d'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        localStorage.removeItem('authToken');
+                        Swal.fire({
+                            icon: 'info',
+                            iconColor: '#002776', 
+                            title: 'Você saiu!',
+                            text: 'Sua sessão foi encerrada com sucesso.',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        setTimeout(() => { window.location.href = '/'; }, 1500);
+                    }
                 });
-            }
+            });
         }
     } else {
-        // --- O usuário NÃO ESTÁ logado ---
         if (navLinks) {
             navLinks.innerHTML = `
                 <li><a href="/">Início</a></li>
@@ -120,9 +131,8 @@ async function setupDynamicLinks() {
         }
     }
     
-    // As funções para os links do card e do rodapé são chamadas aqui
     setupHomePageLinks(isLoggedIn);
-    setupFooterLink(isLoggedIn, user); // Passa o objeto 'user'
+    setupFooterLink(isLoggedIn, user); 
 }
 
 function setupHomePageLinks(isLoggedIn) {
@@ -136,7 +146,6 @@ function setupHomePageLinks(isLoggedIn) {
     }
 }
 
-// CORRIGIDO: A função agora recebe o objeto 'user'
 function setupFooterLink(isLoggedIn, user) {
     const adminFooterLink = document.getElementById('admin-footer-link');
     if (!adminFooterLink) return;
@@ -149,6 +158,5 @@ function setupFooterLink(isLoggedIn, user) {
     }
 }
 
-// --- EXECUÇÃO ---
 protectPage();
 document.addEventListener('DOMContentLoaded', setupDynamicLinks);

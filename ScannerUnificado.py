@@ -58,10 +58,82 @@ def verificar_link_status(url):
         resposta = requests.head(url, headers=REQUESTS_HEADERS, timeout=10, allow_redirects=True, proxies=PROXIES)
         http_code = resposta.status_code
         final_url = resposta.url
+
+        # Se o status HTTP indica erro, retornar imediatamente
+        if http_code >= 400:
+            return {"status": f"Erro {http_code}", "httpCode": http_code, "finalUrl": final_url}
+
+        # Se status é 200, fazer uma requisição GET para verificar o conteúdo
+        if http_code == 200:
+            # Fazer uma requisição GET rápida para analisar o conteúdo
+            content_response = requests.get(url, headers=REQUESTS_HEADERS, timeout=10,
+                                            allow_redirects=True, proxies=PROXIES, stream=True)
+
+            # Ler apenas os primeiros bytes para verificar conteúdo
+            content_sample = ""
+            try:
+                for chunk in content_response.iter_content(chunk_size=1024, decode_unicode=True):
+                    if chunk:
+                        content_sample += str(chunk)[:2000]  # Limitar a 2000 caracteres
+                        break  # Ler apenas o primeiro chunk
+            except:
+                pass
+
+            # Verificar padrões de páginas de erro no conteúdo
+            if is_error_page(content_sample, url):
+                return {"status": "Erro (página não encontrada)", "httpCode": 404, "finalUrl": final_url}
+
         status = "Funcionando" if 200 <= http_code < 400 else f"Erro {http_code}"
         return {"status": status, "httpCode": http_code, "finalUrl": final_url}
+
     except requests.exceptions.RequestException:
         return {"status": "Timeout", "httpCode": None, "finalUrl": url}
+
+
+def is_error_page(content, url):
+
+    if not content:
+        return False
+
+    content_lower = content.lower()
+
+    error_patterns = [
+        'página não encontrada',
+        'página não existe',
+        'error 404',
+        'not found',
+        'página indisponível',
+        'conteúdo não encontrado',
+        'não encontramos a página',
+        'esta página não existe',
+        'url não encontrada',
+        '404 not found',
+        'page not found',
+        'the page cannot be found',
+        'não foi possível encontrar',
+        'erro 404',
+        'página em manutenção',
+        'em construção',
+        'volte mais tarde',
+        'serviço temporariamente indisponível'
+    ]
+
+    for pattern in error_patterns:
+        if pattern in content_lower:
+            return True
+
+    parsed_url = urlparse(url)
+    error_paths = ['/404', '/error', '/erro', '/not-found', '/pagina-nao-encontrada']
+    if any(error_path in parsed_url.path for error_path in error_paths):
+        return True
+
+    title_patterns = ['<title>.*404.*</title>', '<title>.*not found.*</title>', '<title>.*error.*</title>']
+    import re
+    for pattern in title_patterns:
+        if re.search(pattern, content_lower):
+            return True
+
+    return False
 
 
 class Scanner:
@@ -128,7 +200,6 @@ class Scanner:
             q.task_done()
 
     def iniciar(self):
-        # 1. Contrata a equipe de verificação no início
         q = Queue()
         threads = []
         num_workers = 15
@@ -141,7 +212,6 @@ class Scanner:
         queue_navegacao = deque([(self.base_url, 'INICIAL', 0)])
 
         try:
-            # 2. O "Gerente" (Selenium) começa a navegar
             while queue_navegacao:
                 if self.pages_visited_since_restart >= 200:
                     self._restart_driver()
@@ -154,9 +224,19 @@ class Scanner:
                     self.driver.get(url_atual)
                     self.wait.until(EC.presence_of_element_located((By.TAG_NAME, "body")))
                     time.sleep(1.45)
+
+                    # Verificar se a página atual não é uma página de erro
+                    page_content = self.driver.page_source.lower()
+                    current_url = self.driver.current_url
+
                     if origem != 'INICIAL':
-                        atualizar_status_link_api(url_atual, self.session_id, "Funcionando",
-                                                  final_url=self.driver.current_url)
+                        if is_error_page(page_content, current_url):
+                            atualizar_status_link_api(url_atual, self.session_id, "Erro (página não encontrada)",
+                                                      http_code=404, final_url=current_url)
+                        else:
+                            atualizar_status_link_api(url_atual, self.session_id, "Funcionando",
+                                                      final_url=current_url)
+
                 except (WebDriverException, TimeoutException) as e:
                     self.logger.error(f"Não foi possível carregar a página interna {url_atual}: {e}")
 

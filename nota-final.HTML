@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório Final - Análise PE</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --azul-gov-principal: #002776;
+            --amarelo-gov-detalhe: #FFD700;
+            --cinza-texto: #333333;
+            --cinza-fundo: #f4f4f4;
+            --branco: #ffffff;
+            --verde-sucesso: #28a745;
+            --vermelho-destaque: #dc3545;
+            --cinza-borda: #ddd;
+            --laranja-alerta: #fd7e14;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--cinza-fundo);
+            color: var(--cinza-texto);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-header {
+            background-color: var(--branco);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 0 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .main-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo a {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo img {
+            height: 45px;
+            filter: drop-shadow(1px 1px 1.2px rgba(0, 0, 0, 0.5));
+        }
+
+        .logo .site-title {
+            color: var(--azul-gov-principal);
+            font-size: 1.2em;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .logo .site-subtitle {
+            color: var(--cinza-texto);
+            font-size: 0.8em;
+            display: block;
+        }
+
+        .main-nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 20px;
+        }
+
+        .main-nav a {
+            text-decoration: none;
+            color: var(--cinza-texto);
+            font-weight: 600;
+            padding: 10px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .main-nav a:hover, .main-nav a.active {
+            color: var(--azul-gov-principal);
+            border-bottom-color: var(--amarelo-gov-detalhe);
+        }
+
+        .main-footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+            background-color: var(--branco);
+            font-size: 0.9em;
+            position: relative;
+            height: 60px;
+            box-sizing: content-box;
+        }
+
+        .main-footer .footer-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .main-footer img {
+            height: 110px;
+            width: auto;
+            position: absolute;
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .main-footer p a {
+            color: var(--cinza-texto);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        main {
+            padding: 40px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .status-header {
+            background: var(--branco);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+            border-left: 5px solid var(--verde-sucesso);
+        }
+
+        .status-header h1 {
+            margin: 0 0 10px 0;
+            color: var(--azul-gov-principal);
+            font-size: 1.8em;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background-color: var(--verde-sucesso);
+            color: var(--branco);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin: 15px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .orgao-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px 20px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .score-panel {
+            background: linear-gradient(135deg, var(--azul-gov-principal) 0%, #0044aa 100%);
+            color: var(--branco);
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .score-panel h2 {
+            margin: 0 0 25px 0;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        .scores-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .score-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .score-label {
+            font-size: 0.85em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .score-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .score-total {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .chart-container {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 20px;
+            position: relative;
+            height: 200px;
+        }
+
+        .congrats-message {
+            background: linear-gradient(135deg, var(--verde-sucesso) 0%, #20c997 100%);
+            color: var(--branco);
+            padding: 25px;
+            border-radius: 8px;
+            margin: 25px 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .congrats-message h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.4em;
+        }
+
+        .congrats-message p {
+            margin: 0;
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .congrats-message.boa {
+            background: linear-gradient(135deg, #90EE90 0%, #76c776 100%);
+            box-shadow: 0 4px 15px rgba(144, 238, 144, 0.3);
+        }
+
+        .congrats-message.boa h3, .congrats-message.boa p { 
+            margin: 0 0 10px 0; font-size: 1.4em;
+            margin: 0; font-size: 1.1em; opacity: 0.95;
+        }
+
+
+        .congrats-message.alerta {
+            background: linear-gradient(135deg, #FFD700 0%, #e6c200 100%);
+            color: var(--cinza-texto); 
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .congrats-message.alerta h3, .congrats-message.alerta p {
+            margin: 0 0 10px 0; font-size: 1.4em;
+            margin: 0; font-size: 1.1em; opacity: 0.95;
+        }
+
+
+        .congrats-message.melhoria {
+            background: linear-gradient(135deg, var(--laranja-alerta) 0%, #e56a00 100%);
+            box-shadow: 0 4px 15px rgba(253, 126, 20, 0.3);
+        }
+
+        .congrats-message.melhoria h3, .congrats-message.melhoria p { 
+            margin: 0 0 10px 0; font-size: 1.4em;
+            margin: 0; font-size: 1.1em; opacity: 0.95;
+        }
+
+
+        .congrats-message.critica {
+            background: linear-gradient(135deg, var(--vermelho-destaque) 0%, #c82333 100%);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        }
+
+        .congrats-message.critica h3, .congrats-message.critica p { 
+            margin: 0 0 10px 0; font-size: 1.4em;
+            margin: 0; font-size: 1.1em; opacity: 0.95;
+        }
+
+        .dossie-section {
+            margin: 40px 0;
+        }
+
+        .dossie-section h2 {
+            color: var(--azul-gov-principal);
+            margin-bottom: 20px;
+            font-size: 1.6em;
+            border-bottom: 2px solid var(--amarelo-gov-detalhe);
+            padding-bottom: 10px;
+        }
+
+        .requisito-dossie {
+            background: var(--branco);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border-left: 5px solid var(--cinza-borda);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .requisito-dossie:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .requisito-dossie.atende:hover {
+            box-shadow: 0 4px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .requisito-dossie.nao-atende:hover {
+            box-shadow: 0 4px 20px rgba(220, 53, 69, 0.3);
+        }
+
+        .requisito-dossie.atende {
+            border-left-color: var(--verde-sucesso);
+        }
+
+        .requisito-dossie.nao-atende {
+            border-left-color: var(--vermelho-destaque);
+        }
+
+        .dossie-header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .requisito-title {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .requisito-title h3 {
+            margin: 0 0 5px 0;
+            color: var(--azul-gov-principal);
+            font-size: 1.1em;
+            line-height: 1.3;
+        }
+
+        .requisito-number {
+            color: #666;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .atende-badge {
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 15px;
+            color: var(--branco);
+            font-size: 0.85em;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .atende-sim { background-color: var(--verde-sucesso); }
+        .atende-nao { background-color: var(--vermelho-destaque); }
+
+        .dossie-content {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 20px;
+            transition: max-height 0.3s ease-out;
+            border-top: none; 
+            margin-top: 0;
+        }
+
+        .dossie-bloco {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--cinza-borda);
+        }
+
+        .dossie-bloco:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .bloco-title {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            margin: 0 -20px 15px -20px; 
+            color: var(--azul-gov-principal);
+            font-weight: 600;
+            font-size: 0.95em;
+            border-bottom: 1px solid var(--cinza-borda);
+            border-top: 1px solid var(--cinza-borda); 
+        }
+        .dossie-bloco:first-child .bloco-title {
+            border-top: none; 
+            margin-top: -20px; 
+        }
+
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 10px 15px;
+            align-items: baseline;
+            justify-content: start;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--cinza-texto);
+            font-size: 0.9em;
+        }
+
+        .status-badge-small {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            font-weight: 600;
+            color: var(--branco);
+            text-transform: uppercase;
+        }
+
+        .status-aprovado { background-color: var(--verde-sucesso); }
+        .status-rejeitado { background-color: var(--vermelho-destaque); }
+        .status-alterado { background-color: var(--laranja-alerta); }
+        .status-mantido { background-color: var(--verde-sucesso); }
+        .status-pendente { background-color: #ffc107; color: #333;} 
+
+
+        .evidence-list {
+            list-style: none;
+            padding: 0;
+            margin: 8px 0 0 0;
+        }
+
+        .evidence-item {
+            background: #f8f9fa;
+            padding: 6px 10px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            font-size: 0.85em;
+        }
+
+        .evidence-item a {
+            word-break: break-all;
+            color: var(--azul-gov-principal);
+            text-decoration: none;
+        }
+
+        .evidence-item a:hover {
+            text-decoration: underline;
+        }
+
+        .sem-recurso {
+            font-style: italic;
+            color: #666;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 40px 0 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, var(--azul-gov-principal) 0%, #0044aa 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 39, 118, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 39, 118, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #5a6268 0%, #4e555b 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--verde-sucesso) 0%, #20c997 100%);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+        }
+
+        .btn-icon::before {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-weight: normal;
+            font-size: 1.1em;
+        }
+
+        .btn-email::before { content: "📨​"; }
+        .btn-pdf::before { content: "📄"; }
+        .btn-print::before { content: "🖨️"; }
+        .btn-dashboard::before { content: "←"; }
+
+        @media print {
+            .main-header, .main-footer, .action-buttons, #congrats-container {
+                display: none !important;
+            }
+
+            @page {
+                size: landscape;
+            }
+
+            body {
+                background: var(--branco) !important;
+            }
+            main {
+                padding: 10px !important;
+                max-width: none !important;
+                width: 100% !important;
+            }
+            
+            .requisito-dossie .dossie-content {
+                display: block !important;
+                max-height: none !important;
+                padding: 15px 20px 20px 20px !important;
+                border-top: 1px solid #eee !important;
+                margin-top: 15px !important;
+                overflow: visible !important;
+            }
+
+            .status-header, .score-panel, .requisito-dossie {
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+            }
+            
+            .score-panel {
+                break-after: page !important;
+                page-break-after: page !important;
+            }
+            
+            .dossie-section {
+                 break-before: avoid !important;
+                 page-break-before: avoid !important;
+            }
+
+            .requisito-dossie {
+                break-before: page !important; 
+                page-break-before: page !important;
+            }
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--vermelho-destaque);
+            background: #f8d7da;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid var(--vermelho-destaque);
+        }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); display: flex;
+            justify-content: center; align-items: center; z-index: 2000;
+        }
+        .modal-content {
+            background: var(--branco); padding: 30px; border-radius: 8px;
+            width: 90%; max-width: 800px; max-height: 90vh;
+            overflow-y: auto; position: relative;
+        }
+        .modal-close-btn {
+            position: absolute; top: 10px; right: 15px; background: none;
+            border: none; font-size: 2.5em; line-height: 1; color: #aaa;
+            cursor: pointer; transition: color 0.3s ease;
+        }
+        .modal-close-btn:hover { color: #333; }
+
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <nav class="main-nav">
+            <div class="logo">
+                <a href="/">
+                    <img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco">
+                    <div>
+                        <span class="site-title">Análise de Sites</span>
+                        <span class="site-subtitle">Portal da Transparência</span>
+                    </div>
+                </a>
+            </div>
+            <ul id="nav-links">
+                 </ul>
+        </nav>
+    </header>
+
+    <main id="relatorio-content"> <section class="status-header">
+            <h1>Relatório Final de Avaliação - Ciclo 2025</h1>
+            <div class="status-badge">AVALIAÇÃO FINALIZADA</div>
+            <div class="orgao-info">
+                <div>
+                    <strong>Órgão Avaliado:</strong>
+                    <span id="orgao-nome">Carregando...</span>
+                </div>
+                <div>
+                    <strong>Data de Finalização:</strong>
+                    <span id="data-finalizacao">Carregando...</span>
+                </div>
+                <div>
+                    <strong>Enviado por:</strong>
+                    <span id="responsavel-nome">Carregando...</span>
+                </div>
+                <div>
+                    <strong>Email:</strong>
+                    <span id="responsavel-email">Carregando...</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="score-panel">
+            <h2>Evolução da Pontuação</h2>
+            <div class="scores-container">
+                <div class="score-item">
+                    <div class="score-label">Autoavaliação</div>
+                    <div class="score-value" id="score-original">--</div>
+                    <div class="score-total">de <span id="total-original">--</span> pontos</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">1ª Análise SCGE</div>
+                    <div class="score-value" id="score-pos-analise">--</div>
+                    <div class="score-total">de <span id="total-pos-analise">--</span> pontos</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">Pós-Recurso</div>
+                    <div class="score-value" id="score-pos-recurso">--</div>
+                    <div class="score-total">de <span id="total-pos-recurso">--</span> pontos</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">Nota Final</div>
+                    <div class="score-value" id="score-final">--</div>
+                    <div class="score-total">de <span id="total-final">--</span> pontos</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="score-chart"></canvas>
+            </div>
+        </section>
+
+        <div id="congrats-container" style="display: none;">
+            </div>
+
+        <section class="dossie-section">
+            <h2>Análise Detalhada por Requisito</h2>
+            <div id="dossie-container">
+                <div class="loading-state">Carregando dados dos requisitos...</div>
+            </div>
+        </section>
+
+        <div class="action-buttons">
+            <button id="email-btn" class="btn btn-success btn-email">
+                Enviar por Email
+            </button>
+            <button id="pdf-btn" class="btn btn-success btn-pdf">
+                Salvar como PDF
+            </button>
+            <button id="imprimir-btn" class="btn btn-print">
+                Imprimir Relatório
+            </button>
+            <button id="dashboard-btn" class="btn btn-secondary btn-dashboard">
+                Voltar ao Dashboard
+            </button>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados.</p>
+            <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+        </div>
+    </footer>
+
+    <div id="modal-overlay" class="modal-overlay" style="display: none;" aria-hidden="true">
+        <div id="modal-content" class="modal-content" tabindex="-1">
+            <button id="modal-close-btn" class="modal-close-btn" aria-label="Fechar modal">&times;</button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            function determinarTextoStatusRecurso(resposta, statusFinal) {
+                if (!statusFinal || statusFinal === 'pendente') {
+                    return 'Pendente';
+                }
+                return statusFinal === 'aprovado' ? 'Aprovado' : 'Rejeitado';
+            }
+
+            function determinarStatusRecurso(resposta, statusFinal) {
+                if (!statusFinal || statusFinal === 'pendente') {
+                    return 'pendente'; 
+                }
+                return statusFinal === 'aprovado' ? 'aprovado' : 'rejeitado';
+            }
+
+            const avaliacaoId = window.location.pathname.split('/').pop();
+            const authToken = localStorage.getItem('authToken');
+
+            const orgaoNomeEl = document.getElementById('orgao-nome');
+            const dataFinalizacaoEl = document.getElementById('data-finalizacao');
+            const responsavelNomeEl = document.getElementById('responsavel-nome');
+            const responsavelEmailEl = document.getElementById('responsavel-email');
+            const scoreOriginalEl = document.getElementById('score-original');
+            const totalOriginalEl = document.getElementById('total-original');
+            const scorePosAnaliseEl = document.getElementById('score-pos-analise');
+            const totalPosAnaliseEl = document.getElementById('total-pos-analise');
+            const scorePosRecursoEl = document.getElementById('score-pos-recurso');
+            const totalPosRecursoEl = document.getElementById('total-pos-recurso');
+            const scoreFinalEl = document.getElementById('score-final');
+            const totalFinalEl = document.getElementById('total-final');
+            const congratsContainer = document.getElementById('congrats-container');
+            const dossieContainer = document.getElementById('dossie-container');
+
+            const scoreChartCanvas = document.getElementById('score-chart');
+
+            const emailBtn = document.getElementById('email-btn');
+            const pdfBtn = document.getElementById('pdf-btn');
+            const imprimirBtn = document.getElementById('imprimir-btn');
+            const dashboardBtn = document.getElementById('dashboard-btn');
+
+            const modalOverlay = document.getElementById('modal-overlay');
+            const modalContent = document.getElementById('modal-content');
+            const modalBody = document.getElementById('modal-body');
+            const modalCloseBtn = document.getElementById('modal-close-btn');
+
+            let scoreChart = null;
+            let avaliacaoData = null;
+            let emailResponsavel = '';
+
+            if (!authToken) {
+                Swal.fire('Erro de Autenticação', 'Faça login novamente.', 'error');
+                window.location.href = '/login';
+                return;
+            }
+
+            function configurarNavegacao() {
+                if (dashboardBtn) {
+                    dashboardBtn.addEventListener('click', () => {
+                        window.location.href = '/dashboard';
+                    });
+                }
+
+                if (imprimirBtn) {
+                    imprimirBtn.addEventListener('click', () => {
+                        window.print();
+                    });
+                }
+
+                if (emailBtn) {
+                    emailBtn.addEventListener('click', async () => {
+                        await enviarPorEmail();
+                    });
+                }
+
+                if (pdfBtn) {
+                    pdfBtn.addEventListener('click', gerarPDF);
+                }
+
+                modalCloseBtn.addEventListener('click', fecharModal);
+                modalOverlay.addEventListener('click', (event) => {
+                    if (event.target === modalOverlay) {
+                        fecharModal();
+                    }
+                });
+                document.addEventListener('keydown', (event) => {
+                    if (event.key === 'Escape' && modalOverlay.style.display === 'flex') {
+                        fecharModal();
+                    }
+                });
+            }
+
+            function fecharModal() {
+                modalOverlay.style.display = 'none';
+            }
+
+            function abrirModal(conteudo) {
+                modalBody.innerHTML = conteudo;
+                modalOverlay.style.display = 'flex';
+                setTimeout(() => modalContent.focus(), 100);
+            }
+
+            async function enviarPorEmail() {
+                 if (!emailResponsavel) {
+                    if (avaliacaoData && avaliacaoData.emailResponsavel) {
+                        emailResponsavel = avaliacaoData.emailResponsavel;
+                    } else {
+                        Swal.fire('Erro', 'Email do responsável não encontrado na avaliação.', 'error');
+                        return;
+                    }
+                }
+
+                const { value: email } = await Swal.fire({
+                    title: 'Enviar Relatório por Email',
+                    html: `
+                        <p>Deseja enviar o relatório para o seguinte email?</p>
+                        <p><strong>${emailResponsavel}</strong></p>
+                        <p>Você pode editar o email abaixo se necessário:</p>
+                    `,
+                    input: 'email',
+                    inputLabel: 'Email do destinatário',
+                    inputValue: emailResponsavel,
+                    inputPlaceholder: 'Digite o email...',
+                    showCancelButton: true,
+                    confirmButtonText: 'Enviar Relatório',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: 'var(--verde-sucesso)',
+                    cancelButtonColor: 'var(--vermelho-destaque)',
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'Por favor, digite um email válido!';
+                        }
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailRegex.test(value)) {
+                            return 'Por favor, digite um email válido!';
+                        }
+                    }
+                });
+
+                if (email) {
+                    try {
+                        Swal.fire({
+                            title: 'Enviando email...',
+                            text: 'Aguarde enquanto o relatório é gerado e enviado.',
+                            allowOutsideClick: false,
+                            didOpen: () => { Swal.showLoading(); }
+                        });
+
+                        const pdfBlob = await gerarPDFBlob(); 
+
+                        const formData = new FormData();
+                        formData.append('email', email);
+                        formData.append('avaliacaoId', avaliacaoId);
+                        formData.append('relatorioPdf', pdfBlob, `relatorio-final-${avaliacaoData?.secretaria?.sigla || avaliacaoId}.pdf`);
+
+                        const response = await fetch(`/api/enviar-relatorio-email`, {
+                            method: 'POST',
+                            headers: { 'Authorization': `Bearer ${authToken}` }, 
+                            body: formData 
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json().catch(() => ({}));
+                            throw new Error(errorData.error || 'Erro ao enviar email');
+                        }
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Email enviado com sucesso!',
+                            text: `O relatório foi enviado para ${email}`,
+                            confirmButtonColor: 'var(--azul-gov-principal)'
+                        });
+
+                    } catch (error) {
+                        console.error('Erro ao enviar email:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erro ao enviar email',
+                            text: error.message || 'Não foi possível enviar o relatório por email.',
+                            confirmButtonColor: 'var(--vermelho-destaque)'
+                        });
+                    }
+                }
+            }
+
+            // Função auxiliar para gerar PDF como Blob (CORRIGIDA - removida quebra de página por requisito)
+            async function gerarPDFBlob() {
+                const element = document.getElementById('relatorio-content');
+                const actionButtons = document.querySelector('.action-buttons');
+                const allDossieContent = document.querySelectorAll('.requisito-dossie .dossie-content');
+
+                if(actionButtons) actionButtons.style.display = 'none';
+
+                console.log(`[PDF Blob] Forçando expansão de ${allDossieContent.length} cards...`);
+                allDossieContent.forEach(content => {
+                    content.style.display = 'block';
+                    content.style.maxHeight = 'unset'; 
+                    content.style.overflow = 'visible'; 
+                    content.style.padding = '15px 20px 20px 20px';
+                    content.style.borderTop = '1px solid #eee';
+                    content.style.marginTop = '15px';
+
+                });
+
+                const opt = {
+                    margin: [10, 10, 10, 10], 
+                    filename: `relatorio-final-${avaliacaoData?.secretaria?.sigla || avaliacaoId}.pdf`,
+                    image: { type: 'jpeg', quality: 0.95 },
+                    html2canvas: { 
+                        scale: 2, 
+                        useCORS: true, 
+                        scrollY: 0, 
+                        logging: true 
+                    },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
+                    pagebreak: { mode: ['css', 'legacy'], before: '.dossie-section' } 
+                };
+                
+                let pdfBlob = null;
+                
+                try {
+                    pdfBlob = await html2pdf().set(opt).from(element).output('blob');
+                    console.log("[PDF Blob] Blob gerado com sucesso.");
+                } catch (error) {
+                    console.error("[PDF Blob] Erro ao gerar blob:", error);
+                } finally {
+                    console.log("[PDF Blob] Revertendo estilos da página...");
+                    if(actionButtons) actionButtons.style.display = 'flex';
+
+                    allDossieContent.forEach(content => {
+                        content.style.display = ''; 
+                        content.style.maxHeight = '';
+                        content.style.overflow = '';
+                        content.style.padding = '';
+                        content.style.borderTop = '';
+                        content.style.marginTop = '';
+
+                    });
+                }
+                
+                return pdfBlob;
+            }
+
+            // Função para gerar e baixar PDF 
+            function gerarPDF() {
+                const element = document.getElementById('relatorio-content');
+                const actionButtons = document.querySelector('.action-buttons');
+                const allDossieContent = document.querySelectorAll('.requisito-dossie .dossie-content');
+
+                if(actionButtons) actionButtons.style.display = 'none';
+
+                console.log(`[PDF Save] Forçando expansão de ${allDossieContent.length} cards...`);
+                allDossieContent.forEach(content => {
+                    content.style.display = 'block';
+                    content.style.maxHeight = 'unset';
+                    content.style.overflow = 'visible';
+                    content.style.padding = '15px 20px 20px 20px';
+                    content.style.borderTop = '1px solid #eee';
+                    content.style.marginTop = '15px';
+
+                });
+
+                const opt = {
+                    margin: [10, 10, 10, 10],
+                    filename: `relatorio-final-${avaliacaoData?.secretaria?.sigla || avaliacaoId}.pdf`,
+                    image: { type: 'jpeg', quality: 0.95 },
+                    html2canvas: { 
+                        scale: 2, 
+                        useCORS: true, 
+                        scrollY: 0, 
+                        logging: true 
+                    },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
+                    pagebreak: { mode: ['css', 'legacy'], before: '.dossie-section' }
+                };
+
+                Swal.fire({
+                    title: 'Gerando PDF...',
+                    text: 'Aguarde enquanto o relatório é preparado.',
+                    allowOutsideClick: false,
+                    didOpen: () => { Swal.showLoading(); }
+                });
+
+                const reverterEstilos = () => {
+                    console.log("[PDF Save] Revertendo estilos da página...");
+                    if(actionButtons) actionButtons.style.display = 'flex';
+                    
+                    allDossieContent.forEach(content => {
+                        content.style.display = '';
+                        content.style.maxHeight = '';
+                        content.style.overflow = '';
+                        content.style.padding = '';
+                        content.style.borderTop = '';
+                        content.style.marginTop = '';
+
+                    });
+                };
+
+                html2pdf().set(opt).from(element).save().then(() => {
+                    reverterEstilos(); 
+                    Swal.close();
+                    Swal.fire({
+                        title: 'Sucesso!',
+                        text: 'PDF gerado com sucesso.',
+                        icon: 'success',
+                        confirmButtonColor: 'var(--azul-gov-principal)' 
+                    });
+                }).catch(error => {
+                    reverterEstilos(); 
+                    console.error('Erro ao gerar PDF:', error);
+                    Swal.fire('Erro', 'Não foi possível gerar o PDF.', 'error');
+                    confirmButtonColor: 'var(--vermelho-destaque)'
+                });
+            }
+
+            function calcularPontuacoes(avaliacao) {
+                if (avaliacao.pontuacaoAutoavaliacao !== null && avaliacao.pontuacaoAutoavaliacao !== undefined &&
+                    avaliacao.pontuacaoPrimeiraAnalise !== null && avaliacao.pontuacaoPrimeiraAnalise !== undefined &&
+                    avaliacao.pontuacaoPosRecurso !== null && avaliacao.pontuacaoPosRecurso !== undefined &&
+                    avaliacao.pontuacaoFinal !== null && avaliacao.pontuacaoFinal !== undefined &&
+                    avaliacao.pontuacaoTotal !== null && avaliacao.pontuacaoTotal !== undefined)
+                {
+                    console.log('[NOTA-FINAL] Usando notas salvas do banco.');
+                    return {
+                        original: avaliacao.pontuacaoAutoavaliacao,
+                        posAnalise: avaliacao.pontuacaoPrimeiraAnalise,
+                        posRecurso: avaliacao.pontuacaoPosRecurso,
+                        final: avaliacao.pontuacaoFinal,
+                        total: avaliacao.pontuacaoTotal
+                    };
+                }
+
+                console.warn('[NOTA-FINAL] Campos de pontuação não encontrados na avaliação. Calculando manualmente (fallback)...');
+                let pontuacaoOriginal = 0;
+                let pontuacaoPosAnalise = 0;
+                let pontuacaoPosRecurso = 0;
+                let pontuacaoFinalCalc = 0; 
+                let pontuacaoTotal = 0;
+
+                if (!avaliacao.respostas || !Array.isArray(avaliacao.respostas)) {
+                    console.error('[NOTA-FINAL Fallback] Erro: avaliacao.respostas não é um array válido.');
+                    return { original: 0, posAnalise: 0, posRecurso: 0, final: 0, total: 0 };
+                }
+
+
+                avaliacao.respostas.forEach(resposta => {
+                    const pontuacaoRequisito = resposta.requisito?.pontuacao || 0; 
+                    if (!resposta.requisito) {
+                        console.warn(`[NOTA-FINAL Fallback] Requisito não encontrado para resposta ID ${resposta.id}`);
+                    }
+                    pontuacaoTotal += pontuacaoRequisito;
+
+                    if (resposta.atendeOriginal === true) {
+                        pontuacaoOriginal += pontuacaoRequisito;
+                    }
+
+                    if (resposta.statusValidacao === 'aprovado') {
+                        pontuacaoPosAnalise += pontuacaoRequisito;
+                    }
+
+                    const teveRecurso = resposta.atende !== resposta.atendeOriginal ||
+                                    resposta.comentarioRecurso ||
+                                    (Array.isArray(resposta.evidencias) && resposta.evidencias.some(e => e.tipo === 'recurso'));
+
+                    if (teveRecurso) {
+                        if (resposta.atende === true) {
+                            pontuacaoPosRecurso += pontuacaoRequisito;
+                        }
+                    } else {
+                        if (resposta.statusValidacao === 'aprovado') {
+                            pontuacaoPosRecurso += pontuacaoRequisito;
+                        }
+                    }
+
+                    const statusFinalConsiderado = resposta.analiseFinal?.statusValidacaoPosRecurso || resposta.statusValidacao;
+                    if (statusFinalConsiderado === 'aprovado') {
+                        pontuacaoFinalCalc += pontuacaoRequisito;
+                    }
+                });
+
+
+                return {
+                    original: Math.round(pontuacaoOriginal),
+                    posAnalise: Math.round(pontuacaoPosAnalise),
+                    posRecurso: Math.round(pontuacaoPosRecurso),
+                    final: Math.round(pontuacaoFinalCalc), 
+                    total: pontuacaoTotal
+                };
+            }
+
+            function exibirMensagemPorNota(pontuacaoFinal, pontuacaoTotal) {
+                if (pontuacaoTotal === 0) { 
+                    congratsContainer.style.display = 'none';
+                    return;
+                }
+                const percentual = (pontuacaoFinal / pontuacaoTotal) * 100;
+                let titulo = '';
+                let mensagem = '';
+                let classe = '';
+
+                if (percentual === 100) {
+                    titulo = 'PARABÉNS! EXCELÊNCIA TOTAL!';
+                    mensagem = 'Sua secretaria atingiu a pontuação máxima na avaliação final, demonstrando comprometimento exemplar com a transparência e qualidade dos serviços.';
+                    classe = ''; 
+                } else if (percentual >= 90) {
+                    titulo = 'ÓTIMO DESEMPENHO!';
+                    mensagem = 'Sua secretaria atingiu uma pontuação destacada na avaliação final, demonstrando comprometimento com a transparência e qualidade dos serviços.';
+                    classe = 'boa';
+                } else if (percentual >= 70) {
+                    titulo = 'DESEMPENHO SATISFATÓRIO';
+                    mensagem = 'Sua secretaria obteve um bom resultado. Continue investindo em melhorias para alcançar patamares ainda mais elevados de transparência.';
+                    classe = 'alerta';
+                } else if (percentual > 0) {
+                    titulo = 'OPORTUNIDADE DE MELHORIA';
+                    mensagem = 'Sua secretaria precisa avançar na implementação dos requisitos de transparência. Recomendamos atenção especial aos itens não atendidos.';
+                    classe = 'melhoria';
+                } else { 
+                    titulo = 'DESEMPENHO CRÍTICO';
+                    mensagem = 'Sua secretaria não atendeu aos requisitos básicos de transparência. É fundamental uma ação imediata para regularizar esta situação.';
+                    classe = 'critica';
+                }
+
+                congratsContainer.innerHTML = `
+                    <div class="congrats-message ${classe}">
+                        <h3>${titulo}</h3>
+                        <p>${mensagem}</p>
+                    </div>
+                `;
+                congratsContainer.style.display = 'block';
+            }
+
+
+            function atualizarGrafico(pontuacoes) {
+                const scores = [
+                    pontuacoes.original,
+                    pontuacoes.posAnalise,
+                    pontuacoes.posRecurso,
+                    pontuacoes.final
+                ];
+
+                const labels = ['Autoavaliação', '1ª Análise', 'Pós-Recurso', 'Final'];
+                const maxScore = Math.max(...scores, pontuacoes.total); 
+
+                if (!scoreChartCanvas) {
+                    console.error("Elemento canvas do gráfico não encontrado.");
+                    return;
+                }
+                const ctx = scoreChartCanvas.getContext('2d');
+                if (!ctx) {
+                    console.error("Não foi possível obter o contexto 2D do canvas.");
+                    return;
+                }
+
+
+                if (scoreChart) {
+                    scoreChart.destroy();
+                }
+
+                scoreChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Pontuação',
+                            data: scores,
+                            borderColor: '#FFD700',
+                            backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#FFD700',
+                            pointBorderColor: '#FFFFFF',
+                            pointBorderWidth: 2,
+                            pointRadius: 6,
+                            pointHoverRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 39, 118, 0.9)',
+                                titleColor: '#FFFFFF',
+                                bodyColor: '#FFFFFF',
+                                callbacks: {
+                                    label: function(context) { return `Pontuação: ${context.parsed.y}`; }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                suggestedMax: pontuacoes.total,
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: 'rgba(255, 255, 255, 0.8)' }
+                            },
+                            x: {
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: 'rgba(255, 255, 255, 0.8)' }
+                            }
+                        }
+                    }
+                });
+            }
+
+
+            // FUNÇÃO: Renderizar dossiê (Refatorada para INCLUIR conteúdo detalhado escondido)
+            function renderizarDossie(avaliacao) {
+                if (!avaliacao.respostas || avaliacao.respostas.length === 0) {
+                    dossieContainer.innerHTML = '<div class="error-state">Nenhum dado de requisito disponível.</div>';
+                    return;
+                }
+
+                dossieContainer.innerHTML = avaliacao.respostas.map(resposta => {
+                    const statusFinalConsiderado = resposta.analiseFinal?.statusValidacaoPosRecurso || resposta.statusValidacao || 'pendente';
+                    const resultadoFinalAtende = statusFinalConsiderado === 'aprovado';
+
+                    const cardClass = resultadoFinalAtende ? 'atende' : 'nao-atende';
+                    const badgeClass = resultadoFinalAtende ? 'atende-sim' : 'atende-nao';
+                    const badgeText = resultadoFinalAtende ? 'Atende' : 'Não Atende';
+
+                    const conteudoDetalhado = gerarConteudoDetalhado(resposta);
+
+                    const numeroRequisito = resposta.requisito?.numero ? `REQUISITO ${resposta.requisito.numero}` : (resposta.requisito?.texto.split(' ')[0] || '');
+
+
+                    return `
+                        <div class="requisito-dossie ${cardClass}" data-resposta-id="${resposta.id}">
+                            <div class="dossie-header">
+                                <div class="requisito-title">
+                                    ${numeroRequisito ? `<div class="requisito-number">${numeroRequisito}</div>` : ''}
+                                    <h3>${resposta.requisito?.texto || 'Requisito não encontrado'}</h3>
+                                </div>
+                                <div class="status-indicator">
+                                    <span class="atende-badge ${badgeClass}">${badgeText}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="dossie-content">
+                                ${conteudoDetalhado}
+                            </div>
+
+                        </div>`;
+                }).join('');
+
+                setTimeout(() => {
+                    const cards = document.querySelectorAll('.requisito-dossie');
+                    cards.forEach(card => {
+                        card.addEventListener('click', (event) => {
+                            if (event.target.tagName === 'A' || event.target.closest('A')) return; 
+
+                            const respostaId = card.getAttribute('data-resposta-id');
+                            const resposta = avaliacaoData.respostas.find(r => r.id == respostaId);
+
+                            if (resposta) {
+                                const modalContentHTML = gerarConteudoModal(resposta); 
+                                abrirModal(modalContentHTML);
+                            } else {
+                                console.error(`Resposta com ID ${respostaId} não encontrada.`);
+                                abrirModal('<p>Erro ao carregar detalhes do requisito.</p>');
+                            }
+                        });
+                    });
+                }, 100);
+            }
+
+            function gerarConteudoDetalhado(resposta) {
+                const originalAnswerHTML = `
+                <div class="info-grid">
+                    <span class="info-label">Sua Resposta:</span>
+                    <span class="atende-badge ${resposta.atendeOriginal ? 'atende-sim' : 'atende-nao'}">
+                        ${resposta.atendeOriginal ? 'Atende' : 'Não Atende'}
+                    </span>
+                </div>`;
+
+                const evidenciasOriginais = Array.isArray(resposta.evidencias) ? resposta.evidencias.filter(e => e.tipo === 'original') : [];
+                let evidenciasHTML = '';
+                if (resposta.linkComprovante || evidenciasOriginais.length > 0) {
+                    evidenciasHTML = `<div class="info-grid">
+                        <span class="info-label">Evidências:</span>
+                        <ul class="evidence-list">`;
+                    if (resposta.linkComprovante) {
+                        evidenciasHTML += `<li class="evidence-item"><a href="${resposta.linkComprovante}" target="_blank">${resposta.linkComprovante}</a> (Automático)</li>`;
+                    }
+                    evidenciasOriginais.forEach(ev => {
+                        evidenciasHTML += `<li class="evidence-item"><a href="${ev.url}" target="_blank">${ev.url}</a></li>`;
+                    });
+                    evidenciasHTML += `</ul></div>`;
+                }
+
+                const statusPrimeiraAnalise = resposta.statusValidacao || 'pendente';
+                const statusTextoPrimeiraAnalise = statusPrimeiraAnalise === 'pendente' ? 'Pendente' :
+                    (resposta.atendeOriginal === (statusPrimeiraAnalise === 'aprovado') ? 'Mantido' : 'Alterado');
+                const statusClassePrimeiraAnalise = statusPrimeiraAnalise === 'pendente' ? 'pendente' : (statusPrimeiraAnalise === 'aprovado' ? 'aprovado' : 'rejeitado');
+
+                const analiseSCGEHTML = `
+                    <div class="info-grid">
+                        <span class="info-label">Resultado:</span>
+                        <span class="status-badge-small status-${statusClassePrimeiraAnalise}">
+                           ${statusTextoPrimeiraAnalise} (${statusPrimeiraAnalise === 'aprovado' ? 'Aprovado' : statusPrimeiraAnalise === 'rejeitado' ? 'Rejeitado' : 'Pendente'})
+                        </span>
+                    </div>
+                    ${resposta.comentarioAdmin ? `
+                        <div class="info-grid">
+                            <span class="info-label">Comentário:</span>
+                            <span>${resposta.comentarioAdmin}</span>
+                        </div>
+                    ` : ''}`;
+
+
+                const teveRecurso = resposta.atende !== resposta.atendeOriginal || 
+                                    resposta.comentarioRecurso ||
+                                    resposta.recursoAtende !== null || 
+                                    (Array.isArray(resposta.evidencias) && resposta.evidencias.some(e => e.tipo === 'recurso'));
+                let recursoHTML = '';
+                if (teveRecurso) {
+                    const decisaoRecursoAtende = resposta.recursoAtende !== null ? resposta.recursoAtende : resposta.atende;
+
+                    const evidenciasRecurso = Array.isArray(resposta.evidencias) ? resposta.evidencias.filter(e => e.tipo === 'recurso') : [];
+                    let evidenciasRecursoHTML = '';
+                    if (resposta.linkComprovanteRecurso || evidenciasRecurso.length > 0) {
+                        evidenciasRecursoHTML = `<div class="info-grid">
+                            <span class="info-label">Evidências:</span>
+                            <ul class="evidence-list">`;
+                        if (resposta.linkComprovanteRecurso) {
+                            evidenciasRecursoHTML += `<li class="evidence-item"><a href="${resposta.linkComprovanteRecurso}" target="_blank">${resposta.linkComprovanteRecurso}</a></li>`;
+                        }
+                        evidenciasRecurso.forEach(ev => {
+                            evidenciasRecursoHTML += `<li class="evidence-item"><a href="${ev.url}" target="_blank">${ev.url}</a></li>`;
+                        });
+                        evidenciasRecursoHTML += `</ul></div>`;
+                    }
+
+                     recursoHTML = `
+                        <div class="info-grid">
+                            <span class="info-label">Sua Nova Resposta:</span>
+                            <span class="atende-badge ${decisaoRecursoAtende ? 'atende-sim' : 'atende-nao'}">
+                                ${decisaoRecursoAtende ? 'Atende' : 'Não Atende'}
+                            </span>
+                        </div>
+                        ${resposta.comentarioRecurso ? `
+                            <div class="info-grid">
+                                <span class="info-label">Sua Justificativa:</span>
+                                <span>${resposta.comentarioRecurso}</span>
+                            </div>
+                        ` : ''}
+                        ${evidenciasRecursoHTML}
+                    `;
+                } else {
+                    recursoHTML = '<div class="sem-recurso">Não houve recurso para este requisito.</div>';
+                }
+
+                const analiseFinal = resposta.analiseFinal || {};
+                const statusFinalConsiderado = analiseFinal.statusValidacaoPosRecurso || resposta.statusValidacao || 'pendente';
+                const statusTextoFinal = determinarTextoStatusRecurso(resposta, statusFinalConsiderado); 
+                const statusClasseFinal = determinarStatusRecurso(resposta, statusFinalConsiderado);
+
+                 const analiseFinalHTML = `
+                    <div class="info-grid">
+                        <span class="info-label">Decisão Final:</span>
+                        <span class="status-badge-small status-${statusClasseFinal}">
+                            ${statusTextoFinal} 
+                        </span>
+                    </div>
+                     ${analiseFinal.comentario ? `
+                        <div class="info-grid">
+                            <span class="info-label">Comentário Final:</span>
+                            <span>${analiseFinal.comentario}</span>
+                        </div>
+                    ` : ''}`;
+
+
+                return `
+                    <div class="dossie-bloco">
+                        <div class="bloco-title">Sua Resposta Original</div>
+                        ${originalAnswerHTML}
+                        ${resposta.comentarioSecretaria ? `
+                            <div class="info-grid">
+                                <span class="info-label">Seu Comentário:</span>
+                                <span>${resposta.comentarioSecretaria}</span>
+                            </div>
+                        ` : ''}
+                        ${evidenciasHTML}
+                    </div>
+
+                    <div class="dossie-bloco">
+                        <div class="bloco-title">Análise da SCGE (1ª Rodada)</div>
+                        ${analiseSCGEHTML}
+                    </div>
+
+                    <div class="dossie-bloco">
+                        <div class="bloco-title">Seu Recurso</div>
+                        ${recursoHTML}
+                    </div>
+
+                    <div class="dossie-bloco">
+                        <div class="bloco-title">Análise Final da SCGE</div>
+                        ${analiseFinalHTML}
+                    </div>
+                `;
+            }
+
+            function gerarConteudoModal(resposta) {
+                const statusFinalConsiderado = resposta.analiseFinal?.statusValidacaoPosRecurso || resposta.statusValidacao || 'pendente';
+                const resultadoFinalAtende = statusFinalConsiderado === 'aprovado';
+                const badgeClass = resultadoFinalAtende ? 'atende-sim' : 'atende-nao';
+                const badgeText = resultadoFinalAtende ? 'Atende' : 'Não Atende';
+                const numeroRequisito = resposta.requisito?.numero ? `REQUISITO ${resposta.requisito.numero}` : '';
+
+                return `
+                    <div style="margin-bottom: 20px;">
+                        ${numeroRequisito ? `<h2 style="color: var(--azul-gov-principal); margin-bottom: 5px;">${numeroRequisito}</h2>` : ''}
+                        <h3 style="margin-top: 0; margin-bottom: 15px; color: var(--cinza-texto);">
+                            ${resposta.requisito?.texto || 'Requisito não encontrado'}
+                        </h3>
+                        <div>
+                            <span class="atende-badge ${badgeClass}" style="font-size: 1em; padding: 8px 16px;">
+                                ${badgeText}
+                            </span>
+                        </div>
+                    </div>
+                    ${gerarConteudoDetalhado(resposta)}
+                `;
+            }
+
+            async function carregarDados() {
+                try {
+                    console.log(`[NOTA-FINAL] Buscando dados da avaliação final ID: ${avaliacaoId}`);
+                    const response = await fetch(`/api/my-nota-final/${avaliacaoId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        if (response.status === 404) {
+                            throw new Error('Avaliação não encontrada ou ainda não finalizada.');
+                        } else if (response.status === 403) {
+                            throw new Error('Acesso negado. Você não tem permissão para ver esta nota final.');
+                        }
+                        throw new Error(errorData.error || 'Não foi possível carregar os dados da avaliação final.');
+                    }
+
+                    avaliacaoData = await response.json();
+                    console.log('[NOTA-FINAL] Dados recebidos:', avaliacaoData);
+
+                    if (!Array.isArray(avaliacaoData.respostas)) {
+                        console.warn('[NOTA-FINAL] avaliacaoData.respostas não é um array. Inicializando como vazio.');
+                        avaliacaoData.respostas = [];
+                    }
+
+                    emailResponsavel = avaliacaoData.emailResponsavel || '';
+
+                    orgaoNomeEl.textContent = `${avaliacaoData.secretaria?.nome || 'N/A'} (${avaliacaoData.secretaria?.sigla || 'N/A'})`;
+                    const dataFinal = avaliacaoData.dataFinalizacao || avaliacaoData.updatedAt;
+                    dataFinalizacaoEl.textContent = dataFinal ? new Date(dataFinal).toLocaleDateString('pt-BR') : 'N/A';
+                    responsavelNomeEl.textContent = avaliacaoData.nomeResponsavel || 'Não informado';
+                    responsavelEmailEl.textContent = avaliacaoData.emailResponsavel || 'Não informado';
+
+                    const pontuacoes = calcularPontuacoes(avaliacaoData); 
+                    console.log('[NOTA-FINAL] Pontuações:', pontuacoes);
+
+                    scoreOriginalEl.textContent = pontuacoes.original;
+                    totalOriginalEl.textContent = pontuacoes.total;
+                    scorePosAnaliseEl.textContent = pontuacoes.posAnalise;
+                    totalPosAnaliseEl.textContent = pontuacoes.total;
+                    scorePosRecursoEl.textContent = pontuacoes.posRecurso;
+                    totalPosRecursoEl.textContent = pontuacoes.total;
+                    scoreFinalEl.textContent = pontuacoes.final;
+                    totalFinalEl.textContent = pontuacoes.total;
+
+                    atualizarGrafico(pontuacoes); 
+
+                    exibirMensagemPorNota(pontuacoes.final, pontuacoes.total);
+
+                    renderizarDossie(avaliacaoData); 
+
+                } catch (error) {
+                    console.error('[NOTA-FINAL] Erro ao carregar dados:', error);
+                    dossieContainer.innerHTML = `<div class="error-state">Erro ao carregar dados: ${error.message}</div>`;
+                    const scorePanelElement = document.querySelector('.score-panel');
+                    if (scorePanelElement) {
+                        scorePanelElement.style.display = 'none';
+                    }
+                    Swal.fire('Erro', error.message, 'error');
+                }
+            }
+
+            configurarNavegacao(); 
+            carregarDados(); 
+        });
+    </script>
+    <script src="/global.js"></script> </body>
+</html>

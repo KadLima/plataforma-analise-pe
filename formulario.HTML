@@ -28,7 +28,7 @@
         .main-nav a:hover, .main-nav a.active { color: var(--azul-gov-principal); border-bottom-color: var(--amarelo-gov-detalhe); }
         .main-footer { text-align: center; padding: 20px; margin-top: 40px; background-color: var(--branco); font-size: 0.9em; position: relative; height: 60px; }
         .main-footer .footer-content { display: flex; justify-content: center; align-items: center; height: 100%; }
-        .main-footer img { height: 55px; width: auto; position: absolute; right: 5%; top: 50%; transform: translateY(-50%); }
+        .main-footer img { height: 110px; width: auto; position: absolute; right: 5%; top: 50%; transform: translateY(-50%); }
         main { padding: 40px 5%; }
         .container { max-width: 900px; margin: 0 auto; background: var(--branco); padding: 30px 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .form-section { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
@@ -42,7 +42,7 @@
         .btn:disabled { background-color: #ccc; cursor: not-allowed; }
         #requisitos-container { margin-top: 20px; }
         .requisito-card { border: 1px solid var(--cinza-borda); border-radius: 8px; margin-bottom: 20px; overflow: hidden; }
-        .requisito-header { background-color: #e9eef5; padding: 15px; font-weight: bold; }
+        .requisito-header { background-color: #f0f4ff; padding: 15px; font-weight: bold; }
         .requisito-body { padding: 15px; background-color: var(--branco); }
         .requisito-ajuda { font-size: 0.9em; color: #555; background-color: #fafafa; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
         .requisito-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
@@ -62,17 +62,8 @@
         .step-label { margin-top: 8px; font-size: 0.9em; color: #999; transition: color 0.4s; }
         .step.active .step-number { background-color: var(--azul-gov-principal); border-color: var(--azul-gov-principal); color: var(--branco); }
         .step.active .step-label { color: var(--azul-gov-principal); font-weight: bold; }
-
-        .evidence-container {
-            padding-top: 10px;
-            border-top: 1px solid #f0f0f0;
-            margin-top: 10px;
-        }
-        .evidence-list {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 10px 0;
-        }
+        .evidence-container { padding-top: 10px; border-top: 1px solid #f0f0f0; margin-top: 10px; }
+        .evidence-list { list-style: none; padding: 0; margin: 0 0 10px 0; }
         .evidence-item {
             display: flex;
             justify-content: space-between;
@@ -130,9 +121,9 @@
             font-family: 'Segoe UI', Arial, sans-serif;
             font-size: 0.9em;
             min-height: 70px;
-            resize: vertical;
+            resize: none;
         }
-        /* --- ESTILOS PARA REQUISITOS SUBDIVIDIDOS --- */
+        
         .sub-requisito-container {
             margin-top: 15px;
         }
@@ -146,9 +137,21 @@
             margin-bottom: 8px;
             display: block;
         }
-        /* NOVA REGRA: Esconde a seção que tiver a classe 'hidden' */
+        
         .sub-requisito.hidden {
             display: none;
+        }
+
+        .secretaria-display-box {
+            background-color: #e9ecef;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        #logout-btn {
+            cursor: pointer;
         }
 
     </style>
@@ -174,7 +177,11 @@
             </div>
             <div class="form-section">
                 <h2>Passo 1: Identificação</h2>
-                <div class="form-group"><label for="secretaria-select">Selecione o Órgão/Entidade</label><select id="secretaria-select"><option value="">Carregando...</option></select></div>
+                <div class="form-group">
+                    <label>Órgão/Entidade</label>
+                    <div id="secretaria-display" class="secretaria-display-box">Carregando seus dados...</div>
+                    <input type="hidden" id="secretaria-id-hidden">
+                </div>
                 <div class="form-group"><label for="url-manual">URL do Site a ser Avaliado</label><input type="url" id="url-manual" placeholder="https://www.sitedasecretaria.pe.gov.br"></div>
                 <div class="form-group"><label for="responsavel-nome">Nome do Responsável pelo preenchimento</label><input type="text" id="responsavel-nome" placeholder="Digite seu nome completo"></div>
                 <div class="form-group"><label for="responsavel-email">E-mail do Responsável</label><input type="email" id="responsavel-email" placeholder="Digite seu e-mail para contato"></div>
@@ -201,7 +208,22 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const secretariaSelect = document.getElementById('secretaria-select');
+
+            // --- FUNÇÃO AUXILIAR DEBOUNCE ---
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            };
+
+            // --- VARIÁVEIS GLOBAIS DO SCRIPT ---
+            const secretariaHiddenInput = document.getElementById('secretaria-id-hidden');
             const urlManualInput = document.getElementById('url-manual');
             const nomeResponsavelInput = document.getElementById('responsavel-nome');
             const emailResponsavelInput = document.getElementById('responsavel-email');
@@ -213,114 +235,518 @@
             const step2 = document.getElementById('progress-step-2');
             const step3 = document.getElementById('progress-step-3');
             
+            const debouncedSalvarRascunho = debounce(salvarRascunho, 750); 
+            
             let todosOsRequisitos = [];
             let linksEncontradosAutomaticamente = [];
+            let preventUnload = false;
+            let usuarioEscolheuCarregarRascunho = null;
+            let rascunhoPendente = null; 
 
-            async function populateSecretarias() {
-                try {
-                    const response = await fetch('http://localhost:3000/secretarias');
-                    if (!response.ok) throw new Error('Não foi possível carregar a lista de secretarias.');
-                    const secretarias = await response.json();
-                    secretariaSelect.innerHTML = '<option value="">-- Selecione uma opção --</option>';
-                    secretarias.forEach(secretaria => {
-                        const option = document.createElement('option');
-                        option.value = secretaria.id;
-                        option.textContent = `${secretaria.nome} (${secretaria.sigla})`;
-                        option.dataset.url = secretaria.url;
-                        secretariaSelect.appendChild(option);
-                    });
-                } catch (error) {
-                    secretariaSelect.innerHTML = '<option value="">Erro ao carregar a lista</option>';
-                }
-            }
+            nomeResponsavelInput.addEventListener('input', debouncedSalvarRascunho);
+            emailResponsavelInput.addEventListener('input', debouncedSalvarRascunho);
 
-            secretariaSelect.addEventListener('change', () => {
-                const selectedOption = secretariaSelect.options[secretariaSelect.selectedIndex];
-                if (selectedOption && selectedOption.dataset.url) {
-                    urlManualInput.value = selectedOption.dataset.url;
+            requisitosContainer.addEventListener('input', (event) => {
+                if (event.target.matches('.secretaria-comment')) {
+                    debouncedSalvarRascunho(); 
                 }
             });
 
-            // --- NOVAS FUNÇÕES PARA O SISTEMA DE RASCUNHO ---
+            requisitosContainer.addEventListener('click', (event) => {
+                const target = event.target;
+                const requisitoCard = target.closest('.requisito-card');
+                if (!requisitoCard) return;
+
+                const requisitoId = requisitoCard.dataset.requisitoId;
+                if (!requisitoId) return;
+
+                if (target.matches('.requisito-actions .btn-toggle[data-action]')) {
+                    const action = target.dataset.action;
+                    const idFromAction = action.split('-')[1];
+
+                    if (idFromAction === requisitoId && (action.startsWith('sim-') || action.startsWith('nao-'))) {
+                        console.log(`Botão Toggle Clicado: Action=${action}, RequisitoID=${requisitoId}`);
+
+                        const isSimClick = action.startsWith('sim-');
+                        const wrapperId = `evidence-wrapper-${requisitoId}`;
+                        const wrapper = requisitoCard.querySelector(`#${wrapperId}`);
+                        const simButton = requisitoCard.querySelector(`[data-action="sim-${requisitoId}"]`);
+                        const naoButton = requisitoCard.querySelector(`[data-action="nao-${requisitoId}"]`);
+
+                        if (simButton && naoButton) {
+                            simButton.classList.remove('active');
+                            naoButton.classList.remove('active');
+                            target.classList.add('active');
+
+                            if (wrapper) {
+                                if (isSimClick) {
+                                    wrapper.classList.add('show');
+                                } else {
+                                    wrapper.classList.remove('show');
+                                }
+                            }
+                            salvarRascunho(); 
+                        }
+                        return; 
+                    }
+                }
+
+                if (target.matches('.add-link-btn')) {
+                    if(target.dataset.requisitoId === requisitoId) {
+                        console.log(`ADICIONAR LINK Clicado para Req ${requisitoId}`); 
+                        Swal.fire({
+                            title: 'Adicionar Evidência Manual',
+                            input: 'url',
+                            inputLabel: 'URL do Link de Comprovação',
+                            inputPlaceholder: 'www.exemplo.com.br', 
+                            inputAttributes: { autocapitalize: 'off', autocorrect: 'off' },
+                            showCancelButton: true,
+                            confirmButtonText: 'Adicionar Link',
+                            cancelButtonText: 'Cancelar',
+                            confirmButtonColor: 'var(--azul-gov-principal)',
+                            cancelButtonColor: '#6c757d',
+                            showLoaderOnConfirm: true,
+
+                            inputValidator: (value) => {
+                                if (!value) {
+                                    return 'Você precisa digitar um endereço web!';
+                                }
+                                if (/\s/.test(value)) { 
+                                    return 'O endereço não pode conter espaços.';
+                                }
+                                if (value.length > 0 && !value.includes('.')) { 
+                                    return 'Insira um endereço válido (ex: www.exemplo.com)';
+                                }
+                                return null; 
+                            },
+
+                            preConfirm: (value) => {
+                                let finalUrl = value.trim();
+                                if (!/^(https?:\/\/|\/\/)/i.test(finalUrl)) {
+                                    finalUrl = 'https://' + finalUrl;
+                                }
+                                return finalUrl; 
+                            },
+                            
+                            allowOutsideClick: () => !Swal.isLoading()
+                        }).then((result) => {
+                            if (result.isConfirmed && result.value) {
+                                const url = result.value; 
+                                const evidenceList = target.closest('.evidence-container')?.querySelector('.evidence-list');
+                                if (evidenceList) {
+                                    const newItem = document.createElement('li');
+                                    newItem.className = 'evidence-item';
+                                    newItem.dataset.link = url;
+                                    newItem.innerHTML = `<a href="${url}" target="_blank" title="${url}">${url}</a><button class="remove-evidence-btn" title="Remover Evidência">&times;</button>`;
+                                    evidenceList.appendChild(newItem);
+
+                                    const removeBtn = newItem.querySelector('.remove-evidence-btn');
+                                    removeBtn.addEventListener('click', function() {
+                                        this.closest('.evidence-item').remove();
+                                        salvarRascunho();
+                                    });
+                                    salvarRascunho();
+                                }
+                            }
+                        });
+                        return; 
+                    }
+                }
+
+                if (target.matches('.add-fixo-btn')) {
+                    if (target.dataset.requisitoId === requisitoId) {
+                        const linkFixo = target.dataset.linkFixo;
+                        const evidenceList = target.closest('.evidence-container')?.querySelector('.evidence-list');
+                        if (evidenceList && linkFixo) {
+                            let exists = false;
+                            evidenceList.querySelectorAll('.evidence-item').forEach(item => { if (item.dataset.link === linkFixo) exists = true; });
+                            if (!exists) {
+                                const newItem = document.createElement('li');
+                                newItem.className = 'evidence-item';
+                                newItem.dataset.link = linkFixo;
+                                newItem.innerHTML = `<a href="${linkFixo}" target="_blank" title="${linkFixo}">${linkFixo}</a><button class="remove-evidence-btn" title="Remover Evidência">&times;</button>`;
+                                evidenceList.appendChild(newItem);
+                                const removeBtn = newItem.querySelector('.remove-evidence-btn');
+                                removeBtn.addEventListener('click', function() { this.closest('.evidence-item').remove(); salvarRascunho(); });
+                                salvarRascunho();
+                            } else {
+                                Swal.fire({ toast: true, position: 'top-end', icon: 'info', title: 'Link fixo já adicionado.', showConfirmButton: false, timer: 1500 });
+                            }
+                        }
+                        return; 
+                    }
+                }
+
+                if (target.matches('.remove-evidence-btn')) {
+                    event.stopPropagation(); 
+                    target.closest('.evidence-item')?.remove();
+                    salvarRascunho();
+                    return; 
+                }
+            });
+
+            function adicionarListenersRemoverEvidencia() {
+                requisitosContainer.querySelectorAll('.remove-evidence-btn').forEach(btn => {
+                    const listenerAttached = btn.getAttribute('data-listener-attached');
+                    if (!listenerAttached) {
+                        btn.addEventListener('click', function(event) {
+                            event.stopPropagation(); 
+                            this.closest('.evidence-item').remove();
+                            salvarRascunho();
+                        });
+                        btn.setAttribute('data-listener-attached', 'true');
+                    }
+                });
+            }
+
+            function carregarLinksAutomaticos() {
+                const secretariaId = secretariaHiddenInput.value;
+                if (!secretariaId) return [];
+                const linksSalvos = localStorage.getItem(`links_automaticos_${secretariaId}`);
+                if (linksSalvos) {
+                    console.log(`📂 Links automáticos carregados do cache:`, JSON.parse(linksSalvos));
+                    return JSON.parse(linksSalvos);
+                }
+                return [];
+            }
+
+            function salvarLinksAutomaticos(links) {
+                const secretariaId = secretariaHiddenInput.value;
+                if (!secretariaId) return;
+                localStorage.setItem(`links_automaticos_${secretariaId}`, JSON.stringify(links));
+                console.log(`💾 Links automáticos salvos para secretaria ${secretariaId}`);
+            }
+
+            function verificarRascunhoAoCarregar() {
+                const secretariaId = secretariaHiddenInput.value;
+                if (!secretariaId) {
+                    console.log("Aguardando ID da secretaria para verificar rascunho...");
+                    setTimeout(verificarRascunhoAoCarregar, 300);
+                    return;
+                }
+                console.log(`Verificando rascunho para secretaria ID: ${secretariaId}`);
+
+                const rascunhoSalvo = localStorage.getItem(`rascunho_avaliacao_${secretariaId}`);
+                if (rascunhoSalvo) {
+                    const rascunho = JSON.parse(rascunhoSalvo);
+                    const temDadosSignificativos = rascunho.nomeResponsavel || rascunho.emailResponsavel || (rascunho.respostas && Object.keys(rascunho.respostas).length > 0);
+
+                    if (temDadosSignificativos) {
+                        console.log("Rascunho significativo encontrado. Exibindo prompt...");
+                        Swal.fire({
+                            title: 'Progresso Salvo Encontrado',
+                            text: "Encontramos um progresso não finalizado para este órgão. Deseja continuar de onde parou?",
+                            icon: 'info',
+                            iconColor: 'var(--azul-gov-principal)',
+                            showCancelButton: true,
+                            confirmButtonText: 'Sim, continuar',
+                            cancelButtonText: 'Não, começar do zero',
+                            confirmButtonColor: 'var(--azul-gov-principal)',
+                            cancelButtonColor: '#6c757d',
+                            allowOutsideClick: false
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                console.log("Usuário escolheu CARREGAR rascunho.");
+                                usuarioEscolheuCarregarRascunho = true;
+                                carregarRascunhoCompleto(rascunho);
+                                restaurarEstadoPreValidacao(); 
+                            } else {
+                                console.log("Usuário escolheu COMEÇAR DO ZERO.");
+                                usuarioEscolheuCarregarRascunho = false;
+                                limparFormularioCompleto();
+                            }
+                        });
+                    } else {
+                        console.log("Rascunho encontrado, mas sem dados significativos. Ignorando prompt.");
+                        usuarioEscolheuCarregarRascunho = false;
+                    }
+                } else {
+                    console.log("Nenhum rascunho encontrado.");
+                    usuarioEscolheuCarregarRascunho = false;
+                }
+            }
+
+            function limparFormularioCompleto() {
+                const secretariaId = secretariaHiddenInput.value;
+                if (secretariaId) {
+                    localStorage.removeItem(`rascunho_avaliacao_${secretariaId}`);
+                    localStorage.removeItem(`links_automaticos_${secretariaId}`);
+                    nomeResponsavelInput.value = '';
+                    emailResponsavelInput.value = '';
+                    preValidarBtn.textContent = 'Iniciar Pré-Validação';
+                    preValidarBtn.style.backgroundColor = '';
+                    preValidarBtn.style.cursor = '';
+                    preValidarBtn.disabled = false;
+                    urlManualInput.disabled = false;
+                    step1.classList.add('active');
+                    step2.classList.remove('active');
+                    step3.classList.remove('active');
+                    preValidacaoResultado.innerHTML = '';
+                    requisitosContainer.innerHTML = '<p>Aguardando a pré-validação para carregar os requisitos...</p>';
+                    linksEncontradosAutomaticamente = [];
+                    rascunhoPendente = null;
+                    console.log(`✅ Formulário completamente zerado para secretaria ${secretariaId}`);
+                }
+            }
+
+            function carregarRascunhoCompleto(rascunho) {
+                nomeResponsavelInput.value = rascunho.nomeResponsavel || '';
+                emailResponsavelInput.value = rascunho.emailResponsavel || '';
+                if (document.querySelectorAll('.requisito-card').length > 0) {
+                    aplicarRascunhoAosRequisitos(rascunho);
+                } else {
+                    rascunhoPendente = rascunho; 
+                }
+            }
+
+            function aplicarRascunhoAosRequisitos(rascunho) {
+                document.querySelectorAll('.requisito-card').forEach(card => {
+                    const id = card.dataset.requisitoId;
+                    const resposta = rascunho.respostas && rascunho.respostas[id];
+                    
+                    const simBtn = card.querySelector(`[data-action="sim-${id}"]`);
+                    const naoBtn = card.querySelector(`[data-action="nao-${id}"]`);
+                    const wrapper = card.querySelector(`#evidence-wrapper-${id}`);
+
+                    if (resposta && simBtn && naoBtn) {
+                        if (resposta.sim === true) {
+                            simBtn.classList.add('active');
+                            naoBtn.classList.remove('active');
+                            if (wrapper) wrapper.classList.add('show');
+                        } else {
+                            naoBtn.classList.add('active');
+                            simBtn.classList.remove('active');
+                            if (wrapper) wrapper.classList.remove('show');
+                        }
+
+                        const commentEl = card.querySelector('.secretaria-comment');
+                        if (commentEl && resposta.comentario) {
+                            commentEl.value = resposta.comentario;
+                        }
+
+                        const evidenceList = card.querySelector('.evidence-list');
+                        if (evidenceList && Array.isArray(resposta.evidencias)) {
+                            evidenceList.innerHTML = '';
+                            resposta.evidencias.forEach(url => {
+                                if (url && typeof url === 'string') {
+                                    const newItem = document.createElement('li');
+                                    newItem.className = 'evidence-item';
+                                    newItem.dataset.link = url;
+                                    newItem.innerHTML = `<a href="${url}" target="_blank" title="${url}">${url}</a><button class="remove-evidence-btn" title="Remover Evidência">&times;</button>`;
+                                    evidenceList.appendChild(newItem);
+                                }
+                            });
+                        }
+                    } else if (simBtn && naoBtn) {
+                        naoBtn.classList.add('active');
+                        simBtn.classList.remove('active');
+                        if (wrapper) wrapper.classList.remove('show');
+                    }
+                });
+                console.log(`Rascunho aplicado aos requisitos.`);
+                adicionarListenersRemoverEvidencia(); 
+            }
+
+            async function populateSecretarias() {
+                console.log("1. Iniciando populateSecretarias...");
+                try {
+                    const authToken = localStorage.getItem('authToken');
+                    const userResponse = await fetch('/verify-token', {
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    });
+                    if (!userResponse.ok) throw new Error('Não foi possível verificar os dados do usuário.');
+                    const userData = await userResponse.json();
+                    
+                    const secretariaId = userData.user.secretariaId;
+                    const secResponse = await fetch(`/secretarias/${secretariaId}`);
+                    if (!secResponse.ok) throw new Error('Não foi possível carregar os dados da sua secretaria.');
+                    
+                    const secretaria = await secResponse.json();
+                    console.log("7. Dados da secretaria recebidos:", secretaria);
+
+                    const secretariaDisplay = document.getElementById('secretaria-display');
+                    secretariaDisplay.textContent = `${secretaria.nome} (${secretaria.sigla})`;
+                    secretariaHiddenInput.value = secretaria.id;
+                    urlManualInput.value = secretaria.url;
+                    urlManualInput.disabled = false;
+                    
+                    linksEncontradosAutomaticamente = carregarLinksAutomaticos();
+                    await verificarAvaliacaoExistente(secretariaId);
+
+                    setTimeout(() => {
+                        verificarRascunhoAoCarregar(); 
+                    }, 100);
+
+                } catch (error) {
+                    document.getElementById('secretaria-display').textContent = 'Erro ao carregar seus dados.';
+                    console.error("ERRO DETALHADO em populateSecretarias:", error);
+                }
+            }
+
+            function restaurarEstadoPreValidacao() {
+                const secretariaId = secretariaHiddenInput.value;
+                if (!secretariaId) return;
+
+                if (usuarioEscolheuCarregarRascunho === false) {
+                    console.log("❌ Usuário escolheu não carregar rascunho, pulando restauração...");
+                    return;
+                }
+
+                const rascunhoSalvo = localStorage.getItem(`rascunho_avaliacao_${secretariaId}`);
+                const linksSalvos = localStorage.getItem(`links_automaticos_${secretariaId}`);
+                
+                if (linksSalvos || rascunhoSalvo) {
+                    console.log("📁 Links automáticos ou rascunho encontrados, restaurando estado...");
+                    
+                    preValidarBtn.textContent = 'Pré-Validação Concluída';
+                    preValidarBtn.style.backgroundColor = 'var(--verde-sucesso)';
+                    preValidarBtn.style.cursor = 'default';
+                    preValidarBtn.disabled = true;
+                    urlManualInput.disabled = true;
+                    
+                    step1.classList.remove('active');
+                    step2.classList.add('active');
+                    step3.classList.add('active');
+                    
+                    if (linksEncontradosAutomaticamente.length > 0) {
+                        console.log(`Renderizando requisitos com ${linksEncontradosAutomaticamente.length} links...`);
+                        renderRequisitos(linksEncontradosAutomaticamente); 
+
+                        const urlPrincipalRestaurada = document.getElementById('url-manual').value.trim();
+                        const req6ConsideradoRestaurado = linksEncontradosAutomaticamente.some(l => l.alvo === 'KEYWORD:site-exists') || !!urlPrincipalRestaurada;
+                        let contagemExibidaRestaurada = linksEncontradosAutomaticamente.length;
+                        if (req6ConsideradoRestaurado && !linksEncontradosAutomaticamente.some(l => l.alvo === 'KEYWORD:site-exists')) {
+                             contagemExibidaRestaurada++;
+                        }
+                        
+                        preValidacaoResultado.innerHTML = `<h4>Pré-Validação Carregada do Cache</h4><p>Foram encontrados <strong>${contagemExibidaRestaurada}</strong> links obrigatórios na última verificação </p>`;
+
+                    } else if (rascunhoSalvo) {
+                        preValidacaoResultado.innerHTML = `<h4>Progresso Anterior Carregado</h4><p>Seu progresso anterior foi restaurado com sucesso.</p>`;
+                        renderRequisitos([]); 
+                    }
+                }
+            }
+
+            async function verificarAvaliacaoExistente(secretariaId) {
+                try {
+                    const authToken = localStorage.getItem('authToken');
+                    const response = await fetch('/api/my-avaliacoes', {
+                        headers: { 'Authorization': `Bearer ${authToken}`, 'Content-Type': 'application/json' }
+                    });
+
+                    if (response.ok) {
+                        const avaliacoes = await response.json();
+                        const avaliacaoAtiva = avaliacoes.find(av => 
+                            av.secretariaId === parseInt(secretariaId) && 
+                            av.status !== 'PENDENTE_SECRETARIA' &&
+                            av.status !== 'FINALIZADA'
+                        );
+
+                        if (avaliacaoAtiva) {
+                            Swal.fire({
+                                title: 'Avaliação Já Submetida',
+                                html: `Esta secretaria já possui uma avaliação em andamento.<br><br>
+                                       <strong>Status:</strong> ${avaliacaoAtiva.status}<br>
+                                       <strong>URL:</strong> ${avaliacaoAtiva.urlSecretaria}<br><br>
+                                       Você pode acompanhar o andamento na sua área pessoal.`,
+                                icon: 'info',
+                                iconColor: 'var(--azul-gov-principal)',
+                                confirmButtonText: 'Ir para Minha Área',
+                                confirmButtonColor: 'var(--azul-gov-principal)',
+                                showCancelButton: true,
+                                cancelButtonText: 'Continuar no Formulário' 
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '/dashboard';
+                                }
+                            });
+                        }
+                    }
+                } catch (error) {
+                    console.log('Erro ao verificar avaliações existentes:', error);
+                }
+            }
 
             function salvarRascunho() {
-                const secretariaId = secretariaSelect.value;
-                if (!secretariaId) return; // Não salva se nenhuma secretaria estiver selecionada
+                const secretariaId = secretariaHiddenInput.value;
+                if (!secretariaId) return;
 
                 const rascunho = {
                     nomeResponsavel: nomeResponsavelInput.value,
                     emailResponsavel: emailResponsavelInput.value,
                     respostas: {}
                 };
+                let hasData = false; 
 
                 document.querySelectorAll('.requisito-card').forEach(card => {
                     const id = card.dataset.requisitoId;
-                    const comentario = card.querySelector('.secretaria-comment')?.value;
+                    
+                    const simBtn = card.querySelector(`[data-action="sim-${id}"]`); // Seletor corrigido
+                    const atendeSim = simBtn ? simBtn.classList.contains('active') : false;
+                    const comentario = card.querySelector('.secretaria-comment')?.value || '';
                     const evidencias = [];
-                    card.querySelectorAll('.evidence-item').forEach(item => {
-                        evidencias.push(item.dataset.link);
-                    });
 
-                    rascunho.respostas[id] = {
-                        sim: card.querySelector('[data-atende="true"]')?.classList.contains('active'),
-                        nao: card.querySelector('[data-atende="false"]')?.classList.contains('active'),
-                        comentario: comentario,
-                        evidencias: evidencias
-                    };
-                });
-
-                localStorage.setItem(`rascunho_avaliacao_${secretariaId}`, JSON.stringify(rascunho));
-                console.log(`Rascunho para secretaria ${secretariaId} salvo.`);
-            }
-
-            function carregarRascunho() {
-                const secretariaId = secretariaSelect.value;
-                if (!secretariaId) return;
-
-                const rascunhoSalvo = localStorage.getItem(`rascunho_avaliacao_${secretariaId}`);
-                if (rascunhoSalvo) {
-                    if (!confirm("Encontramos um rascunho salvo para este órgão. Deseja carregá-lo?")) {
-                        return;
-                    }
-                    const rascunho = JSON.parse(rascunhoSalvo);
-                    nomeResponsavelInput.value = rascunho.nomeResponsavel || '';
-                    emailResponsavelInput.value = rascunho.emailResponsavel || '';
-
-                    document.querySelectorAll('.requisito-card').forEach(card => {
-                        const id = card.dataset.requisitoId;
-                        const resposta = rascunho.respostas[id];
-                        if (resposta) {
-                            if (resposta.sim) card.querySelector('[data-atende="true"]')?.click();
-                            if (resposta.nao) card.querySelector('[data-atende="false"]')?.click();
-                            
-                            const commentEl = card.querySelector('.secretaria-comment');
-                            if (commentEl && resposta.comentario) {
-                                commentEl.value = resposta.comentario;
-                            }
-
-                            const evidenceList = card.querySelector('.evidence-list');
-                            if (evidenceList && resposta.evidencias) {
-                                resposta.evidencias.forEach(url => {
-                                    const newItem = document.createElement('li');
-                                    newItem.className = 'evidence-item';
-                                    newItem.dataset.link = url;
-                                    newItem.innerHTML = `<a href="${url}" target="_blank" title="${url}">${url}</a><button class="remove-evidence-btn" title="Remover Evidência">&times;</button>`;
-                                    evidenceList.appendChild(newItem);
-                                });
-                            }
+                    card.querySelectorAll('.evidence-list .evidence-item').forEach(item => {
+                        if (item.dataset.link) {
+                            evidencias.push(item.dataset.link);
                         }
                     });
-                    console.log(`Rascunho para secretaria ${secretariaId} carregado.`);
+
+                    const naoBtn = card.querySelector(`[data-action="nao-${id}"]`); // Seletor corrigido
+                    const naoAtivo = naoBtn ? naoBtn.classList.contains('active') : false;
+                    if (atendeSim || naoAtivo || comentario || evidencias.length > 0) {
+                        rascunho.respostas[id] = {
+                            sim: atendeSim,
+                            comentario: comentario,
+                            evidencias: evidencias
+                        };
+                        hasData = true; 
+                    }
+                });
+
+                if (hasData) {
+                    localStorage.setItem(`rascunho_avaliacao_${secretariaId}`, JSON.stringify(rascunho));
+                    console.log(`Rascunho para secretaria ${secretariaId} salvo.`);
+                    preventUnload = true; 
+
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end', 
+                        icon: 'success',
+                        title: 'Rascunho salvo!',
+                        showConfirmButton: false,
+                        timer: 1500, 
+                        timerProgressBar: true,
+                        didOpen: (toast) => { 
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    });
+                } else {
+                    localStorage.removeItem(`rascunho_avaliacao_${secretariaId}`);
+                    console.log(`Rascunho para secretaria ${secretariaId} limpo (vazio).`);
+                    preventUnload = false; 
                 }
             }
 
             function limparRascunho() {
-                const secretariaId = secretariaSelect.value;
+                const secretariaId = secretariaHiddenInput.value;
                 if (secretariaId) {
                     localStorage.removeItem(`rascunho_avaliacao_${secretariaId}`);
+                    localStorage.removeItem(`links_automaticos_${secretariaId}`);
                     console.log(`Rascunho para secretaria ${secretariaId} limpo.`);
+                    preventUnload = false;
                 }
             }
+
+            window.addEventListener('beforeunload', (event) => {
+                if (preventUnload) {
+                    event.preventDefault();
+                    event.returnValue = 'Você tem alterações não salvas. Tem certeza que deseja sair?';
+                    return 'Você tem alterações não salvas. Tem certeza que deseja sair?';
+                }
+            });
 
             async function renderRequisitos(linksEncontrados) {
                 const urlPrincipal = document.getElementById('url-manual').value.trim();
@@ -328,25 +754,28 @@
                     requisitosContainer.innerHTML = '<p>Carregando requisitos...</p>';
                     step2.classList.remove('active');
                     step3.classList.add('active');
+
+                    let linksParaRenderizar = [...linksEncontrados];
+                    const req6JaEncontrado = linksEncontrados.some(l => l.alvo === 'KEYWORD:site-exists');
+                    
+                    if (!req6JaEncontrado && urlPrincipal) {
+                        linksParaRenderizar.push({
+                            alvo: 'KEYWORD:site-exists',
+                            origem: urlPrincipal
+                        });
+                    }
+                    
+                    console.log(`🔢 Total de links para renderizar: ${linksParaRenderizar.length} (incluindo site-exists: ${!req6JaEncontrado ? 'adicionado' : 'já existe'})`);
                     
                     if (todosOsRequisitos.length === 0) {
-                        const response = await fetch('http://localhost:3000/requisitos');
+                        const response = await fetch('/requisitos');
                         if (!response.ok) throw new Error('Falha ao buscar os requisitos.');
                         todosOsRequisitos = await response.json();
                     }
 
-                    const req6JaEncontrado = linksEncontrados.some(l => l.alvo === 'KEYWORD:site-exists');
-                    if (!req6JaEncontrado && urlPrincipal) {
-                        linksEncontrados.push({
-                            alvo: 'KEYWORD:site-exists',
-                            origem: urlPrincipal
-                        });
-                        preValidacaoResultado.innerHTML = `<h4>Verificação Automática Concluída!</h4><p>Foram encontrados <strong>${linksEncontrados.length}</strong> links obrigatórios.</p>`;
-                    }
-
                     requisitosContainer.innerHTML = '';
                     todosOsRequisitos.forEach(req => {
-                        const resultadoEncontrado = linksEncontrados.find(res => res.alvo === req.linkFixo);
+                        const resultadoEncontrado = linksParaRenderizar.find(res => res.alvo === req.linkFixo);
                         const isAutoValidated = !!resultadoEncontrado;
                         
                         const requisitoCard = document.createElement('div');
@@ -354,76 +783,50 @@
                         requisitoCard.dataset.requisitoId = req.id;
                         
                         let actionsHTML = '';
-                        const splitRequisitosCodigos = ["REQUISITO 37", "REQUISITO 38", "REQUISITO 42"];
 
-                        if (splitRequisitosCodigos.some(codigo => req.texto.startsWith(codigo))) {
-                            requisitoCard.dataset.foiAutomatico = 'false';
-                            requisitoCard.dataset.isSplit = 'true';
-                            
-                            actionsHTML = `
-                                <div class="sub-requisito-container">
-                                    <div class="sub-requisito">
-                                        <label class="sub-requisito-label">O órgão possui seção do mapa solicitado?</label>
-                                        <div class="requisito-actions">
-                                            <button class="btn-toggle" data-action="sim-disponibilidade">Sim</button>
-                                            <button class="btn-toggle active" data-action="nao-disponibilidade">Não</button>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="sub-requisito hidden" id="serie-historica-${req.id}">
-                                        <label class="sub-requisito-label">A série histórica está completa (ano atual e 3 anteriores)?</label>
-                                        <div class="requisito-actions">
-                                            <button class="btn-toggle" data-action="sim-serie">Sim</button>
-                                            <button class="btn-toggle active" data-action="nao-serie">Não</button>
-                                        </div>
-                                    </div>
-
-                                    <div class="link-comprovante-wrapper" id="evidence-wrapper-${req.id}">
-                                        <div class="evidence-container">
-                                            <ul class="evidence-list"></ul>
-                                            <div class="add-evidence-buttons">
-                                                <button class="btn-add-evidence add-link-btn">+ Adicionar Link</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        } else if (isAutoValidated) {
+                        if (isAutoValidated) {
                             requisitoCard.dataset.foiAutomatico = 'true';
-                            const linkCorreto = resultadoEncontrado.origem;
+                            
+                            const linkAlvo = resultadoEncontrado.alvo;
+                            const linkOrigem = resultadoEncontrado.origem;
+                            const linkExibido = linkAlvo === 'KEYWORD:site-exists' ? linkOrigem : linkAlvo;
+
                             actionsHTML = `
                                 <div class="requisito-actions">
-                                    <button class="btn-toggle active" data-atende="true">Sim</button>
-                                    <button class="btn-toggle" data-atende="false">Não</button>
+                                     <button class="btn-toggle active" data-action="sim-${req.id}" data-atende="true">Sim</button>
+                                    <button class="btn-toggle" data-action="nao-${req.id}" data-atende="false">Não</button>
                                 </div>
                                 <div class="link-comprovante-wrapper show">
-                                    <input type="url" class="link-input" value="${linkCorreto}" readonly style="background-color: #e9e9e9;">
+                                    <input type="url" class="link-input" value="${linkExibido}" readonly style="background-color: #e9e9e9;">
                                 </div>
                                 <div style="font-size: 0.9em; margin-top: 10px;">
                                     <span style="color: var(--verde-sucesso); font-weight: bold;">✔️ Verificado Automaticamente</span><br>
-                                    <span class="link-meta"><strong>Encontrado em:</strong> <a href="${linkCorreto}" target="_blank">${linkCorreto}</a></span>
+                                    <span class="link-meta"><strong>Encontrado em:</strong> <a href="${linkOrigem}" target="_blank">${linkOrigem}</a></span>
                                 </div>`;
                         } else {
                             requisitoCard.dataset.foiAutomatico = 'false';
                             actionsHTML = `
                                 <div class="requisito-actions">
                                     <span>Atende ao requisito?</span>
-                                    <button class="btn-toggle" data-action="sim" data-atende="true">Sim</button>
-                                    <button class="btn-toggle" data-action="nao" data-atende="false">Não</button>
+                                     <button class="btn-toggle" data-action="sim-${req.id}" data-atende="true">Sim</button>
+                                    <button class="btn-toggle active" data-action="nao-${req.id}" data-atende="false">Não</button>
                                 </div>
-                                <div class="link-comprovante-wrapper">
+                                <div class="link-comprovante-wrapper" id="evidence-wrapper-${req.id}"> 
                                     <div class="evidence-container">
-                                        <ul class="evidence-list"></ul>
+                                        <ul class="evidence-list" id="evidence-list-${req.id}"></ul> 
                                         <div class="add-evidence-buttons">
-                                            <button class="btn-add-evidence add-link-btn">+ Adicionar Link</button>
-                                            <button class="btn-add-evidence add-image-btn" disabled title="Funcionalidade em desenvolvimento">Adicionar Imagem (Em Breve)</button>
+                                            <button class="btn-add-evidence add-link-btn" data-requisito-id="${req.id}">+ Adicionar Link</button>
+                                             ${req.linkFixo && !req.linkFixo.startsWith('KEYWORD:') ?
+                                                `<button class="btn-add-evidence add-fixo-btn" data-requisito-id="${req.id}" data-link-fixo="${req.linkFixo}">+ Adicionar Link Fixo (${req.linkFixo.substring(0,20)}...)</button>` : ''
+                                             }
                                         </div>
                                     </div>
                                 </div>
                                 <div class="comment-container">
-                                    <textarea class="secretaria-comment" placeholder="Adicionar comentário ou justificativa (opcional)..."></textarea>
+                                    <textarea class="secretaria-comment" id="comment-${req.id}" placeholder="Adicionar comentário ou justificativa (opcional)..."></textarea> 
                                 </div>`;
                         }
+
                         requisitoCard.innerHTML = `
                             <div class="requisito-header"><span>${req.texto} (Pontuação: ${req.pontuacao})</span></div>
                             <div class="requisito-body">
@@ -433,6 +836,12 @@
                         requisitosContainer.appendChild(requisitoCard);
                     });
                     enviarAvaliacaoBtn.disabled = false;
+
+                    if (rascunhoPendente) {
+                        aplicarRascunhoAosRequisitos(rascunhoPendente);
+                        rascunhoPendente = null;
+                    }
+
                 } catch (error) {
                     console.error(error);
                     requisitosContainer.innerHTML = '<p style="color: red;">Erro ao carregar os requisitos.</p>';
@@ -451,7 +860,7 @@
                 step1.classList.remove('active');
                 step2.classList.add('active');
                 try {
-                    const response = await fetch('http://localhost:3000/pre-validate', {
+                    const response = await fetch('/pre-validate', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ urlSecretaria: urlParaVerificar }),
@@ -459,9 +868,16 @@
                     if (!response.ok) throw new Error('O servidor retornou um erro durante a pré-validação.');
                     const resultado = await response.json();
                     linksEncontradosAutomaticamente = resultado;
-                    preValidacaoResultado.innerHTML = `<h4>Verificação Automática Concluída!</h4><p>Foram encontrados <strong>${linksEncontradosAutomaticamente.length}</strong> links obrigatórios.</p>`;
+                    
+                    salvarLinksAutomaticos(linksEncontradosAutomaticamente);
+
+                    const urlPrincipal = document.getElementById('url-manual').value.trim();
+                    const req6Considerado = linksEncontradosAutomaticamente.some(l => l.alvo === 'KEYWORD:site-exists') || !!urlPrincipal;
+                    const contagemExibida = linksEncontradosAutomaticamente.length + (req6Considerado && !linksEncontradosAutomaticamente.some(l => l.alvo === 'KEYWORD:site-exists') ? 1 : 0);
+
+                    preValidacaoResultado.innerHTML = `<h4>Verificação Automática Concluída!</h4><p>Foram encontrados <strong>${contagemExibida}</strong> links obrigatórios (incluindo verificação de existência do site).</p>`;
+                    
                     await renderRequisitos(linksEncontradosAutomaticamente);
-                    carregarRascunho();
                     preValidarBtn.textContent = 'Pré-Validação Concluída';
                     preValidarBtn.style.backgroundColor = 'var(--verde-sucesso)';
                     preValidarBtn.style.cursor = 'default';
@@ -473,175 +889,191 @@
                 } 
             });
 
-            requisitosContainer.addEventListener('click', (event) => {
-                const target = event.target;
-                const action = target.dataset.action;
-                const requisitoBody = target.closest('.requisito-body');
-
-                // Lógica para botões SIM/NÃO de requisitos NORMAIS
-                if (action === 'sim' || action === 'nao') {
-                    const linkWrapper = requisitoBody.querySelector('.link-comprovante-wrapper');
-                    const simBtn = requisitoBody.querySelector('[data-action="sim"]');
-                    const naoBtn = requisitoBody.querySelector('[data-action="nao"]');
-
-                    if (action === 'sim') {
-                        simBtn.classList.add('active');
-                        naoBtn.classList.remove('active');
-                        if (linkWrapper) linkWrapper.classList.add('show');
-                    } else { // action === 'nao'
-                        naoBtn.classList.add('active');
-                        simBtn.classList.remove('active');
-                        if (linkWrapper) linkWrapper.classList.remove('show');
-                    }
-                }
-
-                // Lógica para botões de requisitos SUBDIVIDIDOS
-                if (action && (action.includes('-disponibilidade'))) {
-                    const requisitoCard = target.closest('.requisito-card');
-                    const serieHistoricaBlock = requisitoCard.querySelector(`#serie-historica-${requisitoCard.dataset.requisitoId}`);
-                    const evidenceWrapper = requisitoCard.querySelector(`#evidence-wrapper-${requisitoCard.dataset.requisitoId}`);
-                    const simBtn = target.parentElement.querySelector('[data-action="sim-disponibilidade"]');
-                    const naoBtn = target.parentElement.querySelector('[data-action="nao-disponibilidade"]');
-
-                    if (action === 'sim-disponibilidade') {
-                        simBtn.classList.add('active');
-                        naoBtn.classList.remove('active');
-                        if (serieHistoricaBlock) serieHistoricaBlock.classList.remove('hidden');
-                        if (evidenceWrapper) evidenceWrapper.classList.add('show');
-                    } else { // nao-disponibilidade
-                        naoBtn.classList.add('active');
-                        simBtn.classList.remove('active');
-                        if (serieHistoricaBlock) serieHistoricaBlock.classList.add('hidden');
-                        if (evidenceWrapper) evidenceWrapper.classList.remove('show');
-                    }
-                }
-                
-                if (action && action.includes('-serie')) {
-                    const simBtn = target.parentElement.querySelector('[data-action="sim-serie"]');
-                    const naoBtn = target.parentElement.querySelector('[data-action="nao-serie"]');
-                    if (action.startsWith('sim')) {
-                        simBtn.classList.add('active');
-                        naoBtn.classList.remove('active');
-                    } else {
-                        naoBtn.classList.add('active');
-                        simBtn.classList.remove('active');
-                    }
-                }
-
-                // Lógica para ADICIONAR e REMOVER EVIDÊNCIAS
-                if (target.matches('.add-link-btn')) {
-                    const url = prompt("Por favor, insira a URL da evidência:");
-                    if (url && url.trim() !== '') {
-                        const evidenceList = target.closest('.evidence-container').querySelector('.evidence-list');
-                        const newItem = document.createElement('li');
-                        newItem.className = 'evidence-item';
-                        newItem.dataset.link = url;
-                        newItem.innerHTML = `<a href="${url}" target="_blank" title="${url}">${url}</a><button class="remove-evidence-btn" title="Remover Evidência">&times;</button>`;
-                        evidenceList.appendChild(newItem);
-                    }
-                }
-                if (target.matches('.remove-evidence-btn')) {
-                    target.closest('.evidence-item').remove();
-                }
-
-                salvarRascunho();
-            });
-
-            nomeResponsavelInput.addEventListener('input', salvarRascunho);
-            emailResponsavelInput.addEventListener('input', salvarRascunho);
-            requisitosContainer.addEventListener('input', (event) => {
-                if (event.target.matches('.secretaria-comment')) {
-                    salvarRascunho();
-                }
-            });
-        
-            enviarAvaliacaoBtn.addEventListener('click', async () => {
-                enviarAvaliacaoBtn.disabled = true;
-                enviarAvaliacaoBtn.textContent = 'Enviando...';
+            async function enviarEmailConfirmacao(emailDestinatario, nomeResponsavel, nomeSecretaria, urlSecretaria) {
                 try {
-                    const secretariaId = secretariaSelect.value;
-                    const urlSecretaria = urlManualInput.value.trim();
-                    const nomeResponsavel = nomeResponsavelInput.value.trim();
-                    const emailResponsavel = emailResponsavelInput.value.trim();
-                    if (!secretariaId || !nomeResponsavel || !emailResponsavel) {
-                        throw new Error('Por favor, preencha todos os campos de identificação no Passo 1.');
-                    }
-                    
-                    let formValido = true;
-                    const respostas = [];
-                    const requisitoCards = document.querySelectorAll('.requisito-card');
-                    
-                    requisitoCards.forEach(card => {
-                        const requisitoId = parseInt(card.dataset.requisitoId);
-                        const foiAutomatico = card.dataset.foiAutomatico === 'true';
-                        const isSplit = card.dataset.isSplit === 'true';
-                        
-                        let respostaData = { 
-                            requisitoId, 
-                            foiAutomatico,
-                            atende: false,
-                            comentarioSecretaria: null,
-                            evidencias: [],
-                            atendeDisponibilidade: null,
-                            atendeSerieHistorica: null
-                        };
-
-                        if (isSplit) {
-                            const simDisponibilidadeBtn = card.querySelector('[data-action="sim-disponibilidade"]');
-                            const simSerieBtn = card.querySelector('[data-action="sim-serie"]');
-
-                            respostaData.atendeDisponibilidade = simDisponibilidadeBtn.classList.contains('active');
-                            respostaData.atendeSerieHistorica = simSerieBtn.classList.contains('active');
-                            respostaData.atende = respostaData.atendeDisponibilidade || respostaData.atendeSerieHistorica;
-
-                            const evidenciasDisponibilidade = [];
-                            card.querySelectorAll('.evidence-list-disponibilidade .evidence-item').forEach(item => {
-                            evidenciasDisponibilidade.push({ tipo: 'link', url: item.dataset.link });
-                            });
-                            
-                            const evidenciasSerie = [];
-                            card.querySelectorAll('.evidence-list-serie .evidence-item').forEach(item => {
-                            evidenciasSerie.push({ tipo: 'link', url: item.dataset.link });
-                            });
-
-                            respostaData.evidencias = [...evidenciasDisponibilidade, ...evidenciasSerie];
-
-                        } else { // Requisitos normais (automáticos ou manuais)
-                            const simBtn = card.querySelector('[data-atende="true"]');
-                            respostaData.atende = simBtn.classList.contains('active');
-                            
-                            if (foiAutomatico) {
-                                respostaData.linkComprovante = card.querySelector('.link-input')?.value.trim();
-                            } else {
-                                respostaData.comentarioSecretaria = card.querySelector('.secretaria-comment')?.value.trim();
-                                card.querySelectorAll('.evidence-item').forEach(item => {
-                                    respostaData.evidencias.push({ tipo: 'link', url: item.dataset.link });
-                                });
-
-                                if (respostaData.atende && respostaData.evidencias.length === 0) {
-                                    alert(`O requisito "${card.querySelector('.requisito-header span').textContent}" foi marcado como 'Sim', mas nenhuma evidência foi adicionada.`);
-                                    formValido = false;
-                                }
-                            }
-                        }
-                        respostas.push(respostaData);
-                    });
-
-                    if (!formValido) { throw new Error('Formulário inválido. Verifique os campos de evidência obrigatórios.'); }
-                    
-                    const payload = {
-                        secretariaId: parseInt(secretariaId),
-                        urlSecretaria, 
-                        nomeResponsavel, 
-                        emailResponsavel, 
-                        respostas
-                    };
-
-                    const response = await fetch('http://localhost:3000/avaliacoes', {
+                    const response = await fetch('/api/enviar-email-confirmacao', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                        },
+                        body: JSON.stringify({
+                            email: emailDestinatario,
+                            nomeResponsavel: nomeResponsavel,
+                            nomeSecretaria: nomeSecretaria,
+                            urlSecretaria: urlSecretaria
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        console.warn('⚠️ Não foi possível enviar email de confirmação:', errorData.error);
+                        return false;
+                    }
+
+                    const result = await response.json();
+                    console.log('✅ Email de confirmação enviado com sucesso:', result);
+                    return true;
+                } catch (error) {
+                    console.warn('⚠️ Erro ao tentar enviar email de confirmação:', error);
+                    return false;
+                }
+            }
+
+            async function notificarControladoria(nomeResponsavel, emailResponsavel, nomeSecretaria, urlSecretaria) {
+                try {
+                    const response = await fetch('/api/notificar-controladoria', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                        },
+                        body: JSON.stringify({
+                            nomeResponsavel: nomeResponsavel,
+                            emailResponsavel: emailResponsavel,
+                            nomeSecretaria: nomeSecretaria,
+                            urlSecretaria: urlSecretaria,
+                            dataEnvio: new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR')
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        console.warn('⚠️ Não foi possível notificar a controladoria:', errorData.error);
+                        return false;
+                    }
+
+                    const result = await response.json();
+                    console.log('✅ Controladoria notificada com sucesso:', result);
+                    return true;
+                } catch (error) {
+                    console.warn('⚠️ Erro ao tentar notificar a controladoria:', error);
+                    return false;
+                }
+            }
+            
+            enviarAvaliacaoBtn.addEventListener('click', async () => {
+                const urlSecretaria = urlManualInput.value.trim();
+                const nomeResponsavel = nomeResponsavelInput.value.trim();
+                const emailResponsavel = emailResponsavelInput.value.trim();
+                const secretariaDisplay = document.getElementById('secretaria-display').textContent;
+
+                if (!secretariaHiddenInput.value || !nomeResponsavel || !emailResponsavel) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Campos Obrigatórios',
+                        text: 'Por favor, preencha todos os campos de identificação no Passo 1.',
+                        confirmButtonColor: 'var(--azul-gov-principal)'
+                    });
+                    return;
+                }
+
+                const confirmacao = await Swal.fire({
+                    title: 'Confirmar Envio da Avaliação',
+                    html: `
+                        <div style="text-align: left;">
+                            <p><strong>Você está prestes a enviar a avaliação com os seguintes dados:</strong></p>
+                            <ul style="text-align: left; margin-left: 20px;">
+                                <li><strong>Órgão:</strong> ${secretariaDisplay}</li>
+                                <li><strong>URL Avaliada:</strong> ${urlSecretaria}</li>
+                                <li><strong>Responsável:</strong> ${nomeResponsavel}</li>
+                                <li><strong>E-mail:</strong> ${emailResponsavel}</li>
+                            </ul>
+                            <p style="margin-top: 15px; color: #dc3545; font-weight: bold;">
+                                ⚠️ Após o envio, não será possível editar a avaliação.
+                            </p>
+                        </div>
+                    `,
+                    icon: 'question',
+                    iconColor: 'var(--azul-gov-principal)',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sim, Enviar Avaliação',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: 'var(--verde-sucesso)',
+                    cancelButtonColor: 'var(--vermelho-destaque)',
+                    reverseButtons: true
+                });
+
+                if (!confirmacao.isConfirmed) {
+                    return; 
+                }
+
+                enviarAvaliacaoBtn.disabled = true;
+                enviarAvaliacaoBtn.textContent = 'Enviando...';
+
+                try {
+                    let formValido = true;
+                    const respostas = [];
+                    const requisitoCards = document.querySelectorAll('.requisito-card');
+                    
+                    for (const card of requisitoCards) {
+                        const requisitoId = parseInt(card.dataset.requisitoId);
+                        const foiAutomatico = card.dataset.foiAutomatico === 'true';
+                        
+                        const simBtn = card.querySelector(`[data-action="sim-${requisitoId}"]`);
+                        const atende = simBtn ? simBtn.classList.contains('active') : false;
+
+                        const comentarioSecretaria = card.querySelector('.secretaria-comment')?.value.trim() || null;
+                        const evidencias = [];
+                        let linkComprovante = null;
+
+                        if (foiAutomatico) {
+                            linkComprovante = card.querySelector('.link-input')?.value.trim() || null;
+                        } else {
+                            card.querySelectorAll('.evidence-item').forEach(item => {
+                                if (item.dataset.link) {
+                                    evidencias.push({ url: item.dataset.link, tipo: 'original' });
+                                }
+                            });
+
+                            if (atende && evidencias.length === 0) {
+                                Swal.fire({ 
+                                    icon: 'warning', 
+                                    title: 'Evidência Faltando', 
+                                    text: `O requisito "${card.querySelector('.requisito-header span')?.textContent || `ID ${requisitoId}`}" foi marcado como 'Sim', mas nenhuma evidência foi adicionada.` 
+                                });
+                                formValido = false;
+                                break; 
+                            }
+                        }
+
+                        respostas.push({
+                            requisitoId,
+                            foiAutomatico,
+                            atende,
+                            comentarioSecretaria,
+                            evidencias, 
+                            linkComprovante
+                        });
+                    } 
+
+                    if (!formValido) {
+                        enviarAvaliacaoBtn.disabled = false;
+                        enviarAvaliacaoBtn.textContent = 'Enviar Avaliação';
+                        return; 
+                    }
+                    
+                    const payload = {
+                        urlSecretaria: urlSecretaria, 
+                        nomeResponsavel: nomeResponsavel, 
+                        emailResponsavel: emailResponsavel, 
+                        respostas: respostas.map(r => ({
+                            requisitoId: r.requisitoId,
+                            atende: r.atende,
+                            linkComprovante: r.linkComprovante,
+                            foiAutomatico: r.foiAutomatico,
+                            comentarioSecretaria: r.comentarioSecretaria,
+                            evidencias: r.evidencias 
+                        }))
+                    };
+
+                    console.log('📤 Enviando payload para /api/avaliacoes (SIMPLIFICADO):', JSON.stringify(payload));
+
+                    const response = await fetch('/api/avaliacoes', {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json', 
+                            'Authorization': `Bearer ${localStorage.getItem('authToken')}` 
                         },
                         body: JSON.stringify(payload)
                     });
@@ -649,23 +1081,50 @@
                     if (!response.ok) {
                         const errData = await response.json();
                         throw new Error(errData.error || 'Ocorreu um erro no servidor.');
-                    }  
-                    
+                    }
+
                     limparRascunho();
+
+                    await notificarControladoria(
+                        nomeResponsavel,
+                        emailResponsavel,
+                        secretariaDisplay,
+                        urlSecretaria
+                    );
                     
+                    const emailEnviado = await enviarEmailConfirmacao(
+                        emailResponsavel,
+                        nomeResponsavel,
+                        secretariaDisplay,
+                        urlSecretaria
+                    );
+
                     document.querySelector('.container').innerHTML = `
                         <div style="text-align: center; padding: 40px;">
                             <h2 style="color: var(--verde-sucesso);">Avaliação Enviada com Sucesso!</h2>
                             <p>Obrigado por preencher o formulário. A equipe da SCGE será notificada.</p>
-                            <a href="/" class="btn">Voltar para o Início</a>
-                        </div>`;
+                            ${emailEnviado ? 
+                                `<p>Um email de confirmação foi enviado para <strong>${emailResponsavel}</strong>.</p>` : 
+                                `<p style="color: #666;"><em>Seu formulário foi enviado com sucesso.</em></p>`
+                            }
+                            <a href="/dashboard" class="btn">Ir para Minha Área</a>
+                        </div>
+                    `;
 
                 } catch (error) {
-                    Swal.fire('Erro!', `Erro ao enviar: ${error.message}`, 'error');
+                    if (error.message && !error.message.includes('Formulário inválido')) { 
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erro no Envio!',
+                            text: `Erro ao enviar: ${error.message}`,
+                            confirmButtonColor: 'var(--vermelho-destaque)'
+                        });
+                    }
                     enviarAvaliacaoBtn.disabled = false;
                     enviarAvaliacaoBtn.textContent = 'Enviar Avaliação';
                 }
             });
+
             populateSecretarias();
         });
     </script>
