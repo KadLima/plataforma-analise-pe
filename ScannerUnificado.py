@@ -59,35 +59,54 @@ def verificar_link_status(url):
         http_code = resposta.status_code
         final_url = resposta.url
 
-        # Se o status HTTP indica erro, retornar imediatamente
         if http_code >= 400:
-            return {"status": f"Erro {http_code}", "httpCode": http_code, "finalUrl": final_url}
+            if http_code == 405:
+                try:
+                    resposta = requests.get(url, headers=REQUESTS_HEADERS, timeout=10, allow_redirects=True, proxies=PROXIES)
+                    http_code = resposta.status_code
+                    final_url = resposta.url
+                except requests.exceptions.RequestException:
+                    return {"status": "Timeout", "httpCode": None, "finalUrl": url}
+                
+                if http_code < 400:
+                    pass
+                else:
+                    return {"status": f"Erro {http_code} (HEAD falhou)", "httpCode": http_code, "finalUrl": final_url}
+            else:
+                return {"status": f"Erro {http_code}", "httpCode": http_code, "finalUrl": final_url}
 
-        # Se status é 200, fazer uma requisição GET para verificar o conteúdo
-        if http_code == 200:
-            # Fazer uma requisição GET rápida para analisar o conteúdo
-            content_response = requests.get(url, headers=REQUESTS_HEADERS, timeout=10,
+        if http_code < 400:
+            content_response = requests.get(final_url, headers=REQUESTS_HEADERS, timeout=10,
                                             allow_redirects=True, proxies=PROXIES, stream=True)
 
-            # Ler apenas os primeiros bytes para verificar conteúdo
             content_sample = ""
             try:
-                for chunk in content_response.iter_content(chunk_size=1024, decode_unicode=True):
+                for chunk in content_response.iter_content(chunk_size=4096, decode_unicode=True):
                     if chunk:
-                        content_sample += str(chunk)[:2000]  # Limitar a 2000 caracteres
-                        break  # Ler apenas o primeiro chunk
-            except:
-                pass
+                        content_sample += str(chunk)[:5000]  
+                        break
+            except Exception as e:
+                try:
+                    content_response.close() 
+                    full_content_response = requests.get(final_url, headers=REQUESTS_HEADERS, timeout=10, allow_redirects=False, proxies=PROXIES)
+                    content_sample = full_content_response.text[:5000] 
+                except:
+                    pass
+            finally:
+                 if 'content_response' in locals() and content_response is not None:
+                     content_response.close()
 
-            # Verificar padrões de páginas de erro no conteúdo
-            if is_error_page(content_sample, url):
+
+            if is_error_page(content_sample, final_url):
                 return {"status": "Erro (página não encontrada)", "httpCode": 404, "finalUrl": final_url}
 
-        status = "Funcionando" if 200 <= http_code < 400 else f"Erro {http_code}"
+        status = "Funcionando"
         return {"status": status, "httpCode": http_code, "finalUrl": final_url}
 
-    except requests.exceptions.RequestException:
+    except requests.exceptions.Timeout:
         return {"status": "Timeout", "httpCode": None, "finalUrl": url}
+    except requests.exceptions.RequestException as e:
+        return {"status": f"Erro de Conexão ({type(e).__name__})", "httpCode": None, "finalUrl": url}
 
 
 def is_error_page(content, url):
@@ -115,7 +134,16 @@ def is_error_page(content, url):
         'página em manutenção',
         'em construção',
         'volte mais tarde',
-        'serviço temporariamente indisponível'
+        'serviço temporariamente indisponível',
+        'página indisponível',
+        'página em manutenção',
+        'em construção',
+        'volte mais tarde',
+        'serviço temporariamente indisponível',
+        'página excluída', 
+        'link inválido', 
+        'url inválida', 
+        'não existe nesta url' 
     ]
 
     for pattern in error_patterns:
@@ -225,7 +253,6 @@ class Scanner:
                     self.wait.until(EC.presence_of_element_located((By.TAG_NAME, "body")))
                     time.sleep(1.45)
 
-                    # Verificar se a página atual não é uma página de erro
                     page_content = self.driver.page_source.lower()
                     current_url = self.driver.current_url
 
@@ -282,7 +309,6 @@ class Scanner:
                         enviar_link_api(link_data, self.session_id)
                         q.put(link_href)
 
-            # 4. Finalização Sincronizada
             self.logger.info("Navegação concluída. Aguardando a equipe de verificação finalizar...")
             q.join()
             for _ in range(num_workers):

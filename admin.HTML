@@ -39,37 +39,45 @@
         }
         
         .main-nav { 
+            max-width: 1200px; 
+            margin: 0 auto; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
             height: 70px; 
-            max-width: 1200px; 
-            margin: 0 auto; 
         }
-        
+
         .logo a { 
             text-decoration: none; 
             display: flex; 
             align-items: center; 
             gap: 12px; 
+            padding: 10px; 
+            padding-top: 0; 
+            padding-bottom: 0;
+            border-bottom: 2px solid transparent; 
+            transition: all 0.3s ease; 
+            position: relative;
         }
-        
-        .logo img { 
+
+        .logo a::after {
+            content: '';
+            position: absolute;
+            bottom: 29px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: transparent;
+            transition: background-color 0.3s ease;
+        }
+
+        .logo a:hover::after {
+            background-color: var(--amarelo-gov-detalhe);
+        }
+
+        .logo a > img { 
             height: 45px; 
-            filter: drop-shadow(1px 1px 1.2px rgba(0, 0, 0, 0.5)); 
-        }
-        
-        .logo .site-title { 
-            color: var(--azul-gov-principal); 
-            font-size: 1.2em; 
-            font-weight: bold; 
-            line-height: 1.2; 
-        }
-        
-        .logo .site-subtitle { 
-            color: var(--cinza-texto); 
-            font-size: 0.8em; 
-            display: block; 
+            filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0));
         }
         
         .main-nav ul { 
@@ -79,21 +87,25 @@
             display: flex; 
             gap: 20px; 
         }
-        
-        .main-nav a { 
+
+        .main-nav ul a { 
             text-decoration: none; 
             color: var(--cinza-texto); 
             font-weight: 600; 
             padding: 10px; 
             border-bottom: 2px solid transparent; 
             transition: all 0.3s ease; 
+            display: flex; 
+            align-items: center; 
+            height: 100%; 
+            box-sizing: border-box; 
         }
         
-        .main-nav a:hover, .main-nav a.active { 
+        .main-nav ul a:hover, .main-nav ul a.active { 
             color: var(--azul-gov-principal); 
             border-bottom-color: var(--amarelo-gov-detalhe); 
         }
-        
+
         .main-footer { 
             text-align: center; 
             padding: 20px; 
@@ -110,23 +122,40 @@
             justify-content: center; 
             align-items: center; 
             height: 100%; 
+            position: relative; 
         }
-        
-        .main-footer img { 
-            height: 110px; 
-            width: auto; 
+
+        .main-footer .footer-logo-link { 
+            display: block; 
             position: absolute; 
             right: 5%; 
             top: 50%; 
             transform: translateY(-50%); 
+            z-index: 10; 
+            height: 110px; 
+            width: auto; 
+        }
+
+        .main-footer .footer-logo-link img { 
+            height: 100%; 
+            width: auto; 
+            display: block; 
+            max-height: 110px; 
+            object-fit: contain; 
         }
         
         .main-footer p a { 
             color: var(--cinza-texto); 
             font-weight: 600; 
             text-decoration: none; 
+            transition: color 0.2s;
         }
-        
+
+        .main-footer p a:hover {
+            text-decoration: underline;
+            color: var(--azul-gov-principal);
+        }
+   
         main { 
             padding: 40px 5%; 
         }
@@ -177,7 +206,6 @@
             gap: 20px;
         }
 
-        /* ESTILOS DOS CARDS - TODOS COM BARRAS LATERAIS COLORIDAS */
         .avaliacao-card {
             background-color: var(--branco);
             border-radius: 8px;
@@ -185,7 +213,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-            border-left: 5px solid var(--azul-gov-principal); /* Cor padrão */
+            border-left: 5px solid var(--azul-gov-principal); 
         }
 
         .avaliacao-card:hover {
@@ -216,19 +244,15 @@
         .avaliacao-card.status-PENDENTE_SECRETARIA {
             border-left: 5px solid #6c757d; 
         }
-
         .avaliacao-card.status-EM_ANALISE_SCGE {
             border-left: 5px solid var(--azul-gov-principal); 
         }
-
         .avaliacao-card.status-AGUARDANDO_RECURSO {
             border-left: 5px solid #ffb007; 
         }
-
         .avaliacao-card.status-EM_ANALISE_DE_RECURSO {
             border-left: 5px solid var(--amarelo-gov-detalhe); 
         }
-
         .avaliacao-card.status-FINALIZADA {
             border-left: 5px solid var(--verde-sucesso); 
         }
@@ -243,27 +267,22 @@
             letter-spacing: 0.5px;
         }
 
-        /* CORES DOS BADGES PARA CADA STATUS */
         .avaliacao-status-badge.status-PENDENTE_SECRETARIA { 
             background-color: #6c757d; 
             color: var(--branco);
         }
-
         .avaliacao-status-badge.status-EM_ANALISE_SCGE { 
             background-color: #007bff; 
             color: var(--branco);
         }
-
         .avaliacao-status-badge.status-AGUARDANDO_RECURSO { 
             background-color: #ffc107; 
             color: #333;
         }
-
         .avaliacao-status-badge.status-EM_ANALISE_DE_RECURSO { 
             background-color: var(--amarelo-gov-detalhe); 
             color: #333;
         }
-
         .avaliacao-status-badge.status-FINALIZADA { 
             background-color: var(--verde-sucesso); 
             color: var(--branco);
@@ -272,18 +291,15 @@
         .disabled-link {
             cursor: not-allowed; 
         }
-
         #logout-btn {
             cursor: pointer;
         }
 
-        /* Estados de loading e erro */
         .loading-state {
             text-align: center;
             padding: 40px;
             color: #666;
         }
-
         .error-state {
             text-align: center;
             padding: 40px;
@@ -292,7 +308,6 @@
             border-radius: 8px;
             margin: 20px 0;
         }
-
         .empty-state {
             text-align: center;
             padding: 40px;
@@ -301,6 +316,32 @@
             border-radius: 8px;
             border: 2px dashed #ddd;
         }
+        
+        .SIMPE-marca-text-group {
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            gap: 0;
+        }
+        .site-subtitle-modified { 
+            color: var(--cinza-texto); 
+            font-size: 0.7em;
+            display: block;
+            text-align: center;
+            margin: 0; 
+            line-height: 1;
+            padding: 0;
+        }
+        .SIMPE-marca-small {
+            height: 60px; 
+            width: auto;
+            object-fit: contain; 
+            display: block; 
+            margin: 0; 
+            margin-bottom: 5px;
+        }
+
     </style>
 </head>
 <body>
@@ -310,15 +351,13 @@
             <div class="logo">
                 <a href="/">
                     <img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco">
-                    <div>
-                        <span class="site-title">Análise de Sites</span>
-                        <span class="site-subtitle">Portal da Transparência</span>
+                    <div class="SIMPE-marca-text-group">                     
+                        <img src="/assets/simpe.png" alt="Logo SIMPE" class="SIMPE-marca-small">                     
                     </div>
                 </a>
             </div>
             <ul id="nav-links">
-                <!-- Menu será carregado pelo global.js -->
-            </ul>
+                </ul>
         </nav>
     </header>
 
@@ -347,8 +386,10 @@
 
     <footer class="main-footer">
         <div class="footer-content">
-            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados.</p>
-            <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a id="admin-footer-link" href="/admin" style="display: none;">Área Administrativa</a></p>
+            <a href="https://www.scge.pe.gov.br/" target="_blank" rel="noopener noreferrer" class="footer-logo-link">
+                <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+            </a>
         </div>
     </footer>
 
@@ -402,7 +443,14 @@
                         const statusText = statusMap[avaliacao.status] || avaliacao.status;
                         
                         const isRecurso = avaliacao.status === 'EM_ANALISE_DE_RECURSO';
-                        const detailPage = isRecurso ? 'analise-final' : 'avaliacao';
+                        const isFinalizada = avaliacao.status === 'FINALIZADA';
+                        
+                        let detailPage = 'avaliacao'; 
+                        if (isRecurso) {
+                            detailPage = 'analise-final';
+                        } else if (isFinalizada) {
+                            detailPage = 'nota-final'; 
+                        }
 
                         const statusClass = `status-${avaliacao.status}`;
 

@@ -19,13 +19,55 @@
         body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--cinza-fundo); color: var(--cinza-texto); line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
         .main-header { background-color: var(--branco); box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 0 5%; position: sticky; top: 0; z-index: 1000; }
         .main-nav { display: flex; justify-content: space-between; align-items: center; height: 70px; max-width: 1200px; margin: 0 auto; }
-        .logo a { text-decoration: none; display: flex; align-items: center; gap: 12px; }
-        .logo img { height: 45px; filter: drop-shadow(1px 1px 1.2px rgba(0, 0, 0, 0.5)); }
-        .logo .site-title { color: var(--azul-gov-principal); font-size: 1.2em; font-weight: bold; line-height: 1.2; }
-        .logo .site-subtitle { color: var(--cinza-texto); font-size: 0.8em; display: block; }
+        .logo a { 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            padding: 10px;
+            padding-top: 0;
+            padding-bottom: 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .logo a > img { height: 45px; filter: drop-shadow(1px 1px 1.2px rgba(0, 0, 0, 0.5)); }
+
+        .logo a::after {
+            content: '';
+            position: absolute;
+            bottom: 29px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: transparent;
+            transition: background-color 0.3s ease;
+        }
+
+        .logo a:hover::after {
+            background-color: var(--amarelo-gov-detalhe);
+        }
+
+        .SIMPE-marca-text-group {
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            gap: 0;
+        }
+
+        .SIMPE-marca-small {
+            height: 60px; 
+            width: auto;
+            object-fit: contain; 
+            display: block; 
+            margin: 0; 
+            margin-bottom: 5px;
+        }
+
         .main-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; }
-        .main-nav a { text-decoration: none; color: var(--cinza-texto); font-weight: 600; padding: 10px; border-bottom: 2px solid transparent; transition: all 0.3s ease; }
-        .main-nav a:hover, .main-nav a.active { color: var(--azul-gov-principal); border-bottom-color: var(--amarelo-gov-detalhe); }
+        .main-nav ul a { text-decoration: none; color: var(--cinza-texto); font-weight: 600; padding: 10px; border-bottom: 2px solid transparent; transition: all 0.3s ease; }
+        .main-nav ul a:hover, .main-nav ul a.active { color: var(--azul-gov-principal); border-bottom-color: var(--amarelo-gov-detalhe); }
         .main-footer { text-align: center; padding: 20px; margin-top: auto; background-color: var(--branco); font-size: 0.9em; position: relative; height: 60px; box-sizing: content-box; }
         .main-footer .footer-content { display: flex; justify-content: center; align-items: center; height: 100%; }
         .main-footer img { height: 110px; width: auto; position: absolute; right: 5%; top: 50%; transform: translateY(-50%); }
@@ -136,7 +178,6 @@
         }
         .btn:hover { background-color: #001a4d; }
         
-        /* NOVO ESTILO PARA BOTÕES DE VALIDAÇÃO - PADRÃO FORMULARIO.HTML */
         .btn-validation { 
             padding: 8px 16px; 
             border: 1px solid var(--cinza-borda); 
@@ -184,7 +225,6 @@
             cursor: pointer;
         }
         
-        /* Tooltip styles */
         .tooltip {
             position: relative;
             display: inline-block;
@@ -215,7 +255,6 @@
             opacity: 1;
         }
 
-        /* NOVO: Estilo para exibição correta dos requisitos divididos */
         .split-requisito-display {
             display: flex;
             flex-direction: column;
@@ -236,7 +275,14 @@
 <body>
     <header class="main-header">
         <nav class="main-nav">
-            <div class="logo"><a href="/"><img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco"><div><span class="site-title">Análise de Sites</span><span class="site-subtitle">Portal da Transparência</span></div></a></div>
+            <div class="logo">
+                <a href="/">
+                    <img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco">
+                    <div class="SIMPE-marca-text-group">                     
+                        <img src="/assets/simpe.png" alt="Logo SIMPE" class="SIMPE-marca-small">                     
+                    </div>
+                </a>
+            </div>
             <ul id="nav-links"></ul>
         </nav>
     </header>
@@ -259,8 +305,10 @@
     </main>
     <footer class="main-footer">
         <div class="footer-content">
-            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a href="/admin" id="admin-footer-link" style="display: none;">Área Administrativa</a></p>
-            <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a id="admin-footer-link" href="/admin" style="display: none;">Área Administrativa</a></p>
+            <a href="https://www.scge.pe.gov.br/" target="_blank" rel="noopener noreferrer" class="footer-logo-link">
+                <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+            </a>
         </div>
     </footer>
 

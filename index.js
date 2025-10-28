@@ -71,7 +71,6 @@ function authenticateToken(req, res, next) {
     });
 }
 
-// --- FUNÇÃO MIDDLEWARE PARA AUTENTICAÇÃO DE ADMIN (VERSÃO DE DIAGNÓSTICO) ---
 function authenticateAdmin(req, res, next) {
     console.log("\n--- Verificando permissão de Admin ---");
     console.log("Conteúdo do crachá (req.user):", req.user); 
@@ -88,21 +87,20 @@ function authenticateAdmin(req, res, next) {
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/assets', express.static('public/assets'));
 
 function generateCaptcha() {
   const text = crypto.randomBytes(3).toString('hex').toUpperCase();
   const id = crypto.randomBytes(8).toString('hex');
   captchaStore.set(id, text);
-  // Limpa após 10 minutos
   setTimeout(() => captchaStore.delete(id), 10 * 60 * 1000);
   return { id, text };
 }
 
-// Validação de CAPTCHA
 function validateCaptcha(id, answer) {
   const stored = captchaStore.get(id);
   if (!stored) return false;
-  captchaStore.delete(id); // Usa uma vez só
+  captchaStore.delete(id); 
   return stored === answer.toUpperCase();
 }
 
@@ -132,18 +130,15 @@ function generateStrongPassword() {
   const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
   let password = "";
   
-  // Garante pelo menos um de cada tipo
   password += "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[crypto.randomInt(26)];
   password += "abcdefghijklmnopqrstuvwxyz"[crypto.randomInt(26)];
   password += "0123456789"[crypto.randomInt(10)];
   password += "!@#$%^&*"[crypto.randomInt(8)];
   
-  // Preenche o resto
   for (let i = password.length; i < length; i++) {
     password += charset[crypto.randomInt(charset.length)];
   }
   
-  // Embaralha a senha
   return password.split('').sort(() => 0.5 - Math.random()).join('');
 }
 
@@ -190,7 +185,6 @@ app.post('/login', loginLimiter, async (req, res) => {
     return res.status(400).json({ error: 'E-mail, senha e CAPTCHA são obrigatórios.' });
   }
 
-  // Validação do CAPTCHA
   if (!validateCaptcha(captchaId, captchaAnswer)) {
     return res.status(400).json({ error: 'CAPTCHA inválido.' });
   }
@@ -221,8 +215,6 @@ app.post('/login', loginLimiter, async (req, res) => {
   }
 });
 
-
-// --- ROTAS DE RECUPERAÇÃO DE SENHA ---
 app.post('/api/recuperar-senha', async (req, res) => {
   try {
     const { email } = req.body;
@@ -239,11 +231,9 @@ app.post('/api/recuperar-senha', async (req, res) => {
       return res.status(404).json({ error: 'Email não encontrado no sistema' });
     }
 
-    // Gerar código de 6 dígitos
     const codigo = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiraEm = new Date(Date.now() + 30 * 60 * 1000); // 30 minutos
+    const expiraEm = new Date(Date.now() + 30 * 60 * 1000); 
 
-    // Salvar código no banco (você precisa criar a model CodigoVerificacao)
     await prisma.codigoVerificacao.create({
       data: {
         email,
@@ -253,44 +243,135 @@ app.post('/api/recuperar-senha', async (req, res) => {
       },
     });
 
-    // Enviar email com código (implementação básica)
     try {
       await transporter.sendMail({
         from: process.env.SMTP_USER,
         to: email,
-        subject: 'Código de Recuperação de Senha - Análise PE',
+        subject: 'Recuperação de Senha - Sistema de Avaliação de Transparência',
         html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: white;">
-            <!-- CABEÇALHO COM IMAGEM -->
-            <div style="background: #002776; padding: 25px; text-align: center;">
-              <img src="http://localhost:3000/assets/simpe.png" 
-                  alt="Governo de Pernambuco - Controladoria Geral do Estado" 
-                  style="max-width: 300px; height: auto;">
-            </div>
-            
-            <!-- CONTEÚDO -->
-            <div style="padding: 30px;">
-              <h3 style="color: #002776; margin-top: 0;">Recuperação de Senha</h3>
-              <p>Seu código de verificação é:</p>
-              <div style="background: #f8f9fa; padding: 20px; text-align: center; font-size: 28px; font-weight: bold; letter-spacing: 8px; margin: 25px 0; border: 2px dashed #dee2e6;">
-                ${codigo}
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <meta charset="utf-8">
+              <style>
+                  body { 
+                      font-family: Arial, sans-serif; 
+                      line-height: 1.6; 
+                      color: #333; 
+                      max-width: 600px; 
+                      margin: 0 auto;
+                      background: #f5f5f5;
+                  }
+                  .email-container {
+                      background: white;
+                      border-radius: 8px;
+                      overflow: hidden;
+                      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                  }
+                  .header-img {
+                      width: 100%;
+                      max-width: 600px;
+                      height: auto;
+                      display: block;
+                      object-fit: contain;
+                  }
+                  .content { 
+                      padding: 30px; 
+                  }
+                  .footer { 
+                      background: #e9ecef; 
+                      padding: 20px; 
+                      text-align: center; 
+                      font-size: 12px; 
+                      color: #666;
+                  }
+                  .codigo-verificacao {
+                      background: #f8f9fa; 
+                      padding: 25px; 
+                      text-align: center; 
+                      font-size: 32px; 
+                      font-weight: bold; 
+                      letter-spacing: 8px; 
+                      margin: 25px 0; 
+                      border: 2px dashed #dee2e6;
+                      border-radius: 8px;
+                      font-family: 'Courier New', monospace;
+                  }
+                  .alerta {
+                      background: #fff3cd;
+                      border: 1px solid #ffeaa7;
+                      border-radius: 6px;
+                      padding: 15px;
+                      margin: 15px 0;
+                      color: #856404;
+                  }
+                  .footer-images {
+                      display: flex;
+                      justify-content: center;
+                      gap: 20px;
+                      margin: 15px 0;
+                      align-items: center;
+                  }
+                  .footer-img {
+                      max-width: 150px;
+                      height: 60px;
+                      object-fit: contain;
+                  }
+                  .footer-img[alt="SIMPE"] {
+                      max-width: 200px;
+                      height: 80px;
+                  }
+                  h3 { color: #002776; margin-top: 0; }
+              </style>
+          </head>
+          <body>
+              <div class="email-container">
+                  <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/logo-footer.png" 
+                       alt="Controladoria Geral do Estado" 
+                       class="header-img">
+                  
+                  <div class="content">
+                      <h3>Recuperação de Senha</h3>
+                      
+                      <p>Olá,</p>
+                      <p>Recebemos uma solicitação para redefinir a senha da sua conta no <strong>Sistema de Avaliação de Transparência</strong>.</p>
+                      
+                      <p>Seu código de verificação é:</p>
+                      
+                      <div class="codigo-verificacao">
+                          ${codigo}
+                      </div>
+                      
+                      <div class="alerta">
+                          <p><strong>⚠️ Este código expira em 30 minutos.</strong></p>
+                          <p>Não compartilhe este código com ninguém.</p>
+                      </div>
+                      
+                      <p>Se você não solicitou a recuperação de senha, por favor ignore este email.</p>
+                      
+                      <p style="margin-top: 25px;">
+                          Atenciosamente,<br>
+                          <strong>Equipe da Coordenação de Transparência Ativa (CTA)</strong>
+                      </p>
+                  </div>
+                  
+                  <div class="footer">
+                      <p><em>Este é um email automático do Sistema de Avaliação de Transparência.</em></p>
+                      <p>Secretaria da Controladoria-Geral do Estado de Pernambuco<br>
+                      R. Santo Elias, 535 - Espinheiro, Recife-PE, 52020-090</p>
+                      
+                      <div class="footer-images">
+                          <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/SIMPE-marca.png" 
+                               alt="SIMPE" 
+                               class="footer-img">
+                          <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/logo-header.png" 
+                               alt="Governo de Pernambuco" 
+                               class="footer-img">
+                      </div>
+                  </div>
               </div>
-              <p>Este código expira em <strong style="color: #dc3545;">30 minutos</strong>.</p>
-              <p>Se você não solicitou este código, por favor ignore este email.</p>
-            </div>
-            
-            <!-- RODAPÉ COM IMAGEM -->
-            <div style="background: #f8f9fa; padding: 20px; text-align: center; border-top: 3px solid #FFD700;">
-              <img src="http://localhost:3000/assets/logo-footer.png" 
-                  alt="Controladoria-Geral do Estado de Pernambuco" 
-                  style="max-width: 200px; height: auto; margin-bottom: 15px;">
-              <div style="font-size: 12px; color: #666; line-height: 1.4;">
-                <p>Este é um email automático. Por favor, não responda diretamente a esta mensagem.</p>
-                <p>Secretaria da Controladoria-Geral do Estado de Pernambuco<br>
-                R. Santo Elias, 535 - Espinheiro, Recife-PE, 52020-090</p>
-              </div>
-            </div>
-          </div>
+          </body>
+          </html>
         `,
       });
     } catch (emailError) {
@@ -306,7 +387,6 @@ app.post('/api/recuperar-senha', async (req, res) => {
   }
 });
 
-// 2. Verificar código
 app.post('/api/verificar-codigo', async (req, res) => {
   try {
     const { email, codigo, tipo } = req.body;
@@ -315,7 +395,6 @@ app.post('/api/verificar-codigo', async (req, res) => {
       return res.status(400).json({ error: 'Dados incompletos' });
     }
 
-    // Buscar código no banco
     const codigoVerificacao = await prisma.codigoVerificacao.findFirst({
       where: {
         email,
@@ -330,7 +409,6 @@ app.post('/api/verificar-codigo', async (req, res) => {
       return res.status(400).json({ error: 'Código inválido ou expirado' });
     }
 
-    // Marcar código como usado
     await prisma.codigoVerificacao.update({
       where: { id: codigoVerificacao.id },
       data: { usado: true },
@@ -353,7 +431,6 @@ app.post('/api/redefinir-senha', passwordRecoveryLimiter, async (req, res) => {
       return res.status(400).json({ error: 'Email e nova senha são obrigatórios' });
     }
 
-    // Validação de força da senha
     const passwordCheck = isPasswordStrong(novaSenha);
     if (!passwordCheck.isValid) {
       return res.status(400).json({ 
@@ -408,26 +485,146 @@ app.post('/api/primeiro-acesso', async (req, res) => {
     await transporter.sendMail({
       from: process.env.SMTP_USER,
       to: email,
-      subject: 'Código de Primeiro Acesso - Análise PE',
+      subject: 'Primeiro Acesso - Sistema de Avaliação de Transparência',
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <div style="background: #002776; color: white; padding: 20px; text-align: center;">
-            <h2>Governo de Pernambuco</h2>
-            <h3>Controladoria Geral do Estado</h3>
-          </div>
-          <div style="padding: 20px;">
-            <h3>Primeiro Acesso</h3>
-            <p>Seu código de verificação é:</p>
-            <div style="background: #f4f4f4; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 5px; margin: 20px 0;">
-              ${codigo}
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <style>
+                body { 
+                    font-family: Arial, sans-serif; 
+                    line-height: 1.6; 
+                    color: #333; 
+                    max-width: 600px; 
+                    margin: 0 auto;
+                    background: #f5f5f5;
+                }
+                .email-container {
+                    background: white;
+                    border-radius: 8px;
+                    overflow: hidden;
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                }
+                .header-img {
+                    width: 100%;
+                    max-width: 600px;
+                    height: auto;
+                    display: block;
+                    object-fit: contain;
+                }
+                .content { 
+                    padding: 30px; 
+                }
+                .footer { 
+                    background: #e9ecef; 
+                    padding: 20px; 
+                    text-align: center; 
+                    font-size: 12px; 
+                    color: #666;
+                }
+                .codigo-verificacao {
+                    background: #f8f9fa; 
+                    padding: 25px; 
+                    text-align: center; 
+                    font-size: 32px; 
+                    font-weight: bold; 
+                    letter-spacing: 8px; 
+                    margin: 25px 0; 
+                    border: 2px dashed #dee2e6;
+                    border-radius: 8px;
+                    font-family: 'Courier New', monospace;
+                }
+                .alerta {
+                    background: #e8f5e8;
+                    border: 1px solid #c3e6cb;
+                    border-radius: 6px;
+                    padding: 15px;
+                    margin: 15px 0;
+                    color: #155724;
+                }
+                .footer-images {
+                    display: flex;
+                    justify-content: center;
+                    gap: 20px;
+                    margin: 15px 0;
+                    align-items: center;
+                }
+                .footer-img {
+                    max-width: 150px;
+                    height: 60px;
+                    object-fit: contain;
+                }
+                .footer-img[alt="SIMPE"] {
+                    max-width: 200px;
+                    height: 80px;
+                }
+                h3 { color: #002776; margin-top: 0; }
+                .destaque {
+                    background: #e8f4fd;
+                    border: 1px solid #b3d9ff;
+                    border-radius: 6px;
+                    padding: 15px;
+                    margin: 15px 0;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="email-container">
+                <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/logo-footer.png" 
+                     alt="Controladoria Geral do Estado" 
+                     class="header-img">
+                
+                <div class="content">
+                    <h3>Primeiro Acesso ao Sistema</h3>
+                    
+                    <div class="destaque">
+                        <p><strong>Bem-vindo(a) ao Sistema de Avaliação de Transparência!</strong></p>
+                    </div>
+                    
+                    <p>Olá,</p>
+                    <p>Você foi cadastrado(a) como responsável pela avaliação de transparência do seu órgão/entidade.</p>
+                    <p>Para criar sua senha e acessar o sistema pela primeira vez, utilize o código de verificação abaixo:</p>
+                    
+                    <div class="codigo-verificacao">
+                        ${codigo}
+                    </div>
+                    
+                    <div class="alerta">
+                        <p><strong>✅ Este código expira em 30 minutos.</strong></p>
+                        <p>Após a criação da senha, você poderá acessar o sistema normalmente.</p>
+                    </div>
+                    
+                    <p><strong>Próximos passos:</strong></p>
+                    <ul>
+                        <li>Insira este código na tela de primeiro acesso</li>
+                        <li>Crie uma senha segura para sua conta</li>
+                        <li>Faça login no sistema com seu email e a nova senha</li>
+                    </ul>
+                    
+                    <p style="margin-top: 25px;">
+                        Atenciosamente,<br>
+                        <strong>Equipe da Coordenação de Transparência Ativa (CTA)</strong>
+                    </p>
+                </div>
+                
+                <div class="footer">
+                    <p><em>Este é um email automático do Sistema de Avaliação de Transparência.</em></p>
+                    <p>Secretaria da Controladoria-Geral do Estado de Pernambuco<br>
+                    R. Santo Elias, 535 - Espinheiro, Recife-PE, 52020-090</p>
+                    
+                    <div class="footer-images">
+                        <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/SIMPE-marca.png" 
+                             alt="SIMPE" 
+                             class="footer-img">
+                        <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/logo-header.png" 
+                             alt="Governo de Pernambuco" 
+                             class="footer-img">
+                    </div>
+                </div>
             </div>
-            <p>Este código expira em <strong>30 minutos</strong>.</p>
-            <p>Use este código para criar sua senha de acesso.</p>
-          </div>
-          <div style="background: #f4f4f4; padding: 15px; text-align: center; font-size: 12px; color: #666;">
-            <p>Este é um email automático. Não responda.</p>
-          </div>
-        </div>
+        </body>
+        </html>
       `,
     });
 
@@ -548,7 +745,6 @@ app.get('/api/my-avaliacoes/:id', authenticateToken, async (req, res) => {
         const { id } = req.params;
         const userId = req.user.userId;
 
-        // Encontra o usuário para saber a qual secretaria ele pertence
         const user = await prisma.user.findUnique({
             where: { id: userId },
             select: { secretariaId: true }
@@ -1297,7 +1493,6 @@ app.post('/api/enviar-email-confirmacao', authenticateToken, async (req, res) =>
     }
 });
 
-// ROTA PARA NOTIFICAR A CONTROLADORIA SOBRE NOVA AVALIAÇÃO
 app.post('/api/notificar-controladoria', authenticateToken, async (req, res) => {
     try {
         const { nomeResponsavel, emailResponsavel, nomeSecretaria, urlSecretaria, dataEnvio } = req.body;
@@ -1316,57 +1511,141 @@ app.post('/api/notificar-controladoria', authenticateToken, async (req, res) => 
                 <head>
                     <meta charset="utf-8">
                     <style>
-                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; }
-                        .header { background: #002776; color: white; padding: 20px; text-align: center; }
-                        .content { padding: 25px; background: #f9f9f9; }
-                        .footer { background: #e9ecef; padding: 15px; text-align: center; font-size: 12px; color: #666; }
-                        .info-box { background: white; padding: 15px; border-radius: 6px; margin: 15px 0; border-left: 4px solid #002776; }
-                        .destaque { background: #e8f4fd; padding: 12px; border-radius: 4px; margin: 10px 0; }
+                        body { 
+                            font-family: Arial, sans-serif; 
+                            line-height: 1.6; 
+                            color: #333; 
+                            max-width: 600px; 
+                            margin: 0 auto;
+                            background: #f5f5f5;
+                        }
+                        .email-container {
+                            background: white;
+                            border-radius: 8px;
+                            overflow: hidden;
+                            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                        }
+                        .header-img {
+                            width: 100%;
+                            max-width: 600px;
+                            height: auto;
+                            display: block;
+                            object-fit: contain;
+                        }
+                        .content { 
+                            padding: 25px; 
+                        }
+                        .footer { 
+                            background: #e9ecef; 
+                            padding: 20px; 
+                            text-align: center; 
+                            font-size: 12px; 
+                            color: #666;
+                        }
+                        .info-box { 
+                            background: white; 
+                            border: 1px solid #ddd;
+                            border-left: 4px solid #002776;
+                            border-radius: 6px;
+                            padding: 20px;
+                            margin: 15px 0;
+                        }
+                        .destaque { 
+                            background: #e8f4fd; 
+                            border: 1px solid #b3d9ff;
+                            border-radius: 6px;
+                            padding: 15px;
+                            margin: 15px 0;
+                        }
+                        .btn { 
+                            background: #002776; 
+                            color: white; 
+                            padding: 12px 25px; 
+                            text-decoration: none; 
+                            border-radius: 6px; 
+                            font-weight: bold;
+                            display: inline-block;
+                            margin: 10px 0;
+                        }
+                        .footer-images {
+                            display: flex;
+                            justify-content: center;
+                            gap: 20px;
+                            margin: 15px 0;
+                            align-items: center;
+                        }
+                        .footer-img {
+                            max-width: 150px;
+                            height: 60px;
+                            object-fit: contain;
+                        }
+                        .footer-img[alt="SIMPE"] {
+                            max-width: 200px;
+                            height: 80px;
+                        }
+                        h3 { color: #002776; }
+                        h4 { color: #333; margin-top: 0; }
                     </style>
                 </head>
                 <body>
-                    <div class="header">
-                        <h2>Controladoria Geral do Estado</h2>
-                        <h3>Sistema de Avaliação de Transparência</h3>
-                    </div>
-                    
-                    <div class="content">
-                        <h3>Nova Autoavaliação Recebida</h3>
+                    <div class="email-container">
+                        <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/logo-footer.png" 
+                             alt="Controladoria Geral do Estado" 
+                             class="header-img">
                         
-                        <div class="destaque">
-                            <p><strong>Uma nova autoavaliação foi submetida no sistema.</strong></p>
+                        <div class="content">
+                            <h3>Nova Autoavaliação Recebida</h3>
+                            
+                            <div class="destaque">
+                                <p><strong>Uma nova autoavaliação foi submetida no sistema.</strong></p>
+                            </div>
+                            
+                            <div class="info-box">
+                                <h4>Dados do Responsável</h4>
+                                <p><strong>Nome:</strong> ${nomeResponsavel}</p>
+                                <p><strong>Email:</strong> ${emailResponsavel}</p>
+                                <p><strong>Data do Envio:</strong> ${dataEnvio || new Date().toLocaleDateString('pt-BR')}</p>
+                            </div>
+                            
+                            <div class="info-box">
+                                <h4>Dados da Secretaria</h4>
+                                <p><strong>Órgão/Entidade:</strong> ${nomeSecretaria}</p>
+                                <p><strong>URL Avaliada:</strong> ${urlSecretaria}</p>
+                            </div>
+                            
+                            <p><strong>Ações Necessárias:</strong></p>
+                            <ul>
+                                <li>Esta avaliação está com status <strong>EM ANÁLISE PELA SCGE</strong></li>
+                                <li>Acesse o sistema administrativo para iniciar a análise</li>
+                            </ul>
+                            
+                            <p style="margin-top: 25px; text-align: center;">
+                                <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/admin" 
+                                   class="btn">
+                                   Acessar Área Administrativa
+                                </a>
+                            </p>
+                            
+                            <p style="margin-top: 15px;">
+                                Atenciosamente,<br>
+                                <strong>Equipe da Coordenação de Transparência Ativa (CTA)</strong>
+                            </p>
                         </div>
                         
-                        <div class="info-box">
-                            <h4>Dados do Responsável</h4>
-                            <p><strong>Nome:</strong> ${nomeResponsavel}</p>
-                            <p><strong>Email:</strong> ${emailResponsavel}</p>
-                            <p><strong>Data do Envio:</strong> ${dataEnvio || new Date().toLocaleDateString('pt-BR')}</p>
+                        <div class="footer">
+                            <p><em>Este é um email automático do Sistema de Avaliação de Transparência.</em></p>
+                            <p>Secretaria da Controladoria-Geral do Estado de Pernambuco<br>
+                            R. Santo Elias, 535 - Espinheiro, Recife-PE, 52020-090</p>
+                            
+                            <div class="footer-images">
+                                <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/SIMPE-marca.png" 
+                                     alt="SIMPE" 
+                                     class="footer-img">
+                                <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/logo-header.png" 
+                                     alt="Governo de Pernambuco" 
+                                     class="footer-img">
+                            </div>
                         </div>
-                        
-                        <div class="info-box">
-                            <h4>Dados da Secretaria</h4>
-                            <p><strong>Órgão/Entidade:</strong> ${nomeSecretaria}</p>
-                            <p><strong>URL Avaliada:</strong> ${urlSecretaria}</p>
-                        </div>
-                        
-                        <p><strong>Ações Necessárias:</strong></p>
-                        <ul>
-                            <li>Esta avaliação está com status <strong>EM ANÁLISE PELA SCGE</strong></li>
-                            <li>Acesse o sistema administrativo para iniciar a análise</li>
-                        </ul>
-                        
-                        <p style="margin-top: 20px;">
-                            <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/admin" 
-                               style="background: #002776; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;">
-                                Acessar Área Administrativa
-                            </a>
-                        </p>
-                    </div>
-                    
-                    <div class="footer">
-                        <p><em>Este é um email automático do Sistema de Avaliação de Transparência.</em></p>
-                        <p>Controladoria Geral do Estado de Pernambuco</p>
                     </div>
                 </body>
                 </html>
@@ -1429,76 +1708,163 @@ app.post('/api/avaliacoes/:id/notificar-recurso', authenticateToken, async (req,
         const mailOptions = {
             from: `"Sistema de Avaliação - PE" <${process.env.SMTP_USER}>`,
             to: 'kadsonlima91@gmail.com',
-            subject: `Recurso Enviado - ${avaliacao.secretaria.sigla} - Ciclo 2025`,
+            subject: `Recurso Recebido - ${avaliacao.secretaria.sigla} - Ciclo 2025`,
             html: `
                 <!DOCTYPE html>
                 <html>
                 <head>
                     <meta charset="utf-8">
                     <style>
-                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; }
-                        .header { background: #002776; color: white; padding: 25px; text-align: center; }
-                        .content { padding: 25px; background: #f9f9f9; }
-                        .footer { background: #e9ecef; padding: 20px; text-align: center; font-size: 12px; color: #666; }
-                        .info-box { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #6f42c1; }
-                        .destaque { background: #e8f4fd; padding: 15px; border-radius: 6px; margin: 15px 0; }
-                        .badge { display: inline-block; padding: 8px 16px; border-radius: 20px; color: white; font-weight: bold; }
-                        .recurso { background: #6f42c1; }
+                        body { 
+                            font-family: Arial, sans-serif; 
+                            line-height: 1.6; 
+                            color: #333; 
+                            max-width: 600px; 
+                            margin: 0 auto;
+                            background: #f5f5f5;
+                        }
+                        .email-container {
+                            background: white;
+                            border-radius: 8px;
+                            overflow: hidden;
+                            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                        }
+                        .header-img {
+                            width: 100%;
+                            max-width: 600px;
+                            height: auto;
+                            display: block;
+                            object-fit: contain;
+                        }
+                        .content { 
+                            padding: 25px; 
+                        }
+                        .footer { 
+                            background: #e9ecef; 
+                            padding: 20px; 
+                            text-align: center; 
+                            font-size: 12px; 
+                            color: #666;
+                        }
+                        .info-box { 
+                            background: white; 
+                            border: 1px solid #ddd;
+                            border-left: 4px solid #6f42c1;
+                            border-radius: 6px;
+                            padding: 20px;
+                            margin: 15px 0;
+                        }
+                        .destaque { 
+                            background: #f0e6ff; 
+                            border: 1px solid #d9c8ff;
+                            border-radius: 6px;
+                            padding: 15px;
+                            margin: 15px 0;
+                        }
+                        .badge { 
+                            display: inline-block; 
+                            padding: 6px 12px; 
+                            border-radius: 15px; 
+                            font-size: 0.8em;
+                            font-weight: bold;
+                        }
+                        .recurso { 
+                            background: #6f42c1; 
+                            color: white; 
+                        }
+                        .btn { 
+                            background: #6f42c1; 
+                            color: white; 
+                            padding: 12px 25px; 
+                            text-decoration: none; 
+                            border-radius: 6px; 
+                            font-weight: bold;
+                            display: inline-block;
+                            margin: 10px 0;
+                        }
+                        .footer-images {
+                            display: flex;
+                            justify-content: center;
+                            gap: 20px;
+                            margin: 15px 0;
+                            align-items: center;
+                        }
+                        .footer-img {
+                            max-width: 150px;
+                            height: 60px;
+                            object-fit: contain;
+                        }
+                        .footer-img[alt="SIMPE"] {
+                            max-width: 200px;
+                            height: 80px;
+                        }
+                        h3 { color: #002776; }
+                        h4 { color: #333; margin-top: 0; }
                     </style>
                 </head>
                 <body>
-                    <div class="header">
-                        <h2>Controladoria Geral do Estado</h2>
-                        <h3>Sistema de Avaliação de Transparência</h3>
-                    </div>
-                    
-                    <div class="content">
-                        <h3>Nova Solicitação de Recurso Recebida</h3>
+                    <div class="email-container">
+                        <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/logo-footer.png" 
+                             alt="Controladoria Geral do Estado" 
+                             class="header-img">
                         
-                        <div class="destaque">
-                            <p><strong>A secretaria ${avaliacao.secretaria.nome} enviou um recurso para reanálise.</strong></p>
+                        <div class="content">
+                            <h3>Nova Solicitação de Recurso Recebida</h3>
+                            
+                            <div class="destaque">
+                                <p><strong>A secretaria ${avaliacao.secretaria.nome} enviou um recurso para reanálise.</strong></p>
+                            </div>
+                            
+                            <div class="info-box">
+                                <h4>Detalhes do Recurso</h4>
+                                <p><strong>Órgão/Entidade:</strong> ${avaliacao.secretaria.nome} (${avaliacao.secretaria.sigla})</p>
+                                <p><strong>URL Avaliada:</strong> ${avaliacao.urlSecretaria}</p>
+                                <p><strong>Data do Recurso:</strong> ${new Date().toLocaleDateString('pt-BR')}</p>
+                                <p><strong>Requisitos com Recurso:</strong> ${requisitosComRecurso} de ${avaliacao.respostas.length}</p>
+                                <p><strong>Status:</strong> <span class="badge recurso">EM ANÁLISE DE RECURSO</span></p>
+                            </div>
+                            
+                            <div class="info-box">
+                                <h4>Informações do Processo</h4>
+                                <p><strong>ID da Avaliação:</strong> ${avaliacaoId}</p>
+                                <p><strong>Responsável pelo Recurso:</strong> ${avaliacao.nomeResponsavel}</p>
+                                <p><strong>Email do Responsável:</strong> ${avaliacao.emailResponsavel}</p>
+                            </div>
+                            
+                            <p><strong>Ações Necessárias:</strong></p>
+                            <ul>
+                                <li>Esta avaliação está aguardando <strong>análise do recurso</strong></li>
+                                <li>Acesse o sistema administrativo para revisar as alterações solicitadas</li>
+                                <li>Verifique os comentários e novas evidências fornecidas pela secretaria</li>
+                            </ul>
+                            
+                            <p style="margin-top: 25px; text-align: center;">
+                                <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/admin" 
+                                   class="btn">
+                                   Acessar Área Administrativa
+                                </a>
+                            </p>
+                            
+                            <p style="margin-top: 15px;">
+                                Atenciosamente,<br>
+                                <strong>Equipe da Coordenação de Transparência Ativa (CTA)</strong>
+                            </p>
                         </div>
                         
-                        <div class="info-box">
-                            <h4>Detalhes do Recurso</h4>
-                            <p><strong>Órgão/Entidade:</strong> ${avaliacao.secretaria.nome} (${avaliacao.secretaria.sigla})</p>
-                            <p><strong>URL Avaliada:</strong> ${avaliacao.urlSecretaria}</p>
-                            <p><strong>Data do Recurso:</strong> ${new Date().toLocaleDateString('pt-BR')}</p>
-                            <p><strong>Requisitos com Recurso:</strong> ${requisitosComRecurso} de ${avaliacao.respostas.length}</p>
-                            <p><strong>Status:</strong> <span class="badge recurso">EM ANÁLISE DE RECURSO</span></p>
+                        <div class="footer">
+                            <p><em>Este é um email automático do Sistema de Avaliação de Transparência.</em></p>
+                            <p>Secretaria da Controladoria-Geral do Estado de Pernambuco<br>
+                            R. Santo Elias, 535 - Espinheiro, Recife-PE, 52020-090</p>
+                            
+                            <div class="footer-images">
+                                <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/SIMPE-marca.png" 
+                                     alt="SIMPE" 
+                                     class="footer-img">
+                                <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/logo-header.png" 
+                                     alt="Governo de Pernambuco" 
+                                     class="footer-img">
+                            </div>
                         </div>
-                        
-                        <div class="info-box">
-                            <h4> Informações do Processo</h4>
-                            <p><strong>ID da Avaliação:</strong> ${avaliacaoId}</p>
-                            <p><strong>Responsável pelo Recurso:</strong> ${avaliacao.nomeResponsavel}</p>
-                            <p><strong>Email do Responsável:</strong> ${avaliacao.emailResponsavel}</p>
-                        </div>
-                        
-                        <p><strong>Ações Necessárias:</strong></p>
-                        <ul>
-                            <li>Esta avaliação está aguardando <strong>análise do recurso</strong></li>
-                            <li>Acesse o sistema administrativo para revisar as alterações solicitadas</li>
-                            <li>O prazo padrão para análise de recursos é de <strong>10 dias úteis</strong></li>
-                            <li>Verifique os comentários e novas evidências fornecidas pela secretaria</li>
-                        </ul>
-                        
-                        <p style="margin-top: 25px;">
-                            <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/admin" 
-                               style="background: #6f42c1; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">
-                                Acessar Área Administrativa
-                            </a>
-                        </p>
-                        
-                        <p style="margin-top: 20px; font-size: 14px; color: #666;">
-                            <em>Este recurso foi enviado através do sistema de autoavaliação da Controladoria Geral do Estado.</em>
-                        </p>
-                    </div>
-                    
-                    <div class="footer">
-                        <p><em>Este é um email automático do Sistema de Avaliação de Transparência.</em></p>
-                        <p>Controladoria Geral do Estado de Pernambuco<br>
-                        Av. Alfredo Lisboa, s/n - Recife, PE - CEP: 50030-150</p>
                     </div>
                 </body>
                 </html>
@@ -1523,7 +1889,6 @@ app.post('/api/avaliacoes/:id/notificar-recurso', authenticateToken, async (req,
     }
 });
 
-// ROTA PARA ENVIAR EMAIL DE DEVOLUÇÃO PARA RECURSO (CORRIGIDA)
 app.post('/api/avaliacoes/:id/notificar-devolucao-recurso', authenticateToken, authenticateAdmin, async (req, res) => {
     try {
       const { id: avaliacaoId } = req.params;
@@ -1576,71 +1941,155 @@ app.post('/api/avaliacoes/:id/notificar-devolucao-recurso', authenticateToken, a
               <head>
                   <meta charset="utf-8">
                   <style>
-                      /* (Seus estilos CSS do email aqui...) */
-                      body { font-family: Arial, sans-serif; ... }
-                      .header { background: #002776; ... }
-                      .content { padding: 25px; ... }
-                      .footer { background: #e9ecef; ... }
-                      .info-box { background: white; ... }
-                      .destaque { background: #fff3cd; ... }
-                      .badge { ... }
-                      .recurso { background: #ffc107; color: #333; }
-                      .btn { ... }
+                      body { 
+                          font-family: Arial, sans-serif; 
+                          line-height: 1.6; 
+                          color: #333; 
+                          max-width: 600px; 
+                          margin: 0 auto;
+                          background: #f5f5f5;
+                      }
+                      .email-container {
+                          background: white;
+                          border-radius: 8px;
+                          overflow: hidden;
+                          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                      }
+                      .header-img {
+                          width: 100%;
+                          max-width: 600px;
+                          height: auto;
+                          display: block;
+                          object-fit: contain;
+                      }
+                      .content { 
+                          padding: 25px; 
+                      }
+                      .footer { 
+                          background: #e9ecef; 
+                          padding: 20px; 
+                          text-align: center; 
+                          font-size: 12px; 
+                          color: #666;
+                      }
+                      .info-box { 
+                          background: white; 
+                          border: 1px solid #ddd;
+                          border-radius: 6px;
+                          padding: 20px;
+                          margin: 15px 0;
+                      }
+                      .destaque { 
+                          background: #fff3cd; 
+                          border: 1px solid #ffeaa7;
+                          border-radius: 6px;
+                          padding: 15px;
+                          margin: 15px 0;
+                      }
+                      .badge { 
+                          display: inline-block; 
+                          padding: 6px 12px; 
+                          border-radius: 15px; 
+                          font-size: 0.8em;
+                          font-weight: bold;
+                      }
+                      .recurso { 
+                          background: #ffc107; 
+                          color: #333; 
+                      }
+                      .btn { 
+                          background: #002776; 
+                          color: white; 
+                          padding: 12px 25px; 
+                          text-decoration: none; 
+                          border-radius: 6px; 
+                          font-weight: bold;
+                          display: inline-block;
+                          margin: 10px 0;
+                      }
+                      .footer-images {
+                          display: flex;
+                          justify-content: center;
+                          gap: 20px;
+                          margin: 15px 0;
+                          align-items: center;
+                      }
+                      .footer-img {
+                          max-width: 150px;
+                          height: 60px;
+                          object-fit: contain;
+                      }
+                      .footer-img[alt="SIMPE"] {
+                          max-width: 200px;
+                          height: 80px;
+                      }
+                      h3 { color: #002776; }
+                      h4 { color: #333; margin-top: 0; }
                   </style>
               </head>
               <body>
-                  <div class="header">
-                      <h2>Controladoria Geral do Estado</h2>
-                      <h3>Sistema de Avaliação de Transparência</h3>
-                  </div>
-                  
-                  <div class="content">
-                      <h3>Avaliação Devolvida para Recurso</h3>
+                  <div class="email-container">
+                      <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/logo-footer.png" 
+                           alt="Controladoria Geral do Estado" 
+                           class="header-img">
                       
-                      <div class="destaque">
-                          <p><strong>Sua avaliação foi analisada pela SCGE e está disponível para recurso.</strong></p>
-                      </div>
-                      
-                      <div class="info-box">
-                          <h4>Resumo da Avaliação</h4>
-                          <p><strong>Órgão/Entidade:</strong> ${avaliacao.secretaria.nome} (${avaliacao.secretaria.sigla})</p>
-                          <p><strong>URL Avaliada:</strong> ${avaliacao.urlSecretaria}</p>
-                           <p><strong>Nota Atual (SCGE):</strong> ${pontuacaoAtual} / ${pontuacaoTotal} pontos</p>
-                          <p><strong>Status:</strong> <span class="badge recurso">AGUARDANDO RECURSO</span></p>
-                          <p><strong>Data da Devolução:</strong> ${new Date().toLocaleDateString('pt-BR')}</p>
-                      </div>
-                      
-                      <div class="info-box">
-                          <h4> Próximos Passos</h4>
-                          <p><strong>Você tem a oportunidade de interpor recurso sobre os itens divergentes.</strong></p>
-                          <p><strong>Prazo para recurso:</strong> 5 dias (até ${prazoRecurso.toLocaleDateString('pt-BR')})</p>
-                          <p style="font-size: 0.9em; color: #666;">
-                               ⚠️ O prazo exato de expiração será mostrado no sistema.
+                      <div class="content">
+                          <h3>Avaliação Devolvida para Recurso</h3>
+                          
+                          <div class="destaque">
+                              <p><strong>Sua avaliação foi analisada pela SCGE e está disponível para recurso.</strong></p>
+                          </div>
+                          
+                          <div class="info-box">
+                              <h4>Resumo da Avaliação</h4>
+                              <p><strong>Órgão/Entidade:</strong> ${avaliacao.secretaria.nome} (${avaliacao.secretaria.sigla})</p>
+                              <p><strong>URL Avaliada:</strong> ${avaliacao.urlSecretaria}</p>
+                              <p><strong>Nota Atual (SCGE):</strong> ${pontuacaoAtual} / ${pontuacaoTotal} pontos</p>
+                              <p><strong>Status:</strong> <span class="badge recurso">AGUARDANDO RECURSO</span></p>
+                              <p><strong>Data da Devolução:</strong> ${new Date().toLocaleDateString('pt-BR')}</p>
+                          </div>
+                          
+                          <div class="info-box">
+                              <h4>Próximos Passos</h4>
+                              <p><strong>Você tem a oportunidade de interpor recurso sobre os itens divergentes.</strong></p>
+                              <p><strong>Prazo para recurso:</strong> 5 dias (até ${prazoRecurso.toLocaleDateString('pt-BR')})</p>
+                              <p style="font-size: 0.9em; color: #666;">
+                                  ⚠️ O prazo exato de expiração será mostrado no sistema.
+                              </p>
+                              <ul>
+                                  <li>Acesse o sistema para verificar a análise detalhada da SCGE</li>
+                                  <li>Verifique os comentários e justificativas dos analistas</li>
+                                  <li>Envie novas evidências ou argumentos para os requisitos em discordância</li>
+                              </ul>
+                          </div>
+                          
+                          <p style="margin-top: 25px; text-align: center;">
+                              <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/avaliacao-usuario/${avaliacaoId}" 
+                                 class="btn">
+                                 Acessar Sistema para Recurso
+                              </a>
                           </p>
-                          <ul>
-                              <li>Acesse o sistema para verificar a análise detalhada da SCGE</li>
-                              <li>Verifique os comentários e justificativas dos analistas</li>
-                              <li>Envie novas evidências ou argumentos para os requisitos em discordância</li>
-                          </ul>
+                          
+                          <p style="margin-top: 15px;">
+                              Atenciosamente,<br>
+                              <strong>Equipe da Coordenação de Transparência Ativa (CTA)</strong></p>
+                          </p>
                       </div>
                       
-                      <p style="margin-top: 25px;">
-                          <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/avaliacao-usuario/${avaliacaoId}" 
-                             class="btn">
-                             Acessar Sistema para Recurso
-                          </a>
-                      </p>
-                      
-                      <p style="margin-top: 15px;">
-                          Atenciosamente,<br>
-                          <strong>Equipe da Controladoria Geral do Estado de Pernambuco</strong>
-                      </p>
-                  </div>
-                  
-                  <div class="footer">
-                      <p><em>Este é um email automático do Sistema de Avaliação de Transparência.</em></p>
-                      <p>Controladoria Geral do Estado de Pernambuco<br>
-                      R. Santo Elias, 535 - Espinheiro, Recife-PE, 52020-090</p>
+                      <div class="footer">
+                          <p><em>Este é um email automático do Sistema de Avaliação de Transparência.</em></p>
+                          <p>Secretaria da Controladoria-Geral do Estado de Pernambuco<br>
+                          R. Santo Elias, 535 - Espinheiro, Recife-PE, 52020-090</p>
+                          
+                          <div class="footer-images">
+                              <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/SIMPE-marca.png" 
+                                   alt="SIMPE" 
+                                   class="footer-img">
+                              <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/logo-header.png" 
+                                   alt="Governo de Pernambuco" 
+                                   class="footer-img">
+                          </div>
+                      </div>
                   </div>
               </body>
               </html>
@@ -2207,7 +2656,7 @@ async function cleanupZombieScans() {
   }
 }
 
-// 🧪 ROTA PARA TESTE - FORÇAR EXPIRAÇÃO DO PRAZO
+// ROTA PARA TESTE - FORÇAR EXPIRAÇÃO DO PRAZO
 app.post('/api/teste/expirar-recurso/:id', authenticateToken, authenticateAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -2449,68 +2898,138 @@ async function enviarEmailNotaFinal(avaliacao) {
         <head>
             <meta charset="utf-8">
             <style>
-                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; }
-                .header { background: #002776; color: white; padding: 25px; text-align: center; }
-                .content { padding: 25px; background: #f9f9f9; }
-                .footer { background: #e9ecef; padding: 20px; text-align: center; font-size: 12px; color: #666; }
-                .destaque-final { 
-                    background: #e8f5e8; 
-                    border-left: 4px solid #28a745; 
+                body { 
+                    font-family: Arial, sans-serif; 
+                    line-height: 1.6; 
+                    color: #333; 
+                    max-width: 600px; 
+                    margin: 0 auto;
+                    background: #f5f5f5;
+                }
+                .email-container {
+                    background: white;
+                    border-radius: 8px;
+                    overflow: hidden;
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                }
+                .header-img {
+                    width: 100%;
+                    max-width: 600px;
+                    height: auto;
+                    display: block;
+                    object-fit: contain;
+                }
+                .content { 
+                    padding: 30px; 
+                }
+                .footer { 
+                    background: #e9ecef; 
                     padding: 20px; 
-                    margin: 20px 0; 
-                    border-radius: 8px; 
+                    text-align: center; 
+                    font-size: 12px; 
+                    color: #666;
+                }
+                .resultado-final { 
+                    background: #e8f5e8; 
+                    border: 1px solid #c3e6cb;
+                    border-left: 4px solid #28a745;
+                    border-radius: 8px;
+                    padding: 20px;
+                    margin: 20px 0;
                 }
                 .badge { 
-                    display: inline-block; padding: 8px 16px; border-radius: 20px; 
-                    color: white; font-weight: bold; font-size: 1.1em; 
+                    display: inline-block; 
+                    padding: 8px 16px; 
+                    border-radius: 20px; 
+                    color: white; 
+                    font-weight: bold; 
+                    font-size: 1.1em; 
                 }
                 .aprovado { background: #28a745; }
                 .reprovado { background: #dc3545; }
                 .btn { 
-                    background: #002776; color: white; padding: 12px 25px; 
-                    text-decoration: none; border-radius: 6px; font-weight: bold;
+                    background: #002776; 
+                    color: white; 
+                    padding: 12px 25px; 
+                    text-decoration: none; 
+                    border-radius: 6px; 
+                    font-weight: bold;
                     display: inline-block;
+                    margin: 10px 0;
                 }
+                .footer-images {
+                    display: flex;
+                    justify-content: center;
+                    gap: 20px;
+                    margin: 15px 0;
+                    align-items: center;
+                }
+                .footer-img {
+                    max-width: 150px;
+                    height: 60px;
+                    object-fit: contain;
+                }
+                .footer-img[alt="SIMPE"] {
+                    max-width: 200px;
+                    height: 80px;
+                }
+                h3 { color: #002776; margin-top: 0; }
+                h4 { color: #333; margin-top: 0; }
             </style>
         </head>
         <body>
-            <div class="header">
-                <h2>Controladoria Geral do Estado</h2>
-                <h3>Sistema de Avaliação de Transparência</h3>
-            </div>
-            
-            <div class="content">
-                <h3>Prezado(a) ${avaliacao.nomeResponsavel || 'Responsável'},</h3>
-                <p>O processo de avaliação da transparência ativa (Ciclo 2025) foi concluído e sua nota final está disponível para consulta.</p>
+            <div class="email-container">
+                <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/logo-footer.png" 
+                     alt="Controladoria Geral do Estado" 
+                     class="header-img">
                 
-                <div class="destaque-final">
-                    <h4>Resultado Final da Avaliação</h4>
-                    <p style="margin: 8px 0;"><strong>Órgão:</strong> ${avaliacao.secretaria.nome} (${avaliacao.secretaria.sigla})</p>
-                    <p style="margin: 8px 0;">
-                        <strong>Nota Final:</strong> 
-                        <span class="badge ${pontuacaoFinal >= (pontuacaoTotal * 0.7) ? 'aprovado' : 'reprovado'}">
-                            ${pontuacaoFinal} / ${pontuacaoTotal}
-                        </span>
+                <div class="content">
+                    <h3>Nota Final Publicada</h3>
+                    
+                    <p>Prezado(a) ${avaliacao.nomeResponsavel || 'Responsável'},</p>
+                    <p>O processo de avaliação da transparência ativa (Ciclo 2025) foi concluído e sua nota final está disponível para consulta.</p>
+                    
+                    <div class="resultado-final">
+                        <h4>Resultado Final da Avaliação</h4>
+                        <p style="margin: 8px 0;"><strong>Órgão:</strong> ${avaliacao.secretaria.nome} (${avaliacao.secretaria.sigla})</p>
+                        <p style="margin: 8px 0;">
+                            <strong>Nota Final:</strong> 
+                            <span class="badge ${pontuacaoFinal >= (pontuacaoTotal * 0.7) ? 'aprovado' : 'reprovado'}">
+                                ${pontuacaoFinal} / ${pontuacaoTotal}
+                            </span>
+                        </p>
+                        <p style="margin: 8px 0;"><strong>Percentual:</strong> ${percentual.toFixed(1)}%</p>
+                        <p style="margin: 8px 0;"><strong>Desempenho:</strong> ${mensagemDestaque}</p>
+                    </div>
+                    
+                    <p>Você pode acessar o relatório detalhado completo, com os comentários da análise final e a evolução da sua pontuação, clicando no botão abaixo:</p>
+                    
+                    <p style="margin-top: 25px; text-align: center;">
+                        <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/nota-final/${avaliacao.id}" class="btn">
+                            Ver Relatório Final Detalhado
+                        </a>
                     </p>
-                    <p style="margin: 8px 0;"><strong>Desempenho:</strong> ${mensagemDestaque}</p>
+                    
+                    <p style="margin-top: 15px;">
+                        Atenciosamente,<br>
+                        <strong>Equipe da Coordenação de Transparência Ativa (CTA)</strong>
+                    </p>
                 </div>
                 
-                <p>Você pode acessar o relatório detalhado completo, com os comentários da análise final e a evolução da sua pontuação, clicando no botão abaixo:</p>
-                
-                <p style="margin-top: 25px; text-align: center;">
-                    <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/nota-final/${avaliacao.id}" class="btn">
-                        Ver Relatório Final Detalhado
-                    </a>
-                </p>
-                
-                <p style="margin-top: 20px;">Atenciosamente,<br>
-                <strong>Equipe da Controladoria Geral do Estado de Pernambuco</strong></p>
-            </div>
-            
-            <div class="footer">
-                <p><em>Este é um email automático do Sistema de Avaliação de Transparência.</em></p>
-                  <p>Controladoria Geral do Estado de Pernambuco<br>
-                  R. Santo Elias, 535 - Espinheiro, Recife-PE, 52020-090</p>
+                <div class="footer">
+                    <p><em>Este é um email automático do Sistema de Avaliação de Transparência.</em></p>
+                    <p>Secretaria da Controladoria-Geral do Estado de Pernambuco<br>
+                    R. Santo Elias, 535 - Espinheiro, Recife-PE, 52020-090</p>
+                    
+                    <div class="footer-images">
+                        <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/SIMPE-marca.png" 
+                             alt="SIMPE" 
+                             class="footer-img">
+                        <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/logo-header.png" 
+                             alt="Governo de Pernambuco" 
+                             class="footer-img">
+                    </div>
+                </div>
             </div>
         </body>
         </html>

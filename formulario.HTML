@@ -18,17 +18,175 @@
         }
         body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--cinza-fundo); color: var(--cinza-texto); line-height: 1.6; }
         .main-header { background-color: var(--branco); box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 0 5%; position: sticky; top: 0; z-index: 1000; }
-        .main-nav { display: flex; justify-content: space-between; align-items: center; height: 70px; max-width: 1200px; margin: 0 auto; }
-        .logo a { text-decoration: none; display: flex; align-items: center; gap: 12px; }
-        .logo img { height: 45px; filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));}
-        .logo .site-title { color: var(--azul-gov-principal); font-size: 1.2em; font-weight: bold; line-height: 1.2; }
-        .logo .site-subtitle { color: var(--cinza-texto); font-size: 0.8em; display: block; }
-        .main-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; }
-        .main-nav a { text-decoration: none; color: var(--cinza-texto); font-weight: 600; padding: 10px; border-bottom: 2px solid transparent; transition: all 0.3s ease; }
-        .main-nav a:hover, .main-nav a.active { color: var(--azul-gov-principal); border-bottom-color: var(--amarelo-gov-detalhe); }
-        .main-footer { text-align: center; padding: 20px; margin-top: 40px; background-color: var(--branco); font-size: 0.9em; position: relative; height: 60px; }
-        .main-footer .footer-content { display: flex; justify-content: center; align-items: center; height: 100%; }
-        .main-footer img { height: 110px; width: auto; position: absolute; right: 5%; top: 50%; transform: translateY(-50%); }
+        
+        .main-nav { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            height: 70px; 
+        }
+
+        .logo a { 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            padding-top: 0; 
+            padding-bottom: 0; 
+            border-bottom: 2px solid transparent; 
+            transition: all 0.3s ease; 
+            position: relative;
+            padding: 10px; 
+            padding-top: 0; 
+            padding-bottom: 0; 
+        }
+
+        .logo a::after {
+            content: '';
+            position: absolute;
+            bottom: 29px; 
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: transparent;
+            transition: background-color 0.3s ease;
+        }
+
+        .logo a:hover::after {
+            background-color: var(--amarelo-gov-detalhe);
+        }
+
+        .logo a > img { 
+            height: 45px; 
+            filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0));
+        }
+
+        .logo .site-title {
+            color: var(--azul-gov-principal); 
+            font-size: 1.4em; 
+            font-weight: 800; 
+            line-height: 1.2;
+            font-family: 'Segoe UI', 'Arial Black', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        .logo .site-subtitle { 
+            color: var(--cinza-texto); 
+            font-size: 0.8em; 
+            display: block;
+            text-align: center;
+        }
+
+        .logo div { 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-nav ul { 
+            list-style: none; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            gap: 20px; 
+        }
+
+        .main-nav ul a { 
+            text-decoration: none; 
+            color: var(--cinza-texto); 
+            font-weight: 600; 
+            padding: 10px; 
+            border-bottom: 2px solid transparent; 
+            transition: all 0.3s ease; 
+            display: flex; 
+            align-items: center; 
+        }
+
+        .main-nav ul a:hover, 
+        .main-nav ul a.active { 
+            color: var(--azul-gov-principal); 
+            border-bottom-color: var(--amarelo-gov-detalhe); 
+        }
+
+        .main-footer { 
+            text-align: center; 
+            padding: 20px; 
+            margin-top: 40px; 
+            background-color: var(--branco); 
+            font-size: 0.9em; 
+            position: relative; 
+            height: 60px; 
+        }
+
+        .main-footer .footer-content { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100%; 
+            position: relative;
+        }
+
+        .main-footer .footer-logo-link { 
+            display: block; 
+            position: absolute; 
+            right: 5%; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            z-index: 10; 
+            height: 110px; 
+            width: auto; 
+        }
+
+        .main-footer .footer-logo-link img { 
+            height: 100%; 
+            width: auto; 
+            display: block; 
+            max-height: 110px; 
+            object-fit: contain; 
+        }
+
+        .main-footer p a {
+            color: var(--cinza-texto);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .main-footer p a:hover {
+            text-decoration: underline;
+            color: var(--azul-gov-principal);
+        }
+
+        .SIMPE-marca-text-group {
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            gap: 0;
+        }
+
+        .site-subtitle-modified {
+            color: var(--cinza-texto); 
+            font-size: 0.7em;
+            display: block;
+            text-align: center;
+            margin: 0; 
+            line-height: 1;
+            padding: 0;
+        }
+
+        .SIMPE-marca-small {
+            height: 60px; 
+            width: auto;
+            object-fit: contain; 
+            display: block; 
+            margin: 0; 
+            margin-bottom: 5px; 
+        }
+
         main { padding: 40px 5%; }
         .container { max-width: 900px; margin: 0 auto; background: var(--branco); padding: 30px 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .form-section { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
@@ -154,13 +312,35 @@
             cursor: pointer;
         }
 
+        .SIMPE-marca-text-group {
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            gap: 0;
+        }
+
+        .SIMPE-marca-small {
+            height: 60px; 
+            width: auto;
+            object-fit: contain; 
+            display: block; 
+            margin: 0; 
+            margin-bottom: 5px;
+        }
+
     </style>
 </head>
 <body>
     <header class="main-header">
         <nav class="main-nav">
             <div class="logo">
-                <a href="/"><img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco"><div><span class="site-title">Análise de Sites</span><span class="site-subtitle">Portal da Transparência</span></div></a>
+                <a href="/">
+                    <img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco">
+                    <div class="SIMPE-marca-text-group">                     
+                        <img src="/assets/simpe.png" alt="Logo SIMPE" class="SIMPE-marca-small">                     
+                    </div>
+                </a>
             </div>
             <ul id="nav-links"></ul>
         </nav>
@@ -201,15 +381,16 @@
     </main>
     <footer class="main-footer">
         <div class="footer-content">
-            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a href="/admin" id="admin-footer-link">Área Administrativa</a></p>
-            <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a id="admin-footer-link" href="/admin" style="display: none;">Área Administrativa</a></p>
+            <a href="https://www.scge.pe.gov.br/" target="_blank" rel="noopener noreferrer" class="footer-logo-link">
+                <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+            </a>
         </div>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
-            // --- FUNÇÃO AUXILIAR DEBOUNCE ---
             function debounce(func, wait) {
                 let timeout;
                 return function executedFunction(...args) {
@@ -222,7 +403,6 @@
                 };
             };
 
-            // --- VARIÁVEIS GLOBAIS DO SCRIPT ---
             const secretariaHiddenInput = document.getElementById('secretaria-id-hidden');
             const urlManualInput = document.getElementById('url-manual');
             const nomeResponsavelInput = document.getElementById('responsavel-nome');
@@ -682,7 +862,7 @@
                 document.querySelectorAll('.requisito-card').forEach(card => {
                     const id = card.dataset.requisitoId;
                     
-                    const simBtn = card.querySelector(`[data-action="sim-${id}"]`); // Seletor corrigido
+                    const simBtn = card.querySelector(`[data-action="sim-${id}"]`); 
                     const atendeSim = simBtn ? simBtn.classList.contains('active') : false;
                     const comentario = card.querySelector('.secretaria-comment')?.value || '';
                     const evidencias = [];
@@ -693,7 +873,7 @@
                         }
                     });
 
-                    const naoBtn = card.querySelector(`[data-action="nao-${id}"]`); // Seletor corrigido
+                    const naoBtn = card.querySelector(`[data-action="nao-${id}"]`); 
                     const naoAtivo = naoBtn ? naoBtn.classList.contains('active') : false;
                     if (atendeSim || naoAtivo || comentario || evidencias.length > 0) {
                         rascunho.respostas[id] = {
@@ -875,7 +1055,7 @@
                     const req6Considerado = linksEncontradosAutomaticamente.some(l => l.alvo === 'KEYWORD:site-exists') || !!urlPrincipal;
                     const contagemExibida = linksEncontradosAutomaticamente.length + (req6Considerado && !linksEncontradosAutomaticamente.some(l => l.alvo === 'KEYWORD:site-exists') ? 1 : 0);
 
-                    preValidacaoResultado.innerHTML = `<h4>Verificação Automática Concluída!</h4><p>Foram encontrados <strong>${contagemExibida}</strong> links obrigatórios (incluindo verificação de existência do site).</p>`;
+                    preValidacaoResultado.innerHTML = `<h4>Verificação Automática Concluída!</h4><p>Foram encontrados <strong>${contagemExibida}</strong> links obrigatórios</p>`;
                     
                     await renderRequisitos(linksEncontradosAutomaticamente);
                     preValidarBtn.textContent = 'Pré-Validação Concluída';

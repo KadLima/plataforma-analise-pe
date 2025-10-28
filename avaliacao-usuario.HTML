@@ -54,7 +54,6 @@
             text-align: center;
         }
 
-        /* TODOS OS OUTROS ESTILOS ORIGINAIS MANTIDOS */
         .recurso-info-card h4 {
             color: #6f42c1;
             margin: 0 0 15px 0;
@@ -130,13 +129,55 @@
         body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--cinza-fundo); color: var(--cinza-texto); line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
         .main-header { background-color: var(--branco); box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 0 5%; position: sticky; top: 0; z-index: 1000; }
         .main-nav { display: flex; justify-content: space-between; align-items: center; height: 70px; max-width: 1200px; margin: 0 auto; }
-        .logo a { text-decoration: none; display: flex; align-items: center; gap: 12px; }
-        .logo img { height: 45px; filter: drop-shadow(1px 1px 1.2px rgba(0, 0, 0, 0.5)); }
-        .logo .site-title { color: var(--azul-gov-principal); font-size: 1.2em; font-weight: bold; line-height: 1.2; }
-        .logo .site-subtitle { color: var(--cinza-texto); font-size: 0.8em; display: block; }
+        .logo a { 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            padding: 10px;
+            padding-top: 0;
+            padding-bottom: 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .logo a > img { height: 45px; filter: drop-shadow(1px 1px 1.2px rgba(0, 0, 0, 0.5)); }
+
+        .logo a::after {
+            content: '';
+            position: absolute;
+            bottom: 29px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: transparent;
+            transition: background-color 0.3s ease;
+        }
+
+        .logo a:hover::after {
+            background-color: var(--amarelo-gov-detalhe);
+        }
+
+        .SIMPE-marca-text-group {
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            gap: 0;
+        }
+
+        .SIMPE-marca-small {
+            height: 60px; 
+            width: auto;
+            object-fit: contain; 
+            display: block; 
+            margin: 0; 
+            margin-bottom: 5px;
+        }
+
         .main-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; }
-        .main-nav a { text-decoration: none; color: var(--cinza-texto); font-weight: 600; padding: 10px; border-bottom: 2px solid transparent; transition: all 0.3s ease; }
-        .main-nav a:hover, .main-nav a.active { color: var(--azul-gov-principal); border-bottom-color: var(--amarelo-gov-detalhe); }
+        .main-nav ul a { text-decoration: none; color: var(--cinza-texto); font-weight: 600; padding: 10px; border-bottom: 2px solid transparent; transition: all 0.3s ease; }
+        .main-nav ul a:hover, .main-nav ul a.active { color: var(--azul-gov-principal); border-bottom-color: var(--amarelo-gov-detalhe); }
         .main-footer { text-align: center; padding: 20px; margin-top: auto; background-color: var(--branco); font-size: 0.9em; position: relative; height: 60px; box-sizing: content-box; }
         .main-footer .footer-content { display: flex; justify-content: center; align-items: center; height: 100%; }
         .main-footer img { height: 110px; width: auto; position: absolute; right: 5%; top: 50%; transform: translateY(-50%); }
@@ -721,15 +762,6 @@
             gap: 2px;
         }
 
-        .logo .site-title {
-            font-size: 1.1em;
-            line-height: 1.1;
-        }
-
-        .logo .site-subtitle {
-            font-size: 0.75em;
-            line-height: 1.1;
-        }
     </style>
 </head>
 <body>
@@ -737,10 +769,9 @@
         <nav class="main-nav">
             <div class="logo">
                 <a href="/">
-                    <img src="/assets/SIMPE-marca.png" alt="Logo do SIMPE">
-                    <div>
-                        <span class="site-title">SIMPE</span>
-                        <span class="site-subtitle">Portal da Transparência</span>
+                    <img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco">
+                    <div class="SIMPE-marca-text-group">                     
+                        <img src="/assets/simpe.png" alt="Logo SIMPE" class="SIMPE-marca-small">                     
                     </div>
                 </a>
             </div>
@@ -771,8 +802,10 @@
 
     <footer class="main-footer">
         <div class="footer-content">
-            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a href="/admin" id="admin-footer-link" style="display: none;">Área Administrativa</a></p>
-            <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a id="admin-footer-link" href="/admin" style="display: none;">Área Administrativa</a></p>
+            <a href="https://www.scge.pe.gov.br/" target="_blank" rel="noopener noreferrer" class="footer-logo-link">
+                <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+            </a>
         </div>
     </footer>
 
@@ -943,7 +976,6 @@
                         
                         prazoInfo = prazoData;
                         
-                        // Verificar se o prazo expirou OU se já está marcado como expirado
                         if ((!prazoData.dentroDoPrazo || prazoData.recursoExpirado) && 
                             avaliacaoCompleta.status === 'AGUARDANDO_RECURSO') {
                             prazoExpirado = true;
@@ -960,7 +992,6 @@
                 }
             }
 
-            // FUNÇÃO PARA EXIBIR INFORMAÇÕES DO PRAZO (CORRIGIDA COM DIAS/HORAS/MINUTOS)
             function exibirInformacoesPrazo() {
                 if (avaliacaoCompleta.status === 'AGUARDANDO_RECURSO') {
                     if (prazoExpirado) {
@@ -1098,7 +1129,6 @@
                 setTimeout(inicializarBotoesRecursoAutomatico, 50);
             }
 
-            // FUNÇÃO: Abrir modal (SIMPLIFICADA)
             function abrirModal(resposta) {
                 console.log("=== ABRINDO MODAL SIMPLIFICADO ===");
                 console.log("Resposta ID:", resposta.id);
@@ -1110,12 +1140,10 @@
                 console.log("Status da avaliação:", avaliacaoCompleta.status);
                 console.log("É fase de recurso?", isRecursoPhase);
 
-                // Resposta Original
                 const atendeClasse = resposta.atende ? 'atende-sim' : 'atende-nao';
                 const atendeTexto = resposta.atende ? 'Atende' : 'Não atende';
                 const answerHTML = `<p><strong>Resposta:</strong> <span class="atende-badge ${atendeClasse}">${atendeTexto}</span></p>`;
                 
-                // Evidências
                 let evidencesHTML = '';
                 const evidencias = Array.isArray(resposta.evidencias) ? resposta.evidencias : [];
                 
@@ -1199,7 +1227,6 @@
                         </div>`;
                 }
 
-                // Evidências do Recurso
                 let recursoEvidencesHTML = '';
                 const evidenciasRecurso = Array.isArray(resposta.evidencias) ? 
                     resposta.evidencias.filter(ev => ev.tipo === 'recurso') : [];
@@ -1211,7 +1238,6 @@
                     recursoEvidencesHTML += `</ul></div>`;
                 }
 
-                // Botão para editar decisão (se aplicável)
                 let editarDecisaoHTML = '';
                 const usuarioMarcouNaoAtende = !resposta.atende;
                 const scgeConfirmouNaoAtende = resposta.statusValidacao === 'rejeitado';
@@ -1244,13 +1270,11 @@
                 }, 100);
             }
 
-            // FUNÇÃO: Fechar modal
             function fecharModal() {
                 modalOverlay.style.display = 'none';
                 currentModalRespostaId = null;
             }
 
-            // FUNÇÃO: Criar HTML do recurso (SIMPLIFICADA)
             function criarRecursoHTML(container, resposta, isRecursoPhase, showRecurso, recursoEnviado) {
                 console.log('=== CRIANDO HTML DO RECURSO SIMPLIFICADO ===');
                 
@@ -1493,7 +1517,6 @@
                         </div>
                     `;
 
-                    // ⭐⭐ NOVO: Aplicar bloqueio se necessário
                     let cardExtraClass = '';
                     let headerExtraClass = '';
                     let cursorStyle = '';
@@ -1508,7 +1531,6 @@
 
                         let detalhesRecursoHTML = '';
                         
-                        // SE RECURSO FOI ENVIADO, mostrar detalhes
                         if (recursoEnviado) {
                             const respostaOriginal = resposta.atendeOriginal ? 'Atende' : 'Não atende';
                             const respostaRecurso = resposta.atende ? 'Atende' : 'Não atende';
@@ -1721,7 +1743,6 @@
                 });
             }
 
-            // FUNÇÃO: Enviar recurso (SIMPLIFICADA - USE A QUE EU TE ENVIEI ANTERIORMENTE)
             async function enviarRecurso() {
                 if (prazoExpirado) {
                     Swal.fire({
@@ -1795,8 +1816,6 @@
                     return;
                 }
 
-
-                // Confirmação antes do envio
                 Swal.fire({
                     title: 'Confirmar Envio do Recurso?',
                     html: `
@@ -1840,7 +1859,6 @@
                                 throw new Error(errorData.error || "Falha ao enviar recurso.");
                             }
 
-                            // Tentar notificar a controladoria (opcional)
                             try {
                                 const notificacaoResponse = await fetch(`/api/avaliacoes/${avaliacaoId}/notificar-recurso`, {
                                     method: 'POST',

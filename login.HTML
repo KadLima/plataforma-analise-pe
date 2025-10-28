@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <title>Login - SIM|PE</title>
+    <title>Login - SIMPE</title>
     <style>
         :root {
             --azul-gov-principal: #002776;
@@ -19,19 +19,63 @@
         body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--cinza-fundo); color: var(--cinza-texto); display: flex; flex-direction: column; min-height: 100vh; }
         .main-header { background-color: var(--branco); box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 0 5%; }
         .main-nav { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 70px; }
-        .logo a { text-decoration: none; display: flex; align-items: center; gap: 12px; }
-        .logo img { height: 45px; }
-        .logo .site-title { color: var(--azul-gov-principal); font-size: 1.2em; font-weight: bold; line-height: 1.2; }
-        .logo .site-subtitle { color: var(--cinza-texto); font-size: 0.8em; display: block; }
+        .logo a { 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            padding: 10px;
+            padding-top: 0;
+            padding-bottom: 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .logo a > img { 
+            height: 45px; 
+            filter: drop-shadow(1px 1px 1.2px rgba(0, 0, 0, 0.5)); 
+        }
+
+        .logo a::after {
+            content: '';
+            position: absolute;
+            bottom: 29px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: transparent;
+            transition: background-color 0.3s ease;
+        }
+
+        .logo a:hover::after {
+            background-color: var(--amarelo-gov-detalhe);
+        }
+
+        .SIMPE-marca-text-group {
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            gap: 0;
+        }
+
+        .SIMPE-marca-small {
+            height: 60px; 
+            width: auto;
+            object-fit: contain; 
+            display: block; 
+            margin: 0; 
+            margin-bottom: 5px;
+        }
+
         .main-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; }
-        .main-nav a { text-decoration: none; color: var(--cinza-texto); font-weight: 600; padding: 10px; border-bottom: 2px solid transparent; transition: all 0.3s ease; }
-        .main-nav a:hover, .main-nav a.active { color: var(--azul-gov-principal); border-bottom-color: var(--amarelo-gov-detalhe); }
+        .main-nav ul a { text-decoration: none; color: var(--cinza-texto); font-weight: 600; padding: 10px; border-bottom: 2px solid transparent; transition: all 0.3s ease; }
+        .main-nav ul a:hover, .main-nav ul a.active { color: var(--azul-gov-principal); border-bottom-color: var(--amarelo-gov-detalhe); }
         .main-footer { text-align: center; padding: 20px; margin-top: auto; background-color: var(--branco); font-size: 0.9em; }
         .main-footer p a { color: var(--cinza-texto); font-weight: 600; text-decoration: none; }
         .main-footer p a:hover { text-decoration: underline; color: var(--azul-gov-principal); }
         
-
-        /* Estilos da página de Login */
         main {
             display: flex;
             justify-content: center;
@@ -156,9 +200,6 @@
             color: var(--azul-gov-principal);
         }
 
-        /* --- NOVOS ESTILOS PARA SEGURANÇA --- */
-        
-        /* Container do CAPTCHA */
         .captcha-container {
             background: #f8f9fa;
             padding: 15px;
@@ -194,7 +235,16 @@
             color: #0056b3;
         }
 
-        /* Validação de força da senha */
+        .captcha-container canvas {
+            border: 1px dashed #ccc;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: block; 
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         .password-strength {
             margin-top: 8px;
         }
@@ -338,9 +388,8 @@
             <div class="logo">
                 <a href="/">
                     <img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco">
-                    <div>
-                        <span class="site-title">SIM|PE</span>
-                        <span class="site-subtitle">Portal da Transparência</span>
+                    <div class="SIMPE-marca-text-group">                     
+                        <img src="/assets/simpe.png" alt="Logo SIMPE" class="SIMPE-marca-small">                     
                     </div>
                 </a>
             </div>
@@ -362,12 +411,11 @@
                     <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Digite sua senha">
                 </div>
 
-                <!-- CAPTCHA - NOVO CAMPO OBRIGATÓRIO -->
                 <div class="form-group">
                     <label>Verificação de Segurança</label>
                     <div class="captcha-container">
                         <div>Digite o texto abaixo:</div>
-                        <div id="captchaText" class="captcha-text">CARREGANDO...</div>
+                        <canvas id="captchaCanvas" width="200" height="60"></canvas>
                         <input 
                             type="text" 
                             id="captchaInput" 
@@ -413,22 +461,21 @@
 
     <footer class="main-footer">
         <div class="footer-content">
-            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a href="/admin" id="admin-footer-link">Área Administrativa</a></p>
-            <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a id="admin-footer-link" href="/admin" style="display: none;">Área Administrativa</a></p>
+            <a href="https://www.scge.pe.gov.br/" target="_blank" rel="noopener noreferrer" class="footer-logo-link">
+                <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+            </a>
         </div>
     </footer>
 
     <script>
-        // Variáveis globais
         let currentCaptchaId = '';
 
-        // Carregar CAPTCHA ao iniciar a página
         document.addEventListener('DOMContentLoaded', async () => {
             await loadCaptcha();
             initializeLoginForm();
         });
 
-        // Carregar CAPTCHA do servidor
         async function loadCaptcha() {
             try {
                 const response = await fetch('/api/captcha');
@@ -438,7 +485,7 @@
                 const data = await response.json();
                 
                 currentCaptchaId = data.id;
-                document.getElementById('captchaText').textContent = data.text;
+                renderCaptcha(data.text);
                 document.getElementById('captchaInput').value = '';
             } catch (error) {
                 console.error('Erro ao carregar CAPTCHA:', error);
@@ -446,7 +493,6 @@
             }
         }
 
-        // Validar força da senha em tempo real
         async function checkPasswordStrength(password) {
             if (!password) {
                 updatePasswordStrengthUI({ isValid: false, requirements: {} });
@@ -471,7 +517,6 @@
             }
         }
 
-        // Atualizar UI da força da senha
         function updatePasswordStrengthUI(strength) {
             const requirementsDiv = document.getElementById('passwordRequirements');
             if (!requirementsDiv) return;
@@ -523,7 +568,6 @@
             `;
         }
 
-        // Gerar senha sugerida
         async function suggestPassword() {
             try {
                 const response = await fetch('/api/suggest-password');
@@ -537,7 +581,75 @@
             return null;
         }
 
-        // Inicializar o formulário de login
+        function renderCaptcha(text) {
+            const canvas = document.getElementById('captchaCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#f8f9fa');
+            gradient.addColorStop(1, '#e9ecef');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = 'rgba(0, 39, 118, 0.08)';
+            for (let i = 0; i < 80; i++) {
+                ctx.fillRect(
+                    Math.random() * canvas.width,
+                    Math.random() * canvas.height,
+                    1.5, 1.5
+                );
+            }
+            
+            ctx.strokeStyle = 'rgba(0, 39, 118, 0.15)';
+            ctx.lineWidth = 1.2;
+            for (let i = 0; i < 8; i++) {
+                ctx.beginPath();
+                ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.stroke();
+            }
+            
+            ctx.font = 'bold 26px Arial';
+            ctx.fillStyle = '#002776';
+            
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                
+                const x = 15 + (i * 28) + Math.random() * 6 - 3;
+                const y = 38 + Math.random() * 12 - 6;
+                
+                const rotation = Math.random() * 0.4 - 0.2;
+                
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(rotation);
+                
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+                ctx.shadowBlur = 8;           
+                ctx.shadowOffsetX = 4;        
+                ctx.shadowOffsetY = 4;        
+                
+                ctx.fillText(char, 0, 0);
+                ctx.restore();
+            }
+            
+            ctx.globalAlpha = 0.4;  
+            for (let i = 0; i < 40; i++) {  
+                ctx.fillStyle = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.4)`;
+                ctx.fillRect(
+                    Math.random() * canvas.width,
+                    Math.random() * canvas.height,
+                    3, 3  
+                );
+            }
+
+            ctx.filter = 'blur(0.8px)';
+            ctx.drawImage(canvas, 0, 0);
+            ctx.filter = 'none';
+        }
+
         function initializeLoginForm() {
             const loginForm = document.getElementById('login-form');
             const emailInput = document.getElementById('email');
@@ -550,7 +662,6 @@
             const loginSpinner = document.getElementById('loginSpinner');
             const loginText = document.getElementById('loginText');
 
-            // Login normal
             loginForm.addEventListener('submit', async (event) => {
                 event.preventDefault(); 
 
@@ -561,19 +672,16 @@
                 errorMessageDiv.style.display = 'none';
                 successMessageDiv.style.display = 'none';
 
-                // Validação básica
                 if (!email || !password || !captchaAnswer) {
                     showError('Por favor, preencha todos os campos.');
                     return;
                 }
 
-                // Validação de email
                 if (!isValidEmail(email)) {
                     showError('Por favor, digite um email válido.');
                     return;
                 }
 
-                // Mostrar loading
                 loginButton.disabled = true;
                 loginSpinner.style.display = 'inline-block';
                 loginText.textContent = 'Entrando...';
@@ -617,50 +725,42 @@
 
                 } catch (error) {
                     showError(error.message);
-                    // Recarregar CAPTCHA em caso de erro
                     await loadCaptcha();
                 } finally {
-                    // Restaurar botão
                     loginButton.disabled = false;
                     loginSpinner.style.display = 'none';
                     loginText.textContent = 'Entrar';
                 }
             });
 
-            // Recuperação de senha
             forgotPasswordLink.addEventListener('click', async (e) => {
                 e.preventDefault();
                 await handlePasswordRecovery();
             });
 
-            // Primeiro acesso
             firstAccessLink.addEventListener('click', async (e) => {
                 e.preventDefault();
                 await handleFirstAccess();
             });
         }
 
-        // Função de validação de email
         function isValidEmail(email) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return emailRegex.test(email);
         }
 
-        // Mostrar mensagem de erro
         function showError(message) {
             const errorDiv = document.getElementById('error-message');
             errorDiv.textContent = message;
             errorDiv.style.display = 'block';
         }
 
-        // Mostrar mensagem de sucesso
         function showSuccess(message) {
             const successDiv = document.getElementById('success-message');
             successDiv.textContent = message;
             successDiv.style.display = 'block';
         }
 
-        // Recuperação de senha
         async function handlePasswordRecovery() {
             const { value: email } = await Swal.fire({
                 title: 'Recuperação de Senha',
@@ -710,7 +810,6 @@
             }
         }
 
-        // Primeiro acesso
         async function handleFirstAccess() {
             const { value: email } = await Swal.fire({
                 title: 'Primeiro Acesso',
@@ -760,7 +859,6 @@
             }
         }
 
-        // Função para reenviar código de verificação
         async function reenviarCodigoVerificacao(email, tipo) {
             try {
                 const endpoint = tipo === 'recuperacao' 
@@ -799,7 +897,6 @@
             }
         }
 
-        // Função para solicitar código de verificação (mantida do seu código original)
         async function solicitarCodigoVerificacao(email, tipo) {
             const { value: codigo } = await Swal.fire({
                 title: `Digite o código de 6 dígitos`,
@@ -887,7 +984,6 @@
             }
         }
 
-        // Redefinir senha com validação de força
         async function redefinirSenha(email) {
             const suggestedPassword = await suggestPassword();
             
@@ -930,7 +1026,6 @@
                         return false;
                     }
                     
-                    // Validação de força será feita pelo backend
                     return { novaSenha, confirmarSenha };
                 }
             });
@@ -966,7 +1061,6 @@
             }
         }
 
-        // Criar senha no primeiro acesso com validação de força
         async function criarSenhaPrimeiroAcesso(email) {
             const suggestedPassword = await suggestPassword();
             

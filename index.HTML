@@ -22,12 +22,48 @@
             --branco: #ffffff;
         }
 
-        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--cinza-fundo); color: var(--cinza-texto); line-height: 1.6; }
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background-color: var(--cinza-fundo); 
+            color: var(--cinza-texto); 
+            line-height: 1.6; 
+        }
         
-        .main-header { background-color: var(--branco); box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 0 5%; position: sticky; top: 0; z-index: 1000; }
-        .main-nav { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 70px; }
-        .logo a { text-decoration: none; display: flex; align-items: center; gap: 12px; }
-        .logo img { height: 45px; filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0));}
+        .main-header { 
+            background-color: var(--branco); 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            padding: 0 5%; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+        }
+        
+        .main-nav { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            height: 70px; 
+        }
+
+        .logo a { 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            padding: 0; 
+            border-bottom: 2px solid transparent; 
+            transition: all 0.3s ease; 
+            position: relative;
+        }
+
+        .logo a > img { 
+            height: 45px; 
+            filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0));
+        }
+
         .logo .site-title { 
             color: var(--azul-gov-principal); 
             font-size: 1.4em; 
@@ -36,100 +72,256 @@
             font-family: 'Segoe UI', 'Arial Black', sans-serif;
             letter-spacing: 0.5px;
         }
+
         .logo .site-subtitle { 
             color: var(--cinza-texto); 
             font-size: 0.8em; 
             display: block;
             text-align: center;
         }
+
         .logo div {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
         }
-        .main-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; }
-        .main-nav a { text-decoration: none; color: var(--cinza-texto); font-weight: 600; padding: 10px; border-bottom: 2px solid transparent; transition: all 0.3s ease; }
-        .main-nav a:hover, .main-nav a.active { color: var(--azul-gov-principal); border-bottom-color: var(--amarelo-gov-detalhe); }
 
-        .hero-section { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 60vh; padding: 0 20px; background-color: #e9eef5; }
-        .hero-section h1 { font-size: 2.8em; color: var(--azul-gov-principal); margin-bottom: 15px; }
-        .hero-section p { font-size: 1.2em; max-width: 600px; margin-bottom: 30px; }
-        .cta-button { display: inline-block; background-color: var(--azul-gov-principal); color: var(--branco); padding: 15px 30px; font-size: 1em; font-weight: bold; text-decoration: none; border-radius: 5px; transition: transform 0.2s ease, background-color 0.2s ease; }
-        .cta-button:hover { background-color: #001a4d; transform: translateY(-3px); }
-       
-        .features-section { padding: 60px 5%; text-align: center; overflow: hidden; }
-        .features-section h2 { font-size: 2.2em; color: var(--azul-gov-principal); margin-bottom: 40px; }
-        .feature-card { background-color: var(--branco); border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 30px; height: 100%; display: flex; flex-direction: column; }
+        .main-nav ul { 
+            list-style: none; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            gap: 20px; 
+        }
+
+        .main-nav ul a { 
+            text-decoration: none; 
+            color: var(--cinza-texto); 
+            font-weight: 600; 
+            padding: 10px; 
+            border-bottom: 2px solid transparent; 
+            transition: all 0.3s ease; 
+            display: block;
+        }
+
+        .main-nav ul a:hover, 
+        .main-nav ul a.active { 
+            color: var(--azul-gov-principal); 
+            border-bottom-color: var(--amarelo-gov-detalhe); 
+        }
+
+        .hero-section { 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            text-align: center; 
+            height: 60vh; 
+            padding: 0 20px; 
+            background-color: #e9eef5; 
+        }
+
+        .hero-section h1 { 
+            font-size: 2.8em; 
+            color: var(--azul-gov-principal); 
+            margin-bottom: 15px; 
+        }
+
+        .hero-section p { 
+            font-size: 1.2em; 
+            max-width: 600px; 
+            margin-bottom: 30px; 
+        }
+
+        .cta-button { 
+            display: inline-block; 
+            background-color: var(--azul-gov-principal); 
+            color: var(--branco); 
+            padding: 15px 30px; 
+            font-size: 1em; 
+            font-weight: bold; 
+            text-decoration: none; 
+            border-radius: 5px; 
+            transition: transform 0.2s ease, background-color 0.2s ease; 
+        }
+
+        .cta-button:hover { 
+            background-color: #001a4d; 
+            transform: translateY(-3px); 
+        }
+    
+        .features-section { 
+            padding: 60px 5%; 
+            text-align: center; 
+            overflow: hidden; 
+        }
+
+        .features-section h2 { 
+            font-size: 2.2em; 
+            color: var(--azul-gov-principal); 
+            margin-bottom: 40px; 
+        }
+
+        .feature-card { 
+            background-color: var(--branco); 
+            border-radius: 8px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            padding: 30px; 
+            height: 100%; 
+            display: flex; 
+            flex-direction: column; 
+        }
+
         .feature-card .icon {
             font-size: 3em; 
             color: var(--azul-gov-principal);
             margin-bottom: 10px; 
         }
-        .feature-card h3 { font-size: 1.5em; margin: 20px 0 10px 0; }
-        .feature-card p { font-size: 1em; margin-bottom: 25px; flex-grow: 1; }
 
-      
-        .features-section .swiper { padding: 20px 40px 80px 40px;; overflow: visible; }
-        .swiper-slide { width: 320px; height: auto; transition: transform 0.4s ease, opacity 0.4s ease; opacity: 0.7; }
-        .swiper-slide-active { transform: scale(1.1); opacity: 1; z-index: 10; }
-        .swiper-slide:hover { transform: scale(1.15); opacity: 1; }
-        .swiper-button-next, .swiper-button-prev { color: var(--azul-gov-principal); }
-        .swiper-pagination-bullet {background: var(--azul-gov-principal); opacity: 0.3; }
-        .swiper-pagination-bullet-active {opacity: 1; background: var(--azul-gov-principal); }
-        .features-section .swiper .swiper-pagination { position: absolute; bottom: -40px !important; 
+        .feature-card h3 { 
+            font-size: 1.5em; 
+            margin: 20px 0 10px 0; 
         }
-      
-        .main-footer { text-align: center; padding: 20px; margin-top: 40px; background-color: var(--branco); font-size: 0.9em; position: relative; height: 60px; }
-        .main-footer .footer-content { display: flex; justify-content: center; align-items: center; height: 100%; }
-        .main-footer img { height: 110px; width: auto; position: absolute; right: 5%; top: 50%; transform: translateY(-50%); }
 
+        .feature-card p { 
+            font-size: 1em; 
+            margin-bottom: 25px; 
+            flex-grow: 1; 
+        }
+
+        .features-section .swiper { 
+            padding: 20px 40px 80px 40px;
+            overflow: visible; 
+        }
+
+        .swiper-slide { 
+            width: 320px; 
+            height: auto; 
+            transition: transform 0.4s ease, opacity 0.4s ease; 
+            opacity: 0.7; 
+        }
+
+        .swiper-slide-active { 
+            transform: scale(1.1); 
+            opacity: 1; 
+            z-index: 10; 
+        }
+
+        .swiper-slide:hover { 
+            transform: scale(1.15); 
+            opacity: 1; 
+        }
+
+        .swiper-button-next, 
+        .swiper-button-prev { 
+            color: var(--azul-gov-principal); 
+        }
+
+        .swiper-pagination-bullet {
+            background: var(--azul-gov-principal); 
+            opacity: 0.3; 
+        }
+
+        .swiper-pagination-bullet-active {
+            opacity: 1; 
+            background: var(--azul-gov-principal); 
+        }
+
+        .features-section .swiper .swiper-pagination { 
+            position: absolute; 
+            bottom: -40px !important; 
+        }
+    
+        .main-footer { 
+            text-align: center; 
+            padding: 20px; 
+            margin-top: 40px; 
+            background-color: var(--branco); 
+            font-size: 0.9em; 
+            position: relative; 
+            height: 60px; 
+        }
+
+        .main-footer .footer-content { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100%; 
+            position: relative;
+        }
+
+        .main-footer .footer-logo-link { 
+            display: block; 
+            position: absolute; 
+            right: 5%; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            z-index: 10; 
+            height: 110px; 
+            width: auto; 
+        }
+
+        .main-footer .footer-logo-link img { 
+            height: 100%; 
+            width: auto; 
+            display: block; 
+            max-height: 110px; 
+            object-fit: contain; 
+        }
+        
         .main-footer p a {
-        color: var(--cinza-texto);
-        font-weight: 600;
-        text-decoration: none;
-        transition: color 0.2s;
+            color: var(--cinza-texto);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.2s;
         }
+
         .main-footer p a:hover {
-        text-decoration: underline;
-        color: var(--azul-gov-principal);
+            text-decoration: underline;
+            color: var(--azul-gov-principal);
         }
 
         .presentation-section {
             background-color: var(--branco);
-            padding: 60px 5%;
+            padding: 60px 5% 20px;
         }
+
         .presentation-content {
             max-width: 800px;
             margin: 0 auto;
             text-align: center;
         }
+
         .presentation-content h2 {
             font-size: 2.2em;
             color: var(--azul-gov-principal);
             margin-bottom: 20px;
         }
+
         .presentation-content p {
             font-size: 1.1em;
             line-height: 1.7;
             margin-bottom: 30px;
         }
+
         .presentation-content img {
             max-height: 250px; 
             width: auto; 
         }
         
-    
         .pillars-section {
             background-color: var(--branco); 
             padding: 60px 5%;
         }
+
         .pillars-section h2 {
             text-align: center;
             font-size: 2.2em;
             color: var(--azul-gov-principal);
             margin-bottom: 40px;
         }
+
         .pillars-grid {
             display: flex;
             justify-content: center;
@@ -138,19 +330,23 @@
             max-width: 1200px;
             margin: 0 auto;
         }
+
         .pillar-card {
             width: 300px;
             min-width: 280px; 
             text-align: center;
         }
+
         .pillar-card .icon {
             font-size: 3.5em;
         }
+
         .pillar-card h3 {
             font-size: 1.5em;
             margin: 15px 0 10px 0;
             color: var(--cinza-texto);
         }
+
         .pillar-card p {
             font-size: 1em;
             line-height: 1.6;
@@ -164,11 +360,57 @@
             cursor: pointer;
         }
 
-        /* Estilo para o link da área administrativa no menu */
         .admin-menu-item {
             display: none;
         }
 
+        .SIMPE-marca-text-group {
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            gap: 0;
+        }
+
+        .site-subtitle-modified { 
+            color: var(--cinza-texto); 
+            font-size: 0.7em;
+            display: block;
+            text-align: center;
+            margin: 0; 
+            line-height: 1;
+            padding: 0;
+        }
+
+        .SIMPE-marca-small {
+            height: 60px; 
+            width: auto;
+            object-fit: contain; 
+            display: block; 
+            margin: 0; 
+            margin-bottom: 5px;
+        }
+
+        .logo a {
+            position: relative;
+            padding-bottom: 5px;
+        }
+
+        .logo a::after {
+            content: '';
+            position: absolute;
+            bottom: 30px; 
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: transparent;
+            transition: background-color 0.3s ease;
+        }
+
+        .logo a:hover::after {
+            background-color: var(--amarelo-gov-detalhe);
+        }
+        
     </style>
 </head>
 <body>
@@ -178,14 +420,13 @@
             <div class="logo">
                 <a href="/">
                     <img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco">
-                    <div>
-                        <span class="site-title">SIMPE</span>
-                        <span class="site-subtitle">Portal da Transparência</span>
+                    <div class="SIMPE-marca-text-group">                     
+                        <img src="/assets/simpe.png" alt="Logo SIMPE" class="SIMPE-marca-small">                     
                     </div>
                 </a>
             </div>
             <ul id="nav-links">
-                <!-- Menu será carregado pelo global.js -->
+                <!-- Menu é carregado pelo global.js -->
             </ul>
         </nav>
     </header>
@@ -193,7 +434,7 @@
     <main>
         <section class="hero-section">
             <h1>Plataforma de Análise de Sites</h1>
-            <p>Ferramentas digitais para otimização e verificação de integridade para portais do Governo de Pernambuco.</p>
+            <p>Ferramentas digital para verificação de integridade para portais do Governo de Pernambuco.</p>
             <a href="/scanner" class="cta-button">Acessar o Scanner de Links</a>
         </section>
 
@@ -298,21 +539,21 @@
 
     <footer class="main-footer">
         <div class="footer-content">
-            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a id="admin-footer-link" href="/admin" style="display: none;">Área Administrativa</a>
-            <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+            <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a id="admin-footer-link" href="/admin" style="display: none;">Área Administrativa</a></p>
+            <a href="https://www.scge.pe.gov.br/" target="_blank" rel="noopener noreferrer" class="footer-logo-link">
+                <img src="/assets/logo-footer.png" alt="Logo da Controladoria-Geral do Estado de Pernambuco">
+            </a>
         </div>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            // Verificar autenticação e carregar menu
             const authToken = localStorage.getItem('authToken');
             const navLinks = document.getElementById('nav-links');
             const formCardLink = document.getElementById('form-card-link');
             const notaFinalLink = document.getElementById('nota-final-link');
             const adminFooterLink = document.getElementById('admin-footer-link');
 
-            // Função para verificar se tem avaliação finalizada
             async function verificarNotaFinal() {
                 try {
                     const response = await fetch('/api/my-avaliacoes', {
@@ -327,7 +568,6 @@
                         const avaliacaoFinalizada = avaliacoes.find(av => av.status === 'FINALIZADA');
                         
                         if (avaliacaoFinalizada) {
-                            // Redireciona para a nota final
                             window.location.href = `/nota-final/${avaliacaoFinalizada.id}`;
                         } else {
                             Swal.fire({
@@ -352,7 +592,6 @@
                 }
             }
 
-            // Configurar link da nota final
             if (notaFinalLink) {
                 notaFinalLink.addEventListener('click', async (e) => {
                     e.preventDefault();
@@ -371,7 +610,6 @@
                 });
             }
 
-            // Configurar link do formulário
             if (formCardLink) {
                 formCardLink.addEventListener('click', (e) => {
                     if (!authToken) {
@@ -388,7 +626,6 @@
                 });
             }
 
-            // Carregar menu de navegação
             if (authToken) {
                 try {
                     const response = await fetch('/verify-token', {
@@ -401,7 +638,6 @@
                     if (response.ok) {
                         const userData = await response.json();
                         
-                        // Menu para usuários logados
                         navLinks.innerHTML = `
                             <li><a href="/dashboard" class="active">Minha Área</a></li>
                             ${userData.user.role === 'ADMIN' ? 
@@ -410,12 +646,10 @@
                             <li><a href="#" id="logout-btn">Sair</a></li>
                         `;
 
-                        // Mostrar link administrativo no footer apenas para admin
                         if (userData.user.role === 'ADMIN') {
                             adminFooterLink.style.display = 'inline';
                         }
 
-                        // Configurar logout
                         document.getElementById('logout-btn').addEventListener('click', (e) => {
                             e.preventDefault();
                             localStorage.removeItem('authToken');
@@ -426,20 +660,17 @@
                         throw new Error('Token inválido');
                     }
                 } catch (error) {
-                    // Token inválido, mostrar menu público
                     navLinks.innerHTML = `
                         <li><a href="/login">Entrar</a></li>
                     `;
                     localStorage.removeItem('authToken');
                 }
             } else {
-                // Usuário não logado
                 navLinks.innerHTML = `
                     <li><a href="/login">Entrar</a></li>
                 `;
             }
 
-            // Configurações gerais
             document.querySelectorAll('.disabled-link').forEach(link => {
                 link.addEventListener('click', (event) => {
                     event.preventDefault(); 
