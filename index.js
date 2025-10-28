@@ -760,7 +760,8 @@ app.get('/api/my-avaliacoes/:id', authenticateToken, async (req, res) => {
                 respostas: {
                     include: {
                         requisito: true,
-                        evidencias: true 
+                        evidencias: true,
+                        linksAnalista: true
                     },
                     orderBy: {
                         requisitoId: 'asc'
@@ -904,24 +905,68 @@ app.post("/links", async (req, res) => {
 app.patch('/api/respostas/:id', authenticateToken, authenticateAdmin, async (req, res) => {
     const { id } = req.params;
     const { 
-        statusValidacao, comentarioAdmin,
-        validacaoDisponibilidade, comentarioDisponibilidade,
-        validacaoSerieHistorica, comentarioSerieHistorica
+      statusValidacao, comentarioAdmin,
+      linksAnalista, recursoAtende
     } = req.body;
 
-    try {
-        const dataToUpdate = {};
-        if (statusValidacao) dataToUpdate.statusValidacao = statusValidacao;
-        if (comentarioAdmin !== undefined) dataToUpdate.comentarioAdmin = comentarioAdmin;
+    console.log(`=== ATUALIZANDO RESPOSTA ${id} ===`);
+    console.log('Links recebidos:', linksAnalista);
 
-        const respostaAtualizada = await prisma.resposta.update({
-            where: { id: parseInt(id) },
-            data: dataToUpdate
-        });
-        res.json(respostaAtualizada);
-    } catch (error) {
-        console.error(`Erro ao atualizar resposta ${id}:`, error);
-        res.status(500).json({ error: "Erro ao salvar a validação." });
+    try {
+      const resultado = await prisma.$transaction(async (prisma) => {
+          const dataToUpdate = {};
+          if (statusValidacao) dataToUpdate.statusValidacao = statusValidacao;
+          if (comentarioAdmin !== undefined) dataToUpdate.comentarioAdmin = comentarioAdmin;
+          if (recursoAtende !== undefined) dataToUpdate.recursoAtende = recursoAtende;
+
+          const respostaAtualizada = await prisma.resposta.update({
+              where: { id: parseInt(id) },
+              data: dataToUpdate
+          });
+
+          if (linksAnalista !== undefined) {
+              console.log('Processando linksAnalista:', linksAnalista);
+              
+              await prisma.linkAnalista.deleteMany({
+                  where: { respostaId: parseInt(id) }
+              });
+
+              if (Array.isArray(linksAnalista) && linksAnalista.length > 0) {
+                const linksValidos = linksAnalista.filter(link => 
+                    link && typeof link === 'string' && link.trim() !== ''
+                );
+
+                if (linksValidos.length > 0) {
+                    await prisma.linkAnalista.createMany({
+                        data: linksValidos.map(link => ({
+                            url: link.trim(),
+                            respostaId: parseInt(id)
+                        }))
+                    });
+                }
+              }
+          }
+
+          return await prisma.resposta.findUnique({
+              where: { id: parseInt(id) },
+              include: {
+                requisito: true,
+                evidencias: true,
+                linksAnalista: true 
+              }
+          });
+      });
+
+      console.log('✅ Resposta atualizada com sucesso:', {
+          id: resultado.id,
+          totalLinks: resultado.linksAnalista.length
+      });
+
+      res.json(resultado);
+
+    }catch (error) {
+      console.error(`❌ Erro ao atualizar resposta ${id}:`, error);
+      res.status(500).json({ error: "Erro ao salvar a validação." });
     }
 });
 
@@ -1503,7 +1548,7 @@ app.post('/api/notificar-controladoria', authenticateToken, async (req, res) => 
 
         const mailOptions = {
             from: `"Sistema de Avaliação - PE" <${process.env.SMTP_USER}>`,
-            to: 'kadsonlima91@gmail.com', 
+            to: ['kadsonlima91@gmail.com', 'roberta.gomes@scge.pe.gov.br','transparencia@scge.pe.gov.br', 'luiz.f-neto@scge.pe.gov.br'],
             subject: `Nova Autoavaliação Recebida - ${nomeSecretaria}`,
             html: `
                 <!DOCTYPE html>
@@ -1707,7 +1752,7 @@ app.post('/api/avaliacoes/:id/notificar-recurso', authenticateToken, async (req,
 
         const mailOptions = {
             from: `"Sistema de Avaliação - PE" <${process.env.SMTP_USER}>`,
-            to: 'kadsonlima91@gmail.com',
+            to: ['kadsonlima91@gmail.com', 'roberta.gomes@scge.pe.gov.br','transparencia@scge.pe.gov.br', 'luiz.f-neto@scge.pe.gov.br'],
             subject: `Recurso Recebido - ${avaliacao.secretaria.sigla} - Ciclo 2025`,
             html: `
                 <!DOCTYPE html>
@@ -2392,7 +2437,7 @@ app.get('/api/avaliacoes/:id', authenticateToken, authenticateAdmin, async (req,
   try {
     const avaliacao = await prisma.avaliacao.findUnique({
       where: { id: parseInt(id) },
-      include: { secretaria: true, respostas: { orderBy: { requisitoId: 'asc' }, include: { requisito: true, evidencias: true  } } },
+      include: { secretaria: true, respostas: { orderBy: { requisitoId: 'asc' }, include: { requisito: true, evidencias: true, linksAnalista: true  } } },
     });
     if (!avaliacao) { return res.status(404).json({ error: "Avaliação não encontrada." }); }
     res.json(avaliacao);

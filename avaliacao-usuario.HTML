@@ -273,15 +273,18 @@
         }
 
         .analise-scge-destaque h5 {
-            background-color: var(--azul-gov-principal) !important;
+            background: linear-gradient(135deg, var(--azul-gov-principal) 0%, #001a4d 100%) !important;
             color: var(--branco) !important;
-            padding: 8px 16px !important;
-            margin: -14px -15px 15px -15px !important; 
-            border-radius: 6px 6px 0 0;
+            padding: 12px 16px !important;
+            margin: -20px -22px 15px -22px !important;
+            border-radius: 8px 8px 0 0;
             font-size: 0.95em !important;
             font-weight: 700 !important;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .analise-scge-destaque p {
@@ -762,6 +765,87 @@
             gap: 2px;
         }
 
+        .links-analista-section {
+            margin: 15px 0 0 0;
+            padding: 0;
+        }
+
+        .links-analista-section h5 {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
+            color: white !important;
+            padding: 8px 12px !important;
+            margin: 0 0 10px 0 !important;
+            border-radius: 6px;
+            font-size: 0.9em !important;
+            font-weight: 600 !important;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .links-analista-compact {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 0;
+        }
+
+        .links-analista-compact .evidence-list {
+            margin: 0;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .links-analista-compact .evidence-item {
+            background: white;
+            border: 1px solid #dee2e6;
+            margin-bottom: 6px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        .links-analista-compact .evidence-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .links-analista-compact .evidence-item a {
+            color: #0056b3;
+            text-decoration: none;
+        }
+
+        .links-analista-compact .evidence-item a:hover {
+            text-decoration: underline;
+            color: #003d7a;
+        }
+
+        .tem-links-analista {
+            position: relative;
+        }
+
+        .tem-links-analista::before {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #17a2b8;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            z-index: 2;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Se já tiver badge de recurso, ajusta a posição */
+        .tem-links-analista.tem-recurso-enviado::before {
+            right: 80px;
+        }
+
     </style>
 </head>
 <body>
@@ -1184,29 +1268,57 @@
                         statusClass = `status-${resposta.statusValidacao || 'pendente'}`;
                     }
                     
+                    let linksAnalistaHTML = '';
+                    if (resposta.linksAnalista && resposta.linksAnalista.length > 0) {
+                        linksAnalistaHTML = `
+                            <div class="links-analista-section">
+                                <h5>Links de Referência</h5>
+                                <div class="links-analista-compact">
+                                    <ul class="evidence-list">
+                                        ${resposta.linksAnalista.map(link => `
+                                            <li class="evidence-item">
+                                                <a href="${link.url}" target="_blank" title="Abrir link em nova aba">${link.url}</a>
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
+                            </div>`;
+                    }
+                    
                     adminFeedbackHTML = `
                         <div class="info-block analise-scge-destaque">
                             <h5>Análise da SCGE</h5>
-                            <p><strong>Resultado:</strong> <span class="status-validacao ${statusClass}">${statusTexto}</span></p>
+                            
+                            <div style="display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; margin-bottom: 15px;">
+                                <strong>Resultado:</strong>
+                                <span class="status-validacao ${statusClass}" style="justify-self: start;">${statusTexto}</span>
+                            </div>
+                            
+                            ${linksAnalistaHTML}
+                            
                             ${resposta.comentarioAdmin ? `
                                 <div class="comentario-analista-destaque">
                                     <strong>Comentário do Analista:</strong>
                                     <p>"${resposta.comentarioAdmin}"</p>
                                 </div>
                             ` : `
-                                <p style="text-align: center; color: #6c757d; font-style: italic; margin-top: 15px;">
-                                    Nenhum comentário foi adicionado pelo analista.
-                                </p>
+                                <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 6px; margin-top: 10px;">
+                                    <p style="margin: 0; color: #6c757d; font-style: italic;">
+                                        Nenhum comentário adicional do analista.
+                                    </p>
+                                </div>
                             `}
                         </div>`;
                 } else if (avaliacaoCompleta.status === 'EM_ANALISE_SCGE') {
                     adminFeedbackHTML = `
                         <div class="info-block analise-scge-destaque">
                             <h5>Análise da SCGE</h5>
-                            <p><strong>Status:</strong> <span class="status-validacao status-pendente">Em Análise</span></p>
-                            <p style="text-align: center; color: #6c757d; font-style: italic; margin-top: 15px;">
-                                Esta avaliação está sendo analisada pela Controladoria Geral do Estado.
-                            </p>
+                            <div style="text-align: center; padding: 20px;">
+                                <span class="status-validacao status-pendente" style="display: inline-block; margin-bottom: 10px;">Em Análise</span>
+                                <p style="margin: 0; color: #6c757d; font-style: italic;">
+                                    Esta avaliação está sendo analisada pela Controladoria Geral do Estado.
+                                </p>
+                            </div>
                         </div>`;
                 }
 
@@ -1462,6 +1574,10 @@
                         cardClass = atende ? 'card-mantido-sim' : 'card-mantido-nao';
                         statusTexto = atende ? 'ATENDE' : 'NÃO ATENDE';
                         statusClass = atende ? 'summary-status-atende' : 'summary-status-nao-atende';
+                    }
+
+                    if (resposta.linksAnalista && resposta.linksAnalista.length > 0) {
+                        cardClass += ' tem-links-analista';
                     }
 
                     let recursoHTML = '';

@@ -270,6 +270,117 @@
             font-weight: 600;
             min-width: 120px;
         }
+
+        .remove-evidence-btn, .remove-link-analista-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+            flex-shrink: 0;
+        }
+
+        .remove-evidence-btn:hover, .remove-link-analista-btn:hover {
+            background: #c82333;
+        }
+
+        .btn-add-evidence, .btn-add-link-analista {
+            background-color: var(--azul-gov-principal);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-add-evidence:hover, .btn-add-link-analista:hover {
+            background-color: #001a4d;
+        }
+
+        .link-analista-container {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid var(--azul-gov-principal);
+        }
+
+        .link-analista-container h5 {
+            margin: 0 0 10px 0;
+            font-size: 0.95em;
+            color: var(--azul-gov-principal);
+            font-weight: 600;
+        }
+
+        .link-analista-display {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 8px;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+        }
+
+        .link-analista-display .evidence-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+            transition: all 0.2s ease;
+        }
+
+        .link-analista-display .evidence-item:hover {
+            background-color: #f8f9fa;
+            border-color: #007bff;
+        }
+
+        .link-analista-display .evidence-item a {
+            flex: 1;
+            word-break: break-all;
+            margin-right: 10px;
+            color: #0056b3;
+            text-decoration: none;
+        }
+
+        .link-analista-display .evidence-item a:hover {
+            text-decoration: underline;
+        }
+
+        .link-analista-display .remove-link-analista-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background-color 0.2s ease;
+        }
+
+        .link-analista-display .remove-link-analista-btn:hover {
+            background: #c82333;
+        }
+
     </style>
 </head>
 <body>
@@ -357,6 +468,58 @@
                 scoreAdminEl.textContent = `${Math.round(pontuacaoAdmin)} / ${pontuacaoTotal}`;
             }
 
+            async function salvarAnaliseAutomatica(respostaId) {
+                const authToken = localStorage.getItem('authToken');
+                const card = document.querySelector(`.resposta-card[data-resposta-id="${respostaId}"]`);
+                
+                if (!card) return;
+
+                const displayArea = document.getElementById(`link-analista-display-${respostaId}`);
+                const linksAnalista = [];
+                
+                displayArea.querySelectorAll('.evidence-item').forEach(item => {
+                    const link = item.querySelector('a').href;
+                    linksAnalista.push(link);
+                });
+                
+                const comentarioAdmin = card.querySelector('.admin-comment')?.value || '';
+                
+                console.log("=== SALVAMENTO AUTOMÁTICO (LINKS) ===");
+                console.log("Resposta ID:", respostaId);
+                console.log("Links analista:", linksAnalista);
+
+                const payload = {
+                    linksAnalista: linksAnalista, 
+                    comentarioAdmin: comentarioAdmin
+                };
+
+                try {
+                    const response = await fetch(`/api/respostas/${respostaId}`, {
+                        method: 'PATCH',
+                        headers: { 
+                            'Content-Type': 'application/json', 
+                            'Authorization': `Bearer ${authToken}` 
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (response.ok) {
+                        const respostaAtualizada = await response.json();
+                        console.log("✅ Links salvos automaticamente para resposta:", respostaId);
+                        
+                        const index = avaliacaoCompleta.respostas.findIndex(r => r.id === respostaId);
+                        if (index !== -1) {
+                            avaliacaoCompleta.respostas[index].linksAnalista = respostaAtualizada.linksAnalista;
+                        }
+                    } else {
+                        const errorText = await response.text();
+                        console.error("❌ Erro ao salvar links automaticamente:", errorText);
+                    }
+                } catch (error) {
+                    console.error("❌ Erro ao salvar links:", error);
+                }
+            }
+
             try {
                 const response = await fetch(`/api/avaliacoes/${avaliacaoId}`, { 
                     headers: { 'Authorization': `Bearer ${authToken}` } 
@@ -426,17 +589,37 @@
                         }
                         
                         adminInterfaceHTML = `
-                            <div class="validation-section">
-                                <textarea class="admin-comment" placeholder="Adicionar comentário da análise...">${resposta.comentarioAdmin || ''}</textarea>
-                                <div class="validation-actions">
-                                    <span class="tooltip status-validacao status-${resposta.statusValidacao || 'pendente'}">
-                                        ${statusTexto}
-                                        <span class="tooltiptext">${tooltipTexto}</span>
-                                    </span>
-                                    <button class="btn-validation nao-atende ${resposta.statusValidacao === 'rejeitado' ? 'active' : ''}" data-validation-type="normal" title="Ao clicar em não atende você afirma que a secretaria não atende ao requisito">Não atende</button>
-                                    <button class="btn-validation atende ${resposta.statusValidacao === 'aprovado' ? 'active' : ''}" data-validation-type="normal" title="Ao clicar em atende você afirma que a secretaria atende ao requisito">Atende</button>
+                        <div class="validation-section">
+                            <div class="link-analista-container">
+                                <h5>Links de Referência do Analista:</h5>
+                                <div id="link-analista-display-${resposta.id}" class="link-analista-display" style="margin-bottom: 8px;">
+                                    ${resposta.linksAnalista && resposta.linksAnalista.length > 0 ? 
+                                        resposta.linksAnalista.map(link => `
+                                            <div class="evidence-item" data-link="${link.url}">
+                                                <a href="${link.url}" target="_blank" title="${link.url}">${link.url}</a>
+                                                <button class="remove-evidence-btn remove-link-analista-btn" 
+                                                        data-resposta-id="${resposta.id}" 
+                                                        data-link="${link.url}" 
+                                                        title="Remover Link">&times;</button>
+                                            </div>
+                                        `).join('') 
+                                        : '<span style="font-size: 0.85em; color: #6c757d;">Nenhum link adicionado.</span>'
+                                    }
                                 </div>
-                            </div>`;
+                                <button class="btn-add-evidence btn-add-link-analista" data-resposta-id="${resposta.id}">
+                                    + Adicionar Link
+                                </button>
+                            </div>
+                            <textarea class="admin-comment" placeholder="Adicionar comentário da análise...">${resposta.comentarioAdmin || ''}</textarea>
+                            <div class="validation-actions">
+                                <span class="tooltip status-validacao status-${resposta.statusValidacao || 'pendente'}">
+                                    ${statusTexto}
+                                    <span class="tooltiptext">${tooltipTexto}</span>
+                                </span>
+                                <button class="btn-validation nao-atende ${resposta.statusValidacao === 'rejeitado' ? 'active' : ''}" data-validation-type="normal" title="Ao clicar em não atende você afirma que a secretaria não atende ao requisito">Não atende</button>
+                                <button class="btn-validation atende ${resposta.statusValidacao === 'aprovado' ? 'active' : ''}" data-validation-type="normal" title="Ao clicar em atende você afirma que a secretaria atende ao requisito">Atende</button>
+                            </div>
+                        </div>`;
                     } else { 
                         cardClass = resposta.statusValidacao || 'pendente';
                         
@@ -478,7 +661,6 @@
                     const actionBtn = document.getElementById(buttonId);
                     
                     actionBtn.addEventListener('click', () => {
-                        // VALIDAÇÃO: Verificar se todos os requisitos foram analisados
                         const requisitosPendentes = [];
                         avaliacaoCompleta.respostas.forEach(resposta => {
                             if (!resposta.statusValidacao || resposta.statusValidacao === 'pendente') {
@@ -556,9 +738,104 @@
 
             respostasContainer.addEventListener('click', async (event) => {
                 const target = event.target;
+
+                if (target.matches('.btn-add-link-analista')) {
+                    const respostaId = parseInt(target.dataset.respostaId);
+                    const displayArea = document.getElementById(`link-analista-display-${respostaId}`);
+                    const addButton = target;
+
+                    const { value: url } = await Swal.fire({
+                        title: 'Adicionar Link de Referência',
+                        input: 'url',
+                        inputLabel: 'URL do Link',
+                        inputPlaceholder: 'https://exemplo.com',
+                        showCancelButton: true,
+                        confirmButtonText: 'Adicionar Link',
+                        cancelButtonText: 'Cancelar',
+                        confirmButtonColor: 'var(--azul-gov-principal)',
+                        inputValidator: (value) => {
+                            if (!value) { return 'Você precisa digitar um endereço web!'; }
+                            if (!value.includes('.')) { return 'Insira um endereço válido (ex: www.exemplo.com)'; }
+                            return null;
+                        },
+                        preConfirm: (value) => {
+                            let finalUrl = value.trim();
+                            if (!/^(https?:\/\/|\/\/)/i.test(finalUrl)) {
+                                finalUrl = 'https://' + finalUrl;
+                            }
+                            return finalUrl;
+                        }
+                    });
+
+                    if (url && displayArea) {
+                        const noLinksMessage = displayArea.querySelector('span');
+                        if (noLinksMessage) {
+                            noLinksMessage.remove();
+                        }
+
+                        const newLinkItem = document.createElement('div');
+                        newLinkItem.className = 'evidence-item';
+                        newLinkItem.setAttribute('data-link', url);
+                        newLinkItem.innerHTML = `
+                            <a href="${url}" target="_blank" title="${url}">${url}</a>
+                            <button class="remove-evidence-btn remove-link-analista-btn" data-resposta-id="${respostaId}" data-link="${url}" title="Remover Link">&times;</button>
+                        `;
+
+                        displayArea.appendChild(newLinkItem);
+
+                        const removeBtn = newLinkItem.querySelector('.remove-link-analista-btn');
+                        if (removeBtn) {
+                            removeBtn.addEventListener('click', handleRemoveLinkAnalista);
+                        }
+
+                        await salvarAnaliseAutomatica(respostaId);
+                        
+                        Swal.fire({ 
+                            toast: true, 
+                            position: 'top-end', 
+                            icon: 'success', 
+                            title: 'Link adicionado!', 
+                            showConfirmButton: false, 
+                            timer: 1500 
+                        });
+                    }
+                }
+
+                async function handleRemoveLinkAnalista(event) {
+                    const target = event.target;
+                    const respostaId = parseInt(target.dataset.respostaId);
+                    const linkToRemove = target.dataset.link;
+                    const displayArea = document.getElementById(`link-analista-display-${respostaId}`);
+                    
+                    const linkItem = target.closest('.evidence-item');
+                    if (linkItem) {
+                        linkItem.remove();
+                    }
+                    
+                    if (displayArea && displayArea.querySelectorAll('.evidence-item').length === 0) {
+                        displayArea.innerHTML = '<span style="font-size: 0.85em; color: #6c757d;">Nenhum link adicionado.</span>';
+                    }
+                    
+                    await salvarAnaliseAutomatica(respostaId);
+                    
+                    Swal.fire({ 
+                        toast: true, 
+                        position: 'top-end', 
+                        icon: 'success', 
+                        title: 'Link removido!', 
+                        showConfirmButton: false, 
+                        timer: 1500 
+                    });
+                }
+
+                if (target.matches('.remove-link-analista-btn')) {
+                    handleRemoveLinkAnalista(event); 
+                }
+
                 if (target.matches('.btn-validation')) {
                     const card = target.closest('.resposta-card');
                     const respostaId = parseInt(card.dataset.respostaId);
+                    const linkAnalistaInput = card.querySelector(`#link-analista-${respostaId}`);
 
                     console.log("=== DEBUG SALVAMENTO ===");
                     console.log("Resposta ID:", respostaId);
@@ -580,6 +857,12 @@
                     
                     payload.statusValidacao = novoStatus;
                     payload.comentarioAdmin = comentarioGeral;
+                    const displayArea = document.getElementById(`link-analista-display-${respostaId}`);
+                    payload.linksAnalista = [];
+                    displayArea.querySelectorAll('.evidence-item').forEach(item => {
+                        const link = item.querySelector('a').href;
+                        payload.linksAnalista.push(link);
+                    });
 
                     if (novoStatus === 'aprovado') {
                         payload.recursoAtende = true;
@@ -615,6 +898,7 @@
                         const index = avaliacaoCompleta.respostas.findIndex(r => r.id === respostaId);
                         if (index !== -1) {
                             avaliacaoCompleta.respostas[index] = { ...avaliacaoCompleta.respostas[index], ...respostaAtualizada };
+                            avaliacaoCompleta.respostas[index].linkAnalista = payload.linkAnalista;
                         }
 
                         recalcularEExibirPontuacoes(); 
@@ -657,12 +941,21 @@
                     timeoutId = setTimeout(async () => {
                         const card = event.target.closest('.resposta-card');
                         const respostaId = parseInt(card.dataset.respostaId);
+                        const linkAnalistaInput = card.querySelector(`#link-analista-${respostaId}`);
                         
                         console.log("=== SALVAMENTO AUTOMÁTICO (COMENTÁRIO) ===");
                         console.log("Resposta ID:", respostaId);
                         
+                        const displayArea = document.getElementById(`link-analista-display-${respostaId}`);
+                        const linksAnalista = [];
+                        displayArea.querySelectorAll('.evidence-item').forEach(item => {
+                            const link = item.querySelector('a').href;
+                            linksAnalista.push(link);
+                        });
+
                         let payload = {
-                            comentarioAdmin: event.target.value
+                            comentarioAdmin: event.target.value,
+                            linksAnalista: linksAnalista
                         };
 
                         console.log("Payload automático:", payload);

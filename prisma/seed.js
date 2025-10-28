@@ -139,6 +139,20 @@ async function main() {
       role: 'ADMIN' 
     },
     {
+      email: 'luiz.f-neto@scge.pe.gov.br',
+      password: '@4dm1ntr4d0r2505', 
+      nome: 'Administrador',
+      secretariaSigla: 'SCGE',
+      role: 'ADMIN' 
+    },
+    {
+      email: 'roberta.gomes@scge.pe.gov.br',
+      password: '@4dm1ntr4d0r2505', 
+      nome: 'Administrador',
+      secretariaSigla: 'SCGE',
+      role: 'ADMIN' 
+    },
+    {
       email: 'scge@exemplo.com',
       password: 'senha_scge',
       nome: 'Usuário SCGE',

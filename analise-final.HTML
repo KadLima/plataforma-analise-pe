@@ -998,19 +998,6 @@
 
                 return statusFinal === 'aprovado' ? 'aprovado' : 'rejeitado';
 
-                /* Lógica anterior (mantida caso prefira cor baseada em Mantido/Alterado):
-                const textoStatus = determinarTextoStatusRecurso(resposta, statusFinal);
-
-                if (textoStatus === 'Mantido') {
-                    // Mantido pode ser verde (aprovado) ou vermelho (rejeitado) dependendo do status final
-                    return statusFinal;
-                } else if (textoStatus === 'Alterado') {
-                    // Alterado também pode ser verde ou vermelho dependendo do status final
-                    return statusFinal; // Ou talvez sempre uma cor de alerta como 'alterado'?
-                } else { // Caso de Aprovado/Rejeitado (sem recurso)
-                    return statusFinal;
-                }
-                */
             }
 
             function configurarNavegacao() {

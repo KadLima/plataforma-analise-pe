@@ -74,8 +74,7 @@ model Resposta {
   atende                    Boolean
   foiAutomatico             Boolean  @default(false)
   linkComprovante String?
-  linkComprovanteRecurso String?
-  
+  linkComprovanteRecurso String?  
   
   comentarioAdmin           String?
   comentarioSecretaria      String?
@@ -95,6 +94,7 @@ model Resposta {
   avaliacao                 Avaliacao @relation(fields: [avaliacaoId], references: [id], onDelete: Cascade)
   avaliacaoId               Int
   evidencias                Evidencia[]
+  linksAnalista             LinkAnalista[]
 }
 
 model Secretaria {
@@ -144,4 +144,14 @@ model Evidencia {
   createdAt   DateTime @default(now())
   resposta    Resposta @relation(fields: [respostaId], references: [id], onDelete: Cascade)
   respostaId  Int
+}
+
+model LinkAnalista {
+  id         Int      @id @default(autoincrement())
+  url        String  
+  resposta   Resposta @relation(fields: [respostaId], references: [id], onDelete: Cascade)
+  respostaId Int   
+  createdAt  DateTime @default(now())
+  
+  @@index([respostaId])
 }
