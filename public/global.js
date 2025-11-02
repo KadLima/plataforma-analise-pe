@@ -70,20 +70,19 @@ async function setupDynamicLinks() {
 
     if (isLoggedIn && user) {
         if (navLinks) {
-            // Menu para usuários logados - com Área Administrativa ao lado de Minha Área
             let menuHTML = `
                 <li><a href="/">Início</a></li>
                 <li><a href="/dashboard">Minha Área</a></li>
             `;
             
-            // Adiciona Área Administrativa apenas para ADMIN
             if (user.role === 'ADMIN') {
-                menuHTML += `<li><a href="/admin">Área Administrativa</a></li>`;
+                menuHTML += `
+                <li><a href="/admin">Área Administrativa</a></li>
+                <li><a href="/scanner">Scanner de Links</a></li>`;
             }
             
-            // Restante do menu
             menuHTML += `
-                <li><a href="/scanner">Scanner de Links</a></li>
+                
                 <li><a href="/formulario">Autoavaliação</a></li>
                 <li><a id="logout-btn" href="#">Sair</a></li>
             `;

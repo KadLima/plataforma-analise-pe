@@ -48,15 +48,15 @@ async function main() {
       { texto: "REQUISITO 34 - Disponibiliza link de acesso à seção \"Receitas\" do Portal da Transparência de Pernambuco?", textoAjuda: "Disponibilizar link de acesso à seção \"Receitas\" do Portal da Transparência.", pontuacao: 8, linkFixo: 'https://transparencia.pe.gov.br/receitas/' },
       { texto: "REQUISITO 35 - Disponibiliza link de acesso à seção \"Despesas\" do Portal da Transparência de Pernambuco?", textoAjuda: "Disponibilizar link de acesso à seção \"Despesas\" do Portal da Transparência.", pontuacao: 8, linkFixo: 'https://transparencia.pe.gov.br/despesas/menu-despesas/' },
       { texto: "REQUISITO 36 - Disponibiliza link de acesso à seção \"Licitações e Contratos\" do Portal da Transparência de Pernambuco?", textoAjuda: "Disponibilizar link de acesso à seção \"Licitações, Contratos e Fornecedores\" do Portal da Transparência.", pontuacao: 6, linkFixo: 'https://transparencia.pe.gov.br/licitacoes-e-contratos/' },
-      { texto: "REQUISITO 37.1 - Disponibiliza o Mapa de Contratos do órgão/entidade referente ao ano vigente?", textoAjuda: "O Mapa de “Contratos” deverá ser atualizado mensalmente e publicado até o 10º dia útil do mês subsequente.", pontuacao: 3, linkFixo: null },
-      { texto: "REQUISITO 37.2 - Disponibiliza o Mapa de Contratos do órgão/entidade dos 03 (três) anos antecedentes ao ano atual?", textoAjuda: "O Mapa de “Contratos” deverá ser atualizado mensalmente e publicado até o 10º dia útil do mês subsequente.", pontuacao: 3, linkFixo: null },
-      { texto: "REQUISITO 38.1 - Disponibiliza o Mapa de Contratos de Terceirizados do órgão/entidade do ano vigente?", textoAjuda: "Faz referência a série histórica solicitada aos órgãos no guia da transparência", pontuacao: 3, linkFixo: null },
-      { texto: "REQUISITO 38.2 - Disponibiliza o Mapa de Contratos de Terceirizados do órgão/entidade dos 03 (três) anos antecedentes ao atual?", textoAjuda: "Faz referência a série histórica solicitada aos órgãos no guia da transparência", pontuacao: 3, linkFixo: null },
+      { texto: "REQUISITO 37.1 - Disponibiliza os contratos  no ( Mapa de Contratos ou no módulo de contratos do PE Integrado) do órgão/entidade referente ao ano vigente?", textoAjuda: "O Mapa de “Contratos” deverá ser atualizado mensalmente e publicado até o 10º dia útil do mês subsequente.", pontuacao: 4, linkFixo: null },
+      { texto: "REQUISITO 37.2 - Disponibiliza os Mapas de Contratos do órgão/entidade dos 03 (três) anos antecedentes ao ano atual?", textoAjuda: "Faz referência a série histórica solicitada aos órgãos no guia da transparência", pontuacao: 2, linkFixo: null },
+      { texto: "REQUISITO 38.1 - Disponibiliza o Mapa de Contratos de Terceirizados do órgão/entidade do ano vigente?", textoAjuda: "Faz referência a série histórica solicitada aos órgãos no guia da transparência", pontuacao: 4, linkFixo: null },
+      { texto: "REQUISITO 38.2 - Disponibiliza os Mapas de Contratos de Terceirizados do órgão/entidade dos 03 (três) anos antecedentes ao atual?", textoAjuda: "Faz referência a série histórica solicitada aos órgãos no guia da transparência", pontuacao: 2, linkFixo: null },
       { texto: "REQUISITO 39 - Disponibiliza link de acesso à seção \"Obras\" do Portal da Transparência de Pernambuco?", textoAjuda: "Disponibilizar link de acesso à seção \"Obras\" do Portal da Transparência.", pontuacao: 2, linkFixo: 'https://transparencia.pe.gov.br/despesas/obras/' },
       { texto: "REQUISITO 40 - Disponibiliza link de acesso à seção \"Patrimônio Público\" do Portal da Transparência de Pernambuco?", textoAjuda: "Disponibilizar link de acesso à seção \"Patrimônio Público\" do Portal da Transparência.", pontuacao: 1, linkFixo: 'https://transparencia.pe.gov.br/gestao-estadual/patrimonio-publico/' },
       { texto: "REQUISITO 41 - Disponibiliza link de acesso à seção \"Recursos Humanos\" do Portal da Transparência de Pernambuco?", textoAjuda: "Disponibilizar link de acesso à seção \"Recursos Humanos\" do Portal da Transparência.", pontuacao: 6, linkFixo: 'https://transparencia.pe.gov.br/recursos-humanos/' },
-      { texto: "REQUISITO 42.1 - Disponibiliza o Mapa de Diárias e Passagens do órgão/entidade do ano vigente?", textoAjuda: "O Mapa de “Diárias e Passagens” deverá ser atualizado mensalmente e publicado até o 10º dia útil do mês subsequente.", pontuacao: 3, linkFixo: null },
-      { texto: "REQUISITO 42.2 - Disponibiliza o Mapa de Diárias e Passagens do órgão/entidade dos 03 (três) anos antecedentes ao atual?", textoAjuda: "Faz referência a série histórica solicitada aos órgãos no guia da transparência", pontuacao: 3, linkFixo: null },
+      { texto: "REQUISITO 42.1 - Disponibiliza o Mapa de Diárias e Passagens do órgão/entidade do ano vigente?", textoAjuda: "O Mapa de “Diárias e Passagens” deverá ser atualizado mensalmente e publicado até o 10º dia útil do mês subsequente.", pontuacao: 4, linkFixo: null },
+      { texto: "REQUISITO 42.2 - Disponibiliza os Mapas de Diárias e Passagens do órgão/entidade dos 03 (três) anos antecedentes ao atual?", textoAjuda: "Faz referência a série histórica solicitada aos órgãos no guia da transparência", pontuacao: 2, linkFixo: null },
       { texto: "REQUISITO 43 - Disponibiliza link de acesso à seção “Acesso à Informação” do Portal da Transparência de Pernambuco?", textoAjuda: "Disponibilizar link de acesso à seção “Acesso à Informação” do Portal da Transparência.", pontuacao: 4, linkFixo: 'https://transparencia.pe.gov.br/participacao-cidada-pe/acesso-a-informacao/' },
     ],
   });
@@ -133,21 +133,21 @@ async function main() {
   const usersData = [
     {
       email: 'kadsonlima91@gmail.com',
-      password: '@4dm1ntr4d0r2505', 
+      password: 'kadsonlima91@', 
       nome: 'Administrador',
       secretariaSigla: 'SCGE',
       role: 'ADMIN' 
     },
     {
-      email: 'luiz.f-neto@scge.pe.gov.br',
-      password: '@4dm1ntr4d0r2505', 
+      email: 'luiz.f-neto@cge.pe.gov.br',
+      password: 'luiz.f-neto1234', 
       nome: 'Administrador',
       secretariaSigla: 'SCGE',
       role: 'ADMIN' 
     },
     {
       email: 'roberta.gomes@scge.pe.gov.br',
-      password: '@4dm1ntr4d0r2505', 
+      password: 'roberta.gomes1234', 
       nome: 'Administrador',
       secretariaSigla: 'SCGE',
       role: 'ADMIN' 

@@ -650,13 +650,274 @@
             border-radius: 6px;
         }
 
+        .analise-final-destaque .links-analista-section {
+            margin: 15px 0 0 0;
+            padding: 0;
+        }
+
+        .analise-final-destaque .links-analista-section h5 {
+            background: linear-gradient(135deg, var(--verde-sucesso) 0%, #0fdd43 100%) !important;
+            color: white !important;
+            padding: 8px 12px !important;
+            margin: 0 0 10px 0 !important;
+            border-radius: 6px;
+            font-size: 0.9em !important;
+            font-weight: 600 !important;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .analise-final-destaque.rejeitado .links-analista-section h5 {
+            background: linear-gradient(135deg, var(--vermelho-destaque) 0%, #c82333 100%) !important;
+        }
+
+        .analise-final-destaque .links-analista-compact {
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 0;
+        }
+
+        .analise-final-destaque .links-analista-compact .evidence-list {
+            margin: 0;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .analise-final-destaque .links-analista-compact .evidence-item {
+            background: white;
+            border: 1px solid #dee2e6;
+            margin-bottom: 6px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        .analise-final-destaque .links-analista-compact .evidence-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .analise-final-destaque .links-analista-compact .evidence-item a {
+            color: #0056b3;
+            text-decoration: none;
+        }
+
+        .analise-final-destaque .links-analista-compact .evidence-item a:hover {
+            text-decoration: underline;
+            color: #003d7a;
+        }
+
+        .link-analista-container {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid var(--azul-gov-principal); 
+        }
+
+        .link-analista-container h5 {
+            margin: 0 0 10px 0 !important;
+            font-size: 0.95em !important;
+            color: var(--azul-gov-principal) !important; 
+            font-weight: 600 !important;
+            background: none !important;
+            padding: 0 !important;
+            text-align: left !important;
+            width: 100% !important;
+            display: block !important;
+        }
+
+        .link-analista-display {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 8px;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+        }
+
+        .link-analista-display .evidence-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+            transition: all 0.2s ease;
+        }
+
+        .link-analista-display .evidence-item:hover {
+            background-color: #f8f9fa;
+            border-color: #007bff;
+        }
+
+        .link-analista-display .evidence-item a {
+            flex: 1;
+            word-break: break-all;
+            margin-right: 10px;
+            color: #0056b3;
+            text-decoration: none;
+        }
+
+        .link-analista-display .evidence-item a:hover {
+            text-decoration: underline;
+        }
+
+        .link-analista-container {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #ffffff;
+            border-radius: 6px;
+            border-left: 4px solid var(--azul); 
+        }
+
+        .link-analista-container h5 {
+            margin: 0 0 10px 0;
+            font-size: 0.95em;
+            color: var(--verde-sucesso); 
+            font-weight: 600;
+        }
+
+        .link-analista-display {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 8px;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            background-color: #ffffff;
+        }
+
+        .link-analista-display .evidence-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+            transition: all 0.2s ease;
+        }
+
+        .link-analista-display .evidence-item:hover {
+            background-color: #f8f9fa;
+            border-color: var(--verde-sucesso);
+        }
+
+        .link-analista-display .evidence-item a {
+            flex: 1;
+            word-break: break-all;
+            margin-right: 10px;
+            color: #0056b3;
+            text-decoration: none;
+        }
+
+        .link-analista-display .evidence-item a:hover {
+            text-decoration: underline;
+        }
+
+        .link-analista-display .remove-link-analista-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background-color 0.2s ease;
+        }
+
+        .link-analista-display .remove-link-analista-btn:hover {
+            background: #c82333;
+        }
+
+        .btn-add-evidence, .btn-add-link-analista-final {
+            background-color: var(--verde-sucesso); 
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-add-evidence:hover, .btn-add-link-analista-final:hover {
+            background-color: #218838; 
+        }
+
+        .validation-section {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid var(--verde-sucesso); 
+            background-color: #f8fff8; 
+            border-radius: 8px;
+        }
+
+        .validation-section h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: var(--verde-sucesso);
+        }
+
+        .comentario-analista-destaque p {
+            margin: 0;
+            color: #333333 !important;
+            font-weight: 500;
+            line-height: 1.4;
+            word-wrap: break-word; 
+            white-space: pre-wrap; 
+            overflow-wrap: break-word; 
+        }
+
+        .admin-comment,
+        .analise-final-comment {
+            width: 100%; 
+            box-sizing: border-box; 
+            padding: 10px; 
+            border: 1px solid var(--cinza-borda); 
+            border-radius: 6px; 
+            font-size: 0.9em; 
+            min-height: 80px; 
+            margin-bottom: 10px; 
+            resize: none; 
+            font-family: 'Segoe UI', Arial, sans-serif;
+            word-wrap: break-word; 
+            white-space: pre-wrap; 
+            overflow-wrap: break-word; 
+        }
+
+        .detalhes-recurso .info-item {
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            word-wrap: break-word; 
+            white-space: pre-wrap; 
+            overflow-wrap: break-word; 
+        }
+
         .comentario-analista-destaque {
-            background-color: #fff3cd;
+            background: linear-gradient(135deg, #fffffe 0%, #ffffff 100%);
             border-left: 4px solid var(--amarelo-gov-detalhe);
             padding: 15px;
             border-radius: 6px;
             margin: 15px 0 0 0;
             font-style: normal !important;
+            border: 1px solid #6f6d6d;
         }
 
         .comentario-analista-destaque strong {
@@ -664,13 +925,6 @@
             display: block;
             margin-bottom: 8px;
             font-size: 0.95em;
-        }
-
-        .comentario-analista-destaque p {
-            margin: 0;
-            color: #856404 !important; 
-            font-weight: 500;
-            line-height: 1.4;
         }
 
         .analise-final-destaque {
@@ -952,12 +1206,27 @@
                 return `
                     <div class="validation-section">
                         <h4>Análise Final (Pós-Recurso)</h4>
-                        <textarea id="modal-analise-final-comment" class="admin-comment" placeholder="Adicionar comentário da análise final...">${analiseFinal.comentario || ''}</textarea>
+
+                        <div class="link-analista-container">
+                            <h5>Links de Referência da Análise Final:</h5>
+                            <div id="modal-links-analise-final-display" class="link-analista-display" style="margin-bottom: 8px;">
+                                <span style="font-size: 0.85em; color: #6c757d;">Nenhum link adicionado.</span>
+                            </div>
+                            <button class="btn-add-evidence btn-add-link-analista-final" 
+                                    style="background-color: var(--azul-gov-principal); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9em;">
+                                + Adicionar Link
+                            </button>
+                        </div>
+                        
+                        <textarea id="modal-analise-final-comment" class="admin-comment" 
+                                placeholder="Adicionar comentário específico para a análise final (não substitui o comentário anterior)...">${analiseFinal.comentario || ''}</textarea>
+                    
+
                         <div class="validation-actions">
-                             <span class="status-validacao status-${determinarStatusRecurso(resposta, statusFinalAtual)}">
+                            <span class="status-validacao status-${determinarStatusRecurso(resposta, statusFinalAtual)}">
                                 ${determinarTextoStatusRecurso(resposta, statusFinalAtual)}
                             </span>
-                             <button class="btn-toggle ${statusFinalAtual === 'rejeitado' ? 'active' : ''}"
+                            <button class="btn-toggle ${statusFinalAtual === 'rejeitado' ? 'active' : ''}"
                                     data-action="nao-atende-final" data-validation-type="normal">Não Atende</button>
                             <button class="btn-toggle ${statusFinalAtual === 'aprovado' ? 'active' : ''}"
                                     data-action="atende-final" data-validation-type="normal">Atende</button>
@@ -970,8 +1239,7 @@
             }
 
 
-            // FUNÇÃO: Determinar texto do status em relação ao recurso
-             function determinarTextoStatusRecurso(resposta, statusFinal) {
+            function determinarTextoStatusRecurso(resposta, statusFinal) {
                 if (!statusFinal || statusFinal === 'pendente') {
                     return 'Pendente';
                 }
@@ -990,7 +1258,6 @@
                 return respostaRecursoAtende === analiseFinalAtende ? 'Mantido' : 'Alterado';
             }
 
-            // FUNÇÃO: Determinar cor do status em relação ao recurso (simplificada e corrigida)
             function determinarStatusRecurso(resposta, statusFinal) {
                 if (!statusFinal || statusFinal === 'pendente') {
                     return 'pendente';
@@ -1064,8 +1331,20 @@
                     <div class="info-block analise-scge-destaque">
                         <h5>1ª Análise da SCGE</h5>
                         <p><strong>Resultado:</strong>
-                             <span class="status-validacao status-${statusClassePrimeiraAnalise}">${statusTextoPrimeiraAnalise}</span>
+                            <span class="status-validacao status-${statusClassePrimeiraAnalise}">${statusTextoPrimeiraAnalise}</span>
                         </p>
+                        ${resposta.linksAnalista && resposta.linksAnalista.length > 0 ? `
+                            <div class="link-analista-container">
+                                <h5>Links de Referência da 1ª Análise</h5>
+                                <div class="link-analista-display">
+                                    ${resposta.linksAnalista.map(link => `
+                                        <div class="evidence-item">
+                                            <a href="${link.url}" target="_blank" title="Abrir link em nova aba">${link.url}</a>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
                         ${resposta.comentarioAdmin ? `
                             <div class="comentario-analista-destaque">
                                 <strong>Comentário da 1ª análise:</strong>
@@ -1111,31 +1390,47 @@
                 }
 
                 let analiseFinalHTML = '';
-                const temAnaliseFinalRealizada = analiseFinal.statusValidacaoPosRecurso && analiseFinal.statusValidacaoPosRecurso !== 'pendente';
+                    const temAnaliseFinalRealizada = analiseFinal.statusValidacaoPosRecurso && analiseFinal.statusValidacaoPosRecurso !== 'pendente';
 
+                    if (temAnaliseFinalRealizada) {
+                        const resultadoFinalTexto = determinarTextoStatusRecurso(resposta, analiseFinal.statusValidacaoPosRecurso); 
+                        const resultadoFinalClasseCor = determinarStatusRecurso(resposta, analiseFinal.statusValidacaoPosRecurso); 
+                        const aprovadoOuRejeitadoTexto = analiseFinal.statusValidacaoPosRecurso === 'aprovado' ? 'Aprovado' : 'Rejeitado'; 
 
-                if (temAnaliseFinalRealizada) {
-                    const resultadoFinalTexto = determinarTextoStatusRecurso(resposta, analiseFinal.statusValidacaoPosRecurso); 
-                    const resultadoFinalClasseCor = determinarStatusRecurso(resposta, analiseFinal.statusValidacaoPosRecurso); 
-                    const aprovadoOuRejeitadoTexto = analiseFinal.statusValidacaoPosRecurso === 'aprovado' ? 'Aprovado' : 'Rejeitado'; 
+                        let linksAnaliseFinalHTML = '';
+                        if (resposta.linksAnaliseFinal && resposta.linksAnaliseFinal.length > 0) {
+                            linksAnaliseFinalHTML = `
+                                <div class="links-analista-section">
+                                    <h5>Links de Referência da Análise Final</h5>
+                                    <div class="links-analista-compact">
+                                        <ul class="evidence-list">
+                                            ${resposta.linksAnaliseFinal.map(link => `
+                                                <li class="evidence-item">
+                                                    <a href="${link.url}" target="_blank" title="Abrir link em nova aba">${link.url}</a>
+                                                </li>
+                                            `).join('')}
+                                        </ul>
+                                    </div>
+                                </div>`;
+                        }
 
-
-                    analiseFinalHTML = `
-                         <div class="analise-final-destaque ${resultadoFinalClasseCor === 'rejeitado' ? 'rejeitado' : ''}">
-                             <h5>Análise Final da SCGE (Pós-Recurso)</h5>
-                            <p><strong>Resultado:</strong>
-                                 <span class="status-validacao status-${resultadoFinalClasseCor}">
-                                     ${resultadoFinalTexto} (${aprovadoOuRejeitadoTexto})
-                                </span>
-                            </p>
-                            ${analiseFinal.comentario ? `
-                                <div class="comentario-analista-destaque">
-                                    <strong>Comentário Final:</strong>
-                                    <p>"${analiseFinal.comentario}"</p>
-                                </div>
-                            ` : ''}
-                        </div>`;
-                }
+                        analiseFinalHTML = `
+                            <div class="analise-final-destaque ${resultadoFinalClasseCor === 'rejeitado' ? 'rejeitado' : ''}">
+                                <h5>Análise Final da SCGE (Pós-Recurso)</h5>
+                                <p><strong>Resultado:</strong>
+                                    <span class="status-validacao status-${resultadoFinalClasseCor}">
+                                        ${resultadoFinalTexto} (${aprovadoOuRejeitadoTexto})
+                                    </span>
+                                </p>
+                                ${analiseFinal.comentario ? `
+                                    <div class="comentario-analista-destaque">
+                                        <strong>Comentário Final:</strong>
+                                        <p>"${analiseFinal.comentario}"</p>
+                                    </div>
+                                ` : ''}
+                                ${linksAnaliseFinalHTML} <!-- AQUI MOSTRAMOS OS LINKS -->
+                            </div>`;
+                    }
 
                 modalBody.innerHTML = `
                     <div class="info-block">
@@ -1226,39 +1521,39 @@
                     };
                 }
 
-                // Função separada para configurar listeners dos botões internos e textarea
                 function configurarListenersInternosModal() {
                     const cancelarBtnInterno = document.getElementById('cancelar-edicao-btn');
                     const salvarBtnInterno = document.getElementById('salvar-analise-final-btn');
                     const botoesValidacaoInternos = modalBody.querySelectorAll('.btn-toggle');
                     const comentarioTextareaInterno = document.getElementById('modal-analise-final-comment');
+                    const linksDisplay = modalBody.querySelector('#modal-links-analise-final-display');
 
                     if (cancelarBtnInterno) {
-                    cancelarBtnInterno.onclick = () => {
+                        cancelarBtnInterno.onclick = () => {
                             if (modalHasChanges) {
-                            Swal.fire({
-                                title: 'Cancelar Edição?',
-                                text: 'Todas as alterações não salvas na análise final serão perdidas.',
-                                icon: 'warning',
-                                showCancelButton: true,
-                                confirmButtonText: 'Sim, cancelar',
-                                cancelButtonText: 'Continuar editando',
-                                confirmButtonColor: 'var(--vermelho-destaque)',
-                                cancelButtonColor: 'var(--azul-gov-principal)'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    validationInterface.style.display = 'none'; 
-                                    const editarBtn = document.getElementById('editar-analise-final-btn');
-                                    const resposta = avaliacaoCompleta.respostas.find(r => r.id === currentModalRespostaId);
-                                    if(editarBtn && resposta) {
-                                            editarBtn.textContent = (resposta.analiseFinal?.statusValidacaoPosRecurso && resposta.analiseFinal?.statusValidacaoPosRecurso !== 'pendente')
-                                                                ? 'Alterar Análise'
-                                                                : 'Realizar Análise Final';
+                                Swal.fire({
+                                    title: 'Cancelar Edição?',
+                                    text: 'Todas as alterações não salvas na análise final serão perdidas.',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Sim, cancelar',
+                                    cancelButtonText: 'Continuar editando',
+                                    confirmButtonColor: 'var(--vermelho-destaque)',
+                                    cancelButtonColor: 'var(--azul-gov-principal)'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        validationInterface.style.display = 'none'; 
+                                        const editarBtn = document.getElementById('editar-analise-final-btn');
+                                        const resposta = avaliacaoCompleta.respostas.find(r => r.id === currentModalRespostaId);
+                                        if(editarBtn && resposta) {
+                                                editarBtn.textContent = (resposta.analiseFinal?.statusValidacaoPosRecurso && resposta.analiseFinal?.statusValidacaoPosRecurso !== 'pendente')
+                                                                    ? 'Alterar Análise'
+                                                                    : 'Realizar Análise Final';
+                                        }
+                                        isModalEditing = false; 
+                                        modalHasChanges = false; 
                                     }
-                                    isModalEditing = false; 
-                                    modalHasChanges = false; 
-                                }
-                            });
+                                });
                             } else {
                                 validationInterface.style.display = 'none';
                                 const editarBtn = document.getElementById('editar-analise-final-btn');
@@ -1277,20 +1572,45 @@
                     if (salvarBtnInterno) { salvarBtnInterno.onclick = salvarAnaliseFinal; }
 
                     botoesValidacaoInternos.forEach(botao => {
-                    botao.onclick = (e) => {
-                        modalHasChanges = true;
-                        const action = e.target.getAttribute('data-action');
-                        const validationType = e.target.getAttribute('data-validation-type');
-                        const grupoBotoes = modalBody.querySelectorAll(`[data-validation-type="${validationType}"]`);
-                        grupoBotoes.forEach(btn => btn.classList.remove('active'));
-                        e.target.classList.add('active');
-                        atualizarBadgeStatusModal(validationType, action.includes('atende'));
-                    };
+                        botao.onclick = (e) => {
+                            modalHasChanges = true;
+                            const action = e.target.getAttribute('data-action');
+                            const validationType = e.target.getAttribute('data-validation-type');
+                            const grupoBotoes = modalBody.querySelectorAll(`[data-validation-type="${validationType}"]`);
+                            
+                            const decisaoAtual = grupoBotoes[0].classList.contains('active') ? 
+                                                (grupoBotoes[0].getAttribute('data-action').includes('atende') ? 'aprovado' : 'rejeitado') : 
+                                                (grupoBotoes[1].classList.contains('active') ? 
+                                                (grupoBotoes[1].getAttribute('data-action').includes('atende') ? 'aprovado' : 'rejeitado') : 'pendente');
+                            
+                            const novaDecisao = action.includes('atende') ? 'aprovado' : 'rejeitado';
+                            const decisaoMudou = decisaoAtual !== 'pendente' && decisaoAtual !== novaDecisao;
+
+                            if (decisaoMudou && linksDisplay) {
+                                console.log(`🔄 Mudança de decisão detectada: ${decisaoAtual} → ${novaDecisao}. Resetando links...`);
+                                
+                                Swal.fire({
+                                    title: 'Mudança de Decisão',
+                                    text: 'Os links de referência serão resetados para garantir consistência com a nova decisão.',
+                                    icon: 'info',
+                                    confirmButtonText: 'Entendido',
+                                    confirmButtonColor: 'var(--azul-gov-principal)'
+                                }).then(() => {
+                                    linksDisplay.innerHTML = '<span style="font-size: 0.85em; color: #6c757d;">Nenhum link adicionado.</span>';
+                                });
+                            }
+
+                            grupoBotoes.forEach(btn => btn.classList.remove('active'));
+                            e.target.classList.add('active');
+                            atualizarBadgeStatusModal(validationType, action.includes('atende'));
+                        };
                     });
 
                     if (comentarioTextareaInterno) {
                         comentarioTextareaInterno.oninput = () => { modalHasChanges = true; };
                     }
+
+                    configurarLinksAnaliseFinalModal();
                 }
 
                 configurarListenersInternosModal();
@@ -1311,6 +1631,97 @@
                 }    
             }
 
+            function configurarLinksAnaliseFinalModal() {
+                const btnAddLink = modalBody.querySelector('.btn-add-link-analista-final');
+                const linksDisplay = modalBody.querySelector('#modal-links-analise-final-display');
+
+                if (btnAddLink) {
+                    btnAddLink.onclick = async () => {
+                        const { value: url } = await Swal.fire({
+                            title: 'Adicionar Link de Referência da Análise Final',
+                            input: 'url',
+                            inputLabel: 'URL do Link',
+                            inputPlaceholder: 'https://exemplo.com',
+                            showCancelButton: true,
+                            confirmButtonText: 'Adicionar Link',
+                            cancelButtonText: 'Cancelar',
+                            confirmButtonColor: 'var(--azul-gov-principal)',
+                            inputValidator: (value) => {
+                                if (!value) { return 'Você precisa digitar um endereço web!'; }
+                                if (!value.includes('.')) { return 'Insira um endereço válido (ex: www.exemplo.com)'; }
+                                return null;
+                            },
+                            preConfirm: (value) => {
+                                let finalUrl = value.trim();
+                                if (!/^(https?:\/\/|\/\/)/i.test(finalUrl)) {
+                                    finalUrl = 'https://' + finalUrl;
+                                }
+                                return finalUrl;
+                            }
+                        });
+
+                        if (url && linksDisplay) {
+                            const noLinksMessage = linksDisplay.querySelector('span');
+                            if (noLinksMessage) {
+                                noLinksMessage.remove();
+                            }
+
+                            const newLinkItem = document.createElement('div');
+                            newLinkItem.className = 'evidence-item';
+                            newLinkItem.setAttribute('data-link', url);
+                            newLinkItem.innerHTML = `
+                                <a href="${url}" target="_blank" title="${url}">${url}</a>
+                                <button class="remove-evidence-btn remove-link-analista-btn" 
+                                        data-link="${url}" 
+                                        title="Remover Link">&times;</button>
+                            `;
+
+                            linksDisplay.appendChild(newLinkItem);
+                            modalHasChanges = true;
+                            
+                            const removeBtn = newLinkItem.querySelector('.remove-link-analista-btn');
+                            if (removeBtn) {
+                                removeBtn.onclick = (e) => {
+                                    e.preventDefault();
+                                    newLinkItem.remove();
+                                    modalHasChanges = true;
+                                    
+                                    if (linksDisplay.querySelectorAll('.evidence-item').length === 0) {
+                                        linksDisplay.innerHTML = '<span style="font-size: 0.85em; color: #6c757d;">Nenhum link adicionado.</span>';
+                                    }
+                                };
+                            }
+
+                            Swal.fire({ 
+                                toast: true, 
+                                position: 'top-end', 
+                                icon: 'success', 
+                                title: 'Link adicionado!', 
+                                showConfirmButton: false, 
+                                timer: 1500 
+                            });
+                        }
+                    };
+                }
+
+                // Configurar eventos de remoção para links existentes
+                linksDisplay.querySelectorAll('.remove-link-analista-btn').forEach(btn => {
+                    btn.onclick = (e) => {
+                        e.preventDefault();
+                        const item = e.target.closest('.evidence-item');
+                        if (item) {
+                            item.remove();
+                            modalHasChanges = true;
+                            
+                            // Se não houver mais links, mostrar mensagem
+                            if (linksDisplay.querySelectorAll('.evidence-item').length === 0) {
+                                linksDisplay.innerHTML = '<span style="font-size: 0.85em; color: #6c757d;">Nenhum link adicionado.</span>';
+                            }
+                        }
+                    };
+                });
+            }
+
             async function salvarAnaliseFinal() {
                 const respostaId = currentModalRespostaId;
                 const resposta = avaliacaoCompleta.respostas.find(r => r.id === respostaId);
@@ -1327,18 +1738,32 @@
                         decisaoFinal = 'aprovado';
                     } else {
                         decisaoFinal = resposta.analiseFinal?.statusValidacaoPosRecurso || resposta.statusValidacao || 'pendente';
-                        console.warn(`[Salvar Modal - Revisado] Nenhum botão ativo detectado para ${respostaId}. Usando status fallback: ${decisaoFinal}`);
                     }
+
+                    const linksAnaliseFinal = [];
+                    const linksDisplay = modalBody.querySelector('#modal-links-analise-final-display');
+                    if (linksDisplay) {
+                        linksDisplay.querySelectorAll('.evidence-item').forEach(item => {
+                            const link = item.querySelector('a')?.href;
+                            if (link && link.trim() !== '') {
+                                linksAnaliseFinal.push(link);
+                            }
+                        });
+                    }
+
+                    console.log('Links coletados para envio:', linksAnaliseFinal);
 
                     let payload = {
                         analiseFinal: {
                             comentario: document.getElementById('modal-analise-final-comment')?.value || '',
                             statusValidacaoPosRecurso: decisaoFinal 
                         },
+                        comentarioAnaliseFinal: document.getElementById('modal-analise-final-comment')?.value || '', 
+                        linksAnaliseFinal: linksAnaliseFinal,
                         atende: (decisaoFinal === 'aprovado')
                     };
 
-                    console.log('Enviando análise final (REVISADO):', JSON.stringify(payload));
+                    console.log('Enviando análise final com payload:', JSON.stringify(payload));
 
                     const statusBadge = modalBody.querySelector('.validation-actions .status-validacao');
                     let originalBadgeText = '';
@@ -1349,7 +1774,6 @@
                         statusBadge.textContent = 'Salvando...';
                         statusBadge.className = 'status-validacao status-pendente'; 
                     }
-
 
                     const response = await fetch(`/api/respostas/${respostaId}/analise-final`, {
                         method: 'PATCH',
@@ -1376,19 +1800,24 @@
                     if (index !== -1) {
                         avaliacaoCompleta.respostas[index] = {
                             ...avaliacaoCompleta.respostas[index],
-                            analiseFinal: respostaAtualizada.analiseFinal || {}, 
-                            atende: respostaAtualizada.atende, 
-                            statusValidacaoPosRecurso: respostaAtualizada.analiseFinal?.statusValidacaoPosRecurso 
+                            analiseFinal: respostaAtualizada.analiseFinal || {},
+                            comentarioAnaliseFinal: respostaAtualizada.comentarioAnaliseFinal, 
+                            linksAnaliseFinal: respostaAtualizada.linksAnaliseFinal || [],
+                            atende: respostaAtualizada.atende
                         };
-                        avaliacaoCompleta.respostas[index].atendeOriginal = resposta.atendeOriginal;
-                        console.log(`[Salvar Modal - Revisado] Dados locais atualizados para ${respostaId}: atende=${respostaAtualizada.atende}, statusFinal=${respostaAtualizada.analiseFinal?.statusValidacaoPosRecurso}`);
                     }
 
                     recalcularEExibirPontuacoes(); 
 
                     Swal.fire({
-                        toast: true, position: 'top-end', icon: 'success',
-                        title: 'Análise Final Salva!', showConfirmButton: false, timer: 1500
+                        toast: true, 
+                        position: 'top-end', 
+                        icon: 'success',
+                        title: 'Análise Final Salva!', 
+                        showConfirmButton: false, 
+                        timer: 1500
+                    }).then(() => {
+                        window.location.reload();
                     });
 
                     document.getElementById('modal-validation-interface').style.display = 'none';
@@ -1396,10 +1825,6 @@
                     if(editarBtn) editarBtn.textContent = 'Alterar Análise Final'; 
                     isModalEditing = false;
                     modalHasChanges = false;
-
-                    abrirModal(avaliacaoCompleta.respostas.find(r => r.id === respostaId));
-                    renderizarCardsDeResposta();
-                    configurarBotaoFinal();
 
                 } catch (error) {
                     console.error('❌ Erro ao salvar análise final:', error);
@@ -1419,7 +1844,6 @@
             }
 
 
-            // FUNÇÃO: Fechar modal
             function fecharModal() {
                 if (isModalEditing && modalHasChanges) {
                     Swal.fire({
@@ -2055,7 +2479,7 @@
                             <span><strong>URL Avaliada:</strong> ${avaliacaoCompleta.urlSecretaria}</span>
                             <span><strong>Enviado em:</strong> ${dataFormatada}</span>
                             <span><strong>Responsável:</strong> ${avaliacaoCompleta.nomeResponsavel}</span>
-                            <span><strong>Status:</strong> ${avaliacaoCompleta.status}</span>
+                            <span><strong>Email:</strong> ${avaliacaoCompleta.emailResponsavel}</span>
                         </div>
                     `;
 

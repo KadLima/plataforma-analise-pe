@@ -101,7 +101,7 @@
 
         .card-com-recurso-verde::before,
         .card-com-recurso-vermelho::before {
-            content: "📤 RECURSO";
+            content: "RECURSO";
             position: absolute;
             top: 10px;
             right: 10px;
@@ -299,32 +299,40 @@
         }
 
         .analise-scge-destaque .status-validacao {
-            font-size: 0.85em;
-            padding: 6px 12px;
+            font-size: 0.8em;
+            padding: 4px 8px;
             border-radius: 6px;
         }
 
         .comentario-analista-destaque {
-            background-color: #fff3cd;
-            border-left: 4px solid var(--amarelo-gov-detalhe);
+            margin-bottom: 15px;
             padding: 15px;
+            background-color: #f8f9fa;
             border-radius: 6px;
-            margin: 15px 0 0 0;
+            border-left: 4px solid var(--amarelo-gov-detalhe) !important;
             font-style: normal !important;
         }
 
         .comentario-analista-destaque strong {
-            color: var(--azul-gov-principal);
-            display: block;
-            margin-bottom: 8px;
-            font-size: 0.95em;
+            margin: 0 0 10px 0 !important;
+            font-size: 0.95em !important;
+            color: var(--cinza-texto) !important; 
+            font-weight: 600 !important;
+            background: none !important;
+            padding: 0 !important;
+            text-align: left !important;
+            width: 100% !important;
+            display: block !important;
         }
 
         .comentario-analista-destaque p {
             margin: 0;
-            color: #000000 !important;
+            color: #5555 !important;
             font-weight: 500;
             line-height: 1.4;
+            word-wrap: break-word !important;
+            white-space: pre-wrap !important;
+            overflow-wrap: break-word !important;
         }
         
         .resposta-header { 
@@ -554,7 +562,92 @@
             font-size: 0.9em; 
         }
         .evidence-item a { word-break: break-all; }
-        .comment-section p { margin: 0; font-style: italic; color: #555; }
+
+        .link-comprovante-wrapper {
+            margin-bottom: 15px;
+            padding: 15px !important;
+            background-color: #ffffff !important;
+            border-radius: 15px;
+            border-left: 4px solid var(--verde-sucesso) !important; 
+            width: 95% !important; 
+            max-width: 95% !important; 
+        }
+
+        .evidence-container {
+            margin-bottom: 10px;
+        }
+
+        .evidence-list-recurso {
+            display: flex;
+            flex-direction: column;
+            gap: 6px !important;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 0;
+            border: none !important; 
+            border-radius: 0; 
+            background-color: transparent !important; 
+            margin-bottom: 8px;
+            max-width: 98%;
+            box-sizing: border-box;
+        }
+
+        .evidence-list-recurso .evidence-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white !important;
+            padding: 6px 10px !important;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+            transition: all 0.2s ease;
+        }
+
+
+        .evidence-list-recurso .evidence-item:hover {
+            background-color: #f8f9fa;
+            border-color: #007bff;
+        }
+
+        .evidence-list-recurso .evidence-item a {
+            flex: 1;
+            word-break: break-all;
+            margin-right: 10px;
+            color: #0056b3;
+            text-decoration: none;
+        }
+
+        .evidence-list-recurso .evidence-item a:hover {
+            text-decoration: underline;
+        }
+
+        .evidence-list-recurso .remove-evidence-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background-color 0.2s ease;
+        }
+
+        .evidence-list-recurso .remove-evidence-btn:hover {
+            background: #c82333;
+        }
+        .comment-section p { 
+            margin: 0; 
+            font-style: italic; 
+            color: #555; 
+            word-wrap: break-word; 
+            white-space: pre-wrap; 
+            overflow-wrap: break-word; 
+        }
         
         .admin-feedback-box { 
             margin-top: 15px; 
@@ -566,6 +659,53 @@
         .admin-feedback-box h4 { 
             margin: 0 0 10px 0; 
             color: var(--azul-gov-principal); 
+        }
+
+        .comment-section p,
+        .admin-feedback-box p,
+        .recurso-comment,
+        .admin-comment,
+        .comentario-analista-destaque p,
+        .detalhes-recurso .info-item,
+        .info-block p {
+            word-wrap: break-word; 
+            white-space: pre-wrap; 
+            overflow-wrap: break-word; 
+        }
+
+        .comentario-analista-destaque p {
+            margin: 0;
+            color: #000000 !important;
+            font-weight: 500;
+            line-height: 1.4;
+            word-wrap: break-word; 
+            white-space: pre-wrap; 
+            overflow-wrap: break-word; 
+        }
+
+        .recurso-comment { 
+            width: 100%; 
+            box-sizing: border-box; 
+            padding: 10px; 
+            border: 1px solid var(--cinza-borda); 
+            border-radius: 6px; 
+            font-size: 0.9em; 
+            min-height: 70px; 
+            resize: none; 
+            font-family: 'Segoe UI', Arial, sans-serif;
+            word-wrap: break-word; 
+            white-space: pre-wrap; 
+            overflow-wrap: break-word; 
+        }
+
+        .detalhes-recurso .info-item {
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            word-wrap: break-word; 
+            white-space: pre-wrap; 
+            overflow-wrap: break-word; 
         }
         
         .recurso-box { 
@@ -643,6 +783,7 @@
             display: none; 
             width: 100%; 
             margin-top: 15px; 
+            background: #f9f7f7;
         }
         .link-comprovante-wrapper.show { 
             display: block; 
@@ -671,8 +812,8 @@
             font-size: 0.8em; 
             border-radius: 6px; 
             border: 1px solid var(--azul-gov-principal); 
-            background-color: var(--branco); 
-            color: var(--azul-gov-principal); 
+            background-color: var(--branco) !important;
+            color: var(--azul-gov-principal) !important; 
             font-weight: bold; 
             cursor: pointer; 
             transition: all 0.3s ease;
@@ -765,59 +906,64 @@
             gap: 2px;
         }
 
-        .links-analista-section {
-            margin: 15px 0 0 0;
-            padding: 0;
-        }
-
-        .links-analista-section h5 {
-            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
-            color: white !important;
-            padding: 8px 12px !important;
-            margin: 0 0 10px 0 !important;
+        .link-analista-container {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
             border-radius: 6px;
-            font-size: 0.9em !important;
-            font-weight: 600 !important;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            border-left: 4px solid var(--azul-gov-principal);
         }
 
-        .links-analista-compact {
-            background: #f8f9fa;
+        .link-analista-container h5 {
+            margin: 0 0 10px 0 !important;
+            font-size: 0.95em !important;
+            color: var(--azul-gov-principal) !important;
+            font-weight: 600 !important;
+            background: none !important;
+            padding: 0 !important;
+            text-align: left !important;
+            width: 100% !important;
+            display: block !important;
+        }
+
+        .link-analista-display {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 8px;
             border: 1px solid #e9ecef;
             border-radius: 6px;
-            padding: 12px;
-            margin: 0;
+            background-color: #f8f9fa;
         }
 
-        .links-analista-compact .evidence-list {
-            margin: 0;
-            max-height: 120px;
-            overflow-y: auto;
-        }
-
-        .links-analista-compact .evidence-item {
-            background: white;
-            border: 1px solid #dee2e6;
-            margin-bottom: 6px;
-            padding: 6px 10px;
+        .link-analista-display .evidence-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            padding: 8px 12px;
             border-radius: 4px;
-            font-size: 0.85em;
+            border: 1px solid #dee2e6;
+            transition: all 0.2s ease;
         }
 
-        .links-analista-compact .evidence-item:last-child {
-            margin-bottom: 0;
+        .link-analista-display .evidence-item:hover {
+            background-color: #f8f9fa;
+            border-color: #007bff;
         }
 
-        .links-analista-compact .evidence-item a {
+        .link-analista-display .evidence-item a {
+            flex: 1;
+            word-break: break-all;
+            margin-right: 10px;
             color: #0056b3;
             text-decoration: none;
         }
 
-        .links-analista-compact .evidence-item a:hover {
+        .link-analista-display .evidence-item a:hover {
             text-decoration: underline;
-            color: #003d7a;
         }
 
         .tem-links-analista {
@@ -841,9 +987,28 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
-        /* Se já tiver badge de recurso, ajusta a posição */
         .tem-links-analista.tem-recurso-enviado::before {
             right: 80px;
+        }
+
+        .resposta-header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            gap: 15px;
+        }
+
+        .resposta-header-content strong {
+            flex: 1;
+            margin-right: 15px;
+            word-wrap: break-word;
+            min-width: 0;
+        }
+
+        .summary-status-badge {
+            flex-shrink: 0;
+            white-space: nowrap;
         }
 
     </style>
@@ -964,14 +1129,37 @@
                         const evidenceList = this.closest('.evidence-container').querySelector('.evidence-list');
                         Swal.fire({
                             title: 'Adicionar Nova Evidência',
-                            input: 'url',
+                            input: 'text',
                             inputLabel: 'URL do Link de Comprovação',
-                            inputPlaceholder: 'https://exemplo.com.br/',
+                            inputPlaceholder: 'exemplo.com.br ou https://exemplo.com.br',
                             confirmButtonText: 'Adicionar',
                             confirmButtonColor: 'var(--azul-gov-principal)',
                             showCancelButton: true,
                             cancelButtonText: 'Cancelar',
-                            cancelButtonColor: 'var(--vermelho-destaque)'
+                            cancelButtonColor: 'var(--vermelho-destaque)',
+                            inputValidator: (value) => {
+                                if (!value) {
+                                    return 'Você precisa digitar um endereço web!';
+                                }
+                                if (/\s/.test(value)) { 
+                                    return 'O endereço não pode conter espaços.';
+                                }
+                                if (value.length > 0 && !value.includes('.')) { 
+                                    return 'Insira um endereço válido (ex: exemplo.com)';
+                                }
+                                return null; 
+                            },
+                            preConfirm: (value) => {
+                                let finalUrl = value.trim();
+                                
+                                finalUrl = finalUrl.replace(/^(https?:\/\/|\/\/)/i, '');
+                                
+                                if (!/^(https?:\/\/)/i.test(finalUrl)) {
+                                    finalUrl = 'https://' + finalUrl;
+                                }
+                                
+                                return finalUrl;
+                            }
                         }).then((result) => {
                             if (result.isConfirmed && result.value) {
                                 const url = result.value;
@@ -1271,16 +1459,14 @@
                     let linksAnalistaHTML = '';
                     if (resposta.linksAnalista && resposta.linksAnalista.length > 0) {
                         linksAnalistaHTML = `
-                            <div class="links-analista-section">
-                                <h5>Links de Referência</h5>
-                                <div class="links-analista-compact">
-                                    <ul class="evidence-list">
-                                        ${resposta.linksAnalista.map(link => `
-                                            <li class="evidence-item">
-                                                <a href="${link.url}" target="_blank" title="Abrir link em nova aba">${link.url}</a>
-                                            </li>
-                                        `).join('')}
-                                    </ul>
+                            <div class="link-analista-container">
+                                <h5>Links de Referência do Analista</h5>
+                                <div class="link-analista-display">
+                                    ${resposta.linksAnalista.map(link => `
+                                        <div class="evidence-item">
+                                            <a href="${link.url}" target="_blank" title="Abrir link em nova aba">${link.url}</a>
+                                        </div>
+                                    `).join('')}
                                 </div>
                             </div>`;
                     }
@@ -1289,9 +1475,9 @@
                         <div class="info-block analise-scge-destaque">
                             <h5>Análise da SCGE</h5>
                             
-                            <div style="display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; margin-bottom: 15px;">
-                                <strong>Resultado:</strong>
-                                <span class="status-validacao ${statusClass}" style="justify-self: start;">${statusTexto}</span>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                                <strong style="font-size: 0.9em;">Resultado:</strong>
+                                <span class="status-validacao ${statusClass}" style="font-size: 0.8em; padding: 4px 8px;">${statusTexto}</span>
                             </div>
                             
                             ${linksAnalistaHTML}
@@ -1299,7 +1485,7 @@
                             ${resposta.comentarioAdmin ? `
                                 <div class="comentario-analista-destaque">
                                     <strong>Comentário do Analista:</strong>
-                                    <p>"${resposta.comentarioAdmin}"</p>
+                                    <p style="color: #666666 !important; margin: 0 !important;">"${resposta.comentarioAdmin}"</p>
                                 </div>
                             ` : `
                                 <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 6px; margin-top: 10px;">
@@ -1465,6 +1651,97 @@
                 return { pontuacaoSecretaria: Math.round(pontuacaoSecretariaOriginal), pontuacaoAdmin: Math.round(pontuacaoAdmin), pontuacaoTotal };
             }
 
+            function gerarCSVRecurso() {
+                if (!avaliacaoCompleta || !Array.isArray(avaliacaoCompleta.respostas)) {
+                    console.error("Dados da avaliação inválidos para gerar CSV.");
+                    Swal.fire('Erro', 'Não foi possível gerar o CSV. Dados da avaliação ausentes.', 'error');
+                    return;
+                }
+
+                console.log("Iniciando geração do CSV para recurso...");
+
+                const headers = [
+                    "Requisito",
+                    "Pontuacao",
+                    "Sua Resposta Original", 
+                    "Seu Comentario Original",
+                    "Suas Evidencias Originais",
+                    "1ª Validação SCGE"
+                ].join(';');
+
+                const rows = avaliacaoCompleta.respostas.map(resposta => {
+                    const req = resposta.requisito || {};
+                    
+                    const requisito = req.texto || '';                  
+                    const pontuacao = req.pontuacao || 0;
+                    const respostaOriginal = resposta.atendeOriginal === true ? 'Atende' : 
+                            resposta.atendeOriginal === false ? 'Não Atende' : 'N/A';
+                    
+                    const comentarioOriginal = resposta.comentarioSecretaria || '';
+                    
+                    const evidenciasOriginais = Array.isArray(resposta.evidencias) ? 
+                        resposta.evidencias
+                            .filter(e => e.tipo === 'original')
+                            .map(e => e.url)
+                            .join(' | ') : '';
+                    
+                    let analiseSCGE = '';
+                    if (resposta.statusValidacao === 'aprovado') {
+                        analiseSCGE = 'Atende';
+                    } else if (resposta.statusValidacao === 'rejeitado') {
+                        analiseSCGE = 'Não Atende';
+                    } else {
+                        analiseSCGE = 'Pendente';
+                    }
+
+                    const escapeCSV = (field) => {
+                        const str = String(field === null || field === undefined ? '' : field);
+                        const sanitized = str.replace(/;/g, ',');
+                        if (sanitized.includes('"') || sanitized.includes('\n') || sanitized.includes('\r') || sanitized.includes(',')) {
+                            return `"${sanitized.replace(/"/g, '""')}"`;
+                        }
+                        return sanitized;
+                    };
+
+                    return [
+                        escapeCSV(requisito),
+                        escapeCSV(pontuacao),
+                        escapeCSV(respostaOriginal),
+                        escapeCSV(comentarioOriginal),
+                        escapeCSV(evidenciasOriginais),
+                        escapeCSV(analiseSCGE)
+                    ].join(';');
+                });
+
+                const csvContent = [headers, ...rows].join('\n');
+
+                const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+
+                const link = document.createElement("a");
+                if (link.download !== undefined) {
+                    const url = URL.createObjectURL(blob);
+                    const nomeArquivo = `relatorio_recurso_${avaliacaoCompleta.secretaria?.sigla || avaliacaoId}_${new Date().toISOString().slice(0,10)}.csv`;
+                    link.setAttribute("href", url);
+                    link.setAttribute("download", nomeArquivo);
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    console.log("Download CSV para recurso iniciado.");
+                    
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'CSV baixado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                } else {
+                    Swal.fire('Erro', 'Seu navegador não suporta a funcionalidade de download direto.', 'error');
+                }
+            }
+
             function renderizarCardsDeResposta() {
                 if (!avaliacaoCompleta || !Array.isArray(avaliacaoCompleta.respostas)) {
                     respostasContainer.innerHTML = '<p>Nenhuma resposta encontrada.</p>';
@@ -1495,11 +1772,11 @@
                     const requisitosComRecurso = avaliacaoCompleta.respostas.filter(r => r.recursoEnviado).length;
                     respostasContainer.innerHTML = `
                         <div class="recurso-info-card" style="margin-bottom: 25px;">
-                            <h4>📤 Recurso Enviado para Análise</h4>
+                            <h4>Recurso Enviado para Análise</h4>
                             <p>Seu recurso foi enviado com sucesso e está em análise pela Controladoria Geral do Estado.</p>
                             <p><strong>Requisitos com recurso:</strong> ${requisitosComRecurso} de ${avaliacaoCompleta.respostas.length}</p>
                             <p style="font-size: 0.9em; color: #6c757d; margin-top: 10px;">
-                                ⏳ O prazo estimado para análise é de 10 dias úteis.
+                                O prazo estimado para análise é de 10 dias úteis.
                             </p>
                         </div>
                     `;
@@ -1678,8 +1955,10 @@
                             <div class="resposta-card ${cardClass} ${cardExtraClass}" data-resposta-id="${resposta.id}" ${cursorStyle}>
                                 ${alertaRecursoHTML}
                                 <div class="resposta-header ${headerExtraClass}">
-                                    <strong>${resposta.requisito.texto}</strong>
-                                    <span class="summary-status-badge ${statusClass}">${statusTexto}</span>
+                                    <div class="resposta-header-content">
+                                        <strong>${resposta.requisito.texto}</strong>
+                                        <span class="summary-status-badge ${statusClass}">${statusTexto}</span>
+                                    </div>
                                 </div>
                                 ${detalhesRecursoHTML}
                                 ${cardContent}
@@ -1689,8 +1968,10 @@
                         return `
                             <div class="resposta-card ${cardClass} ${cardExtraClass}" data-resposta-id="${resposta.id}" data-resposta='${respostaData}' role="article" ${cursorStyle}>
                                 <div class="summary-header ${headerExtraClass}" tabindex="0" role="button" aria-expanded="false">
-                                    <strong>${resposta.requisito.texto}</strong>
-                                    <span class="summary-status-badge ${statusClass}">${statusTexto}</span>
+                                    <div class="resposta-header-content">
+                                        <strong>${resposta.requisito.texto}</strong>
+                                        <span class="summary-status-badge ${statusClass}">${statusTexto}</span>
+                                    </div>
                                 </div>
                             </div>`;
                     }
@@ -1859,6 +2140,84 @@
                 });
             }
 
+            // === NOVA FUNÇÃO PARA CALCULAR E SALVAR NOTA PÓS-RECURSO ===
+            async function calcularESalvarNotaPosRecurso(avaliacaoId, respostasDoRecurso) {
+                try {
+                    console.log('🧮 Calculando nota pós-recurso...');
+                    
+                    // Buscar dados atualizados da avaliação
+                    const response = await fetch(`/api/my-avaliacoes/${avaliacaoId}`, {
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Não foi possível buscar dados da avaliação');
+                    }
+                    
+                    const avaliacaoAtualizada = await response.json();
+                    let pontuacaoPosRecurso = 0;
+                    let pontuacaoTotal = 0;
+
+                    avaliacaoAtualizada.respostas.forEach(resposta => {
+                        const pontuacaoRequisito = resposta.requisito?.pontuacao || 0;
+                        pontuacaoTotal += pontuacaoRequisito;
+
+                        let pontuacaoRequisitoPosRecurso = 0;
+                        const teveRecurso = resposta.recursoAtende !== null || 
+                                        resposta.comentarioRecurso ||
+                                        (Array.isArray(resposta.evidencias) && resposta.evidencias.some(e => e.tipo === 'recurso'));
+
+                        console.log(`Requisito ${resposta.requisitoId}:`);
+                        console.log(`   - Pontuação: ${pontuacaoRequisito}`);
+                        console.log(`   - Teve recurso: ${teveRecurso}`);
+                        console.log(`   - recursoAtende: ${resposta.recursoAtende}`);
+
+                        if (teveRecurso) {
+                            if (resposta.recursoAtende === true) {
+                                pontuacaoRequisitoPosRecurso = pontuacaoRequisito;
+                                console.log(`   ✅ Adiciona ${pontuacaoRequisito} (recurso = true)`);
+                            } else {
+                                console.log(`   ❌ Não adiciona (recurso = false)`);
+                            }
+                        } else {
+                            if (resposta.statusValidacao === 'aprovado') {
+                                pontuacaoRequisitoPosRecurso = pontuacaoRequisito;
+                                console.log(`   ✅ Adiciona ${pontuacaoRequisito} (sem recurso, aprovado)`);
+                            } else {
+                                console.log(`   ❌ Não adiciona (sem recurso, não aprovado)`);
+                            }
+                        }
+                        
+                        pontuacaoPosRecurso += pontuacaoRequisitoPosRecurso;
+                    });
+
+                    const notaCalculada = Math.round(pontuacaoPosRecurso);
+                    console.log(`🎯 Nota pós-recurso calculada: ${notaCalculada}/${pontuacaoTotal}`);
+
+                    const saveResponse = await fetch(`/api/avaliacoes/${avaliacaoId}/nota-pos-recurso`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: JSON.stringify({ pontuacaoPosRecurso: notaCalculada })
+                    });
+
+                    if (!saveResponse.ok) {
+                        const errorData = await saveResponse.json().catch(() => ({}));
+                        throw new Error(errorData.error || 'Falha ao salvar nota');
+                    }
+
+                    const result = await saveResponse.json();
+                    console.log(`✅ Nota pós-recurso salva no banco: ${result.pontuacaoPosRecurso}`);
+                    return result;
+
+                } catch (error) {
+                    console.error('❌ Erro ao salvar nota pós-recurso:', error);
+                    return { success: false, error: error.message };
+                }
+            }
+
             async function enviarRecurso() {
                 if (prazoExpirado) {
                     Swal.fire({
@@ -1943,7 +2302,7 @@
                                     return `<li>${resposta?.requisito.texto || 'Requisito'}</li>`;
                                 }).join('')}
                             </ul>
-                            <p style="margin-top: 15px; color: #dc3545; font-weight: bold;">
+                            <p style="margin-top: 15px; color: #dc3545; font-weight:">
                                 ⚠️ Após o envio, não será possível editar o recurso.
                             </p>
                         </div>
@@ -1973,6 +2332,15 @@
                             if (!response.ok) {
                                 const errorData = await response.json().catch(() => ({}));
                                 throw new Error(errorData.error || "Falha ao enviar recurso.");
+                            }
+
+                            console.log('🔄 Iniciando cálculo da nota pós-recurso...');
+                            const notaResult = await calcularESalvarNotaPosRecurso(avaliacaoId, respostasDoRecurso);
+                            
+                            if (notaResult.success) {
+                                console.log('🎉 Nota pós-recurso salva com sucesso durante envio do recurso');
+                            } else {
+                                console.warn('⚠️ Nota pós-recurso não foi salva, mas recurso foi enviado');
                             }
 
                             try {
@@ -2006,7 +2374,6 @@
                                 confirmButtonColor: 'var(--azul-gov-principal)'
                             });
                             
-                            // Limpar rascunho e redirecionar
                             localStorage.removeItem(`rascunho_recurso_${avaliacaoId}`);
                             window.location.href = '/dashboard';
                             
@@ -2124,7 +2491,6 @@
                     </div>
                 `;
 
-                // CALCULAR E EXIBIR PONTUAÇÕES
                 const pontuacoes = calcularPontuacaoRecurso();
                 scoreSecretariaEl.textContent = `${pontuacoes.pontuacaoSecretaria} / ${pontuacoes.pontuacaoTotal}`;
                 scoreAdminEl.textContent = `${pontuacoes.pontuacaoAdmin} / ${pontuacoes.pontuacaoTotal}`;
@@ -2132,13 +2498,19 @@
                 renderizarCardsDeResposta();
                 adicionarEventListeners();
 
-                // CONFIGURAR BOTÕES DE AÇÃO
                 if(avaliacaoCompleta.status === 'AGUARDANDO_RECURSO' && !prazoExpirado) {
                     recursoActionsContainer.innerHTML = `
-                        <button id="enviar-recurso-btn" class="btn">Enviar Recurso para Reanálise</button>
+                        <div style="display: flex; gap: 15px; justify-content: flex-end; align-items: center; flex-wrap: wrap;">
+                            <button id="csv-recurso-btn" class="btn" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                                Baixar CSV para Análise
+                            </button>
+                            <button id="enviar-recurso-btn" class="btn">Enviar Recurso para Reanálise</button>
+                        </div>
                     `;
                     
                     document.getElementById('enviar-recurso-btn').addEventListener('click', enviarRecurso);
+                    document.getElementById('csv-recurso-btn').addEventListener('click', gerarCSVRecurso);
+
                 } else if (avaliacaoCompleta.status === 'AGUARDANDO_RECURSO' && prazoExpirado) {
                     recursoActionsContainer.innerHTML = `
                         <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px; margin-top: 20px;">

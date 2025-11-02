@@ -57,11 +57,11 @@ model Avaliacao {
   recursoExpirado      Boolean   @default(false)
   status           AvaliacaoStatus   @default(PENDENTE_SECRETARIA) 
   ciclo            Int               @default(2025)
-  pontuacaoFinal   Float?  
   secretaria       Secretaria        @relation(fields: [secretariaId], references: [id])
   secretariaId     Int
   respostas        Resposta[]
 
+  pontuacaoFinal   Float?  
   pontuacaoAutoavaliacao  Float? 
   pontuacaoPrimeiraAnalise Float? 
   pontuacaoPosRecurso      Float? 
@@ -79,8 +79,8 @@ model Resposta {
   comentarioAdmin           String?
   comentarioSecretaria      String?
   comentarioRecurso         String?
+  comentarioAnaliseFinal String?
  
-
   statusRecurso             String?
   statusValidacao           String   @default("pendente")
   statusValidacaoPosRecurso           String?
@@ -95,6 +95,7 @@ model Resposta {
   avaliacaoId               Int
   evidencias                Evidencia[]
   linksAnalista             LinkAnalista[]
+  linksAnaliseFinal         LinkAnaliseFinal[]  
 }
 
 model Secretaria {
@@ -115,6 +116,7 @@ model User {
   createdAt    DateTime   @default(now())
   secretaria   Secretaria @relation(fields: [secretariaId], references: [id])
   secretariaId Int
+  primeiroAcesso Boolean @default(true)
 }
 
 model CodigoVerificacao {
@@ -154,4 +156,11 @@ model LinkAnalista {
   createdAt  DateTime @default(now())
   
   @@index([respostaId])
+}
+
+model LinkAnaliseFinal {
+  id         Int      @id @default(autoincrement())
+  url        String
+  resposta   Resposta @relation(fields: [respostaId], references: [id])
+  respostaId Int
 }

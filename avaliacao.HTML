@@ -151,7 +151,14 @@
         .evidence-list { list-style: none; padding-left: 0; margin: 0; }
         .evidence-item { display: flex; justify-content: space-between; align-items: center; background-color: #f8f9fa; padding: 8px 12px; border-radius: 6px; margin-bottom: 5px; font-size: 0.9em; }
         .evidence-item a { word-break: break-all; }
-        .comment-section p { margin: 0; font-style: italic; color: #555; }
+        .comment-section p { 
+            margin: 0; 
+            font-style: italic; 
+            color: #555; 
+            word-wrap: break-word; 
+            white-space: pre-wrap; 
+            overflow-wrap: break-word; 
+        }
         .validation-section { margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--cinza-borda); }
         .admin-comment { 
             width: 100%; 
@@ -163,6 +170,16 @@
             min-height: 80px; 
             margin-bottom: 10px; 
             resize: none;
+            word-wrap: break-word; 
+            white-space: pre-wrap; 
+            overflow-wrap: break-word; 
+        }
+
+        .admin-feedback-box p {
+            word-wrap: break-word; 
+            white-space: pre-wrap; 
+            overflow-wrap: break-word; 
+            margin: 5px 0;
         }
         .validation-actions { display: flex; justify-content: flex-end; align-items: center; gap: 10px; }
         .btn { 
@@ -287,8 +304,21 @@
             flex-shrink: 0;
         }
 
-        .remove-evidence-btn:hover, .remove-link-analista-btn:hover {
-            background: #c82333;
+        .remove-evidence-btn, .remove-link-analista-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
         }
 
         .btn-add-evidence, .btn-add-link-analista {

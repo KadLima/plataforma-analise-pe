@@ -432,6 +432,35 @@
             margin-top: -20px; 
         }
 
+        .comment-container {
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 4px;
+            background: #ffffff;
+            border-radius: 3px;
+            border: 1px solid #ffffff;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+        }
+
+        .comment-container::-webkit-scrollbar {
+            width: 3px;
+        }
+
+        .comment-container::-webkit-scrollbar-track {
+            background: #ffffff;
+            border-radius: 3px;
+        }
+
+        .comment-container::-webkit-scrollbar-thumb {
+            background: #ffffff;
+            border-radius: 3px;
+        }
+
+        .comment-container::-webkit-scrollbar-thumb:hover {
+            background: #ffffff;
+        }
 
         .info-grid {
             display: grid;
@@ -630,10 +659,90 @@
             font-size: 1.1em;
         }
 
-        .btn-email::before { content: "📨​"; }
-        .btn-pdf::before { content: "📄"; }
-        .btn-print::before { content: "🖨️"; }
-        .btn-csv::before { content: "💾"; }
+        .percentage-card-header {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* REMOVER completamente o ::before com gradiente */
+        .percentage-card-header::before {
+            display: none;
+        }
+
+        .percentage-value-header {
+            font-size: 2em;
+            font-weight: bold;
+            line-height: 1;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .percentage-label-header {
+            font-size: 0.8em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.9;
+        }
+
+        .percentage-card-header.excelencia {
+            background: #FFD700; 
+            color: #ffffff;
+        }
+
+        .percentage-card-header.otimo {
+            background: #28a745; 
+            color: white;
+        }
+
+        .percentage-card-header.bom {
+            background: #FFD700; 
+            color: #333;
+        }
+
+        .percentage-card-header.melhoria {
+            background: #fd7e14; 
+            color: white;
+        }
+
+        .percentage-card-header.critico {
+            background: #dc3545; 
+            color: white;
+        }
+
+        .percentage-header-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-left: 30px;
+        }
+
+        .percentage-text-above {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: var(--azul-gov-principal);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-with-percentage {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        
 
 
         @media print {
@@ -695,8 +804,8 @@
                 <div class="logo">
                     <a href="/">
                         <img src="/assets/logo-header.png" alt="Logo do Governo de Pernambuco">
-                        <div class="SIMPE-marca-text-group">                     
-                            <img src="/assets/simpe.png" alt="Logo SIMPE" class="SIMPE-marca-small">                     
+                        <div class="SIMPE-marca-text-group">                     
+                            <img src="/assets/simpe.png" alt="Logo SIMPE" class="SIMPE-marca-small">                     
                         </div>
                     </a>
                 </div>
@@ -706,25 +815,37 @@
         </nav>
     </header>
 
-    <main id="relatorio-content"> <section class="status-header">
-            <h1>Relatório Final de Avaliação - Ciclo 2025</h1>
-            <div class="status-badge">AVALIAÇÃO FINALIZADA</div>
-            <div class="orgao-info">
-                <div>
-                    <strong>Órgão Avaliado:</strong>
-                    <span id="orgao-nome">Carregando...</span>
+    <main id="relatorio-content"> 
+        <section class="status-header">
+            <div class="header-with-percentage">
+                <div style="flex: 1;">
+                    <h1>Relatório Final de Avaliação - Ciclo 2025</h1>
+                    <div class="status-badge">AVALIAÇÃO FINALIZADA</div>
+                    <div class="orgao-info">
+                        <div>
+                            <strong>Órgão Avaliado:</strong>
+                            <span id="orgao-nome">Carregando...</span>
+                        </div>
+                        <div>
+                            <strong>Data de Finalização:</strong>
+                            <span id="data-finalizacao">Carregando...</span>
+                        </div>
+                        <div>
+                            <strong>Enviado por:</strong>
+                            <span id="responsavel-nome">Carregando...</span>
+                        </div>
+                        <div>
+                            <strong>Email:</strong>
+                            <span id="responsavel-email">Carregando...</span>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <strong>Data de Finalização:</strong>
-                    <span id="data-finalizacao">Carregando...</span>
-                </div>
-                <div>
-                    <strong>Enviado por:</strong>
-                    <span id="responsavel-nome">Carregando...</span>
-                </div>
-                <div>
-                    <strong>Email:</strong>
-                    <span id="responsavel-email">Carregando...</span>
+                <div class="percentage-header-container">
+                    <div class="percentage-text-above">Nota Final</div>
+                    <div id="percentage-card-header" class="percentage-card-header">
+                        <div class="percentage-value-header">--%</div>
+                        <div class="percentage-label-header">Percentual</div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -748,7 +869,7 @@
                     <div class="score-total">de <span id="total-pos-recurso">--</span> pontos</div>
                 </div>
                 <div class="score-item">
-                    <div class="score-label">Nota Final</div>
+                    <div class="score-label">Pontuação Final</div>
                     <div class="score-value" id="score-final">--</div>
                     <div class="score-total">de <span id="total-final">--</span> pontos</div>
                 </div>
@@ -904,6 +1025,33 @@
                 setTimeout(() => modalContent.focus(), 100);
             }
 
+            function determinarClassePorcentagem(percentual) {
+                if (percentual === 100) {
+                    return 'excelencia';
+                } else if (percentual >= 90 && percentual < 100) {
+                    return 'otimo';
+                } else if (percentual >= 70 && percentual < 90) {
+                    return 'bom';
+                } else if (percentual > 0 && percentual < 70) {
+                    return 'melhoria';
+                } else {
+                    return 'critico';
+                }
+            }
+
+            function atualizarCardPorcentagemHeader(pontuacaoFinal, pontuacaoTotal) {
+                if (pontuacaoTotal === 0) return;
+                
+                const percentual = (pontuacaoFinal / pontuacaoTotal) * 100;
+                const classeCor = determinarClassePorcentagem(percentual);
+                
+                const percentageCard = document.getElementById('percentage-card-header');
+                if (percentageCard) {
+                    percentageCard.className = `percentage-card-header ${classeCor}`;
+                    percentageCard.querySelector('.percentage-value-header').textContent = `${percentual.toFixed(1)}%`;
+                }
+            }
+
             async function enviarPorEmail() {
                  if (!emailResponsavel) {
                     if (avaliacaoData && avaliacaoData.emailResponsavel) {
@@ -987,7 +1135,6 @@
                 }
             }
 
-            // Função auxiliar para gerar PDF como Blob (CORRIGIDA - removida quebra de página por requisito)
             async function gerarPDFBlob() {
                 const element = document.getElementById('relatorio-content');
                 const actionButtons = document.querySelector('.action-buttons');
@@ -1045,7 +1192,6 @@
                 return pdfBlob;
             }
 
-            // Função para gerar e baixar PDF 
             function gerarPDF() {
                 const element = document.getElementById('relatorio-content');
                 const actionButtons = document.querySelector('.action-buttons');
@@ -1124,115 +1270,107 @@
                     return;
                 }
 
-                console.log("Iniciando geração do CSV...");
+                console.log("Iniciando geração do CSV simplificado...");
 
-                // Define o cabeçalho do CSV
                 const headers = [
-                    "ID Requisito",
                     "Requisito",
                     "Pontuação",
-                    "Sua Resposta Original",
+                    "Resposta Original",
                     "Seu Comentário Original",
                     "Suas Evidências Originais",
-                    "Resultado 1ª Análise SCGE",
-                    "Comentário 1ª Análise SCGE",
-                    "Houve Recurso?",
-                    "Sua Resposta no Recurso",
+                    "Sua Resposta no Recurso", 
                     "Seu Comentário no Recurso",
                     "Suas Evidências no Recurso",
-                    "Resultado Análise Final SCGE",
-                    "Comentário Análise Final SCGE"
+                    "Resultado Análise Final SCGE"
                 ];
 
-                // Mapeia as respostas para linhas do CSV
                 const rows = avaliacao.respostas.map(resposta => {
-                    const req = resposta.requisito || {}; // Garante que req não seja undefined
+                    const req = resposta.requisito || {}; 
                     const analiseFinal = resposta.analiseFinal || {};
 
-                    const atendeOriginalTexto = resposta.atendeOriginal === true ? 'Atende' : resposta.atendeOriginal === false ? 'Não Atende' : 'N/A';
-                    const evidenciasOriginais = (Array.isArray(resposta.evidencias) ? resposta.evidencias.filter(e => e.tipo === 'original').map(e => e.url) : []).join('; ');
-                    const linkComprovanteOriginal = resposta.linkComprovante || ''; // Link automático da pré-validação
+                    const requisito = req.texto || '';
 
-                    // Combina link automático com evidências manuais
-                    let todasEvidenciasOriginais = evidenciasOriginais;
-                    if (linkComprovanteOriginal && evidenciasOriginais) {
-                        todasEvidenciasOriginais = `${linkComprovanteOriginal}; ${evidenciasOriginais}`;
-                    } else if (linkComprovanteOriginal) {
-                        todasEvidenciasOriginais = linkComprovanteOriginal;
+                    const pontuacao = req.pontuacao || 0;
+
+                    const respostaOriginal = resposta.atendeOriginal === true ? 'Atende' : 
+                                        resposta.atendeOriginal === false ? 'Não Atende' : 'N/A';
+
+                    const comentarioOriginal = resposta.comentarioSecretaria || '';
+
+                    const evidenciasOriginais = Array.isArray(resposta.evidencias) ? 
+                        resposta.evidencias.filter(e => e.tipo === 'original').map(e => e.url) : [];
+                    
+                    if (resposta.linkComprovante) {
+                        evidenciasOriginais.unshift(resposta.linkComprovante);
                     }
+                    
+                    const evidenciasOriginaisTexto = evidenciasOriginais.length > 0 ? 
+                        evidenciasOriginais.join('; ') : '';
 
+                    const teveRecurso = resposta.recursoAtende !== null || 
+                                    resposta.comentarioRecurso || 
+                                    (Array.isArray(resposta.evidencias) && resposta.evidencias.some(e => e.tipo === 'recurso'));
+                    
+                    const respostaRecurso = teveRecurso ? 
+                                        (resposta.atende === true ? 'Atende' : 'Não Atende') : 'Não houve recurso';
 
-                    const resultadoPrimeiraAnalise = resposta.statusValidacao === 'aprovado' ? 'Aprovado' : resposta.statusValidacao === 'rejeitado' ? 'Rejeitado' : 'Pendente';
+                    const comentarioRecurso = teveRecurso ? (resposta.comentarioRecurso || '') : 'Não houve recurso';
 
-                    const teveRecurso = resposta.recursoAtende !== null || resposta.comentarioRecurso || (Array.isArray(resposta.evidencias) && resposta.evidencias.some(e => e.tipo === 'recurso'));
-                    const houveRecursoTexto = teveRecurso ? 'Sim' : 'Não';
-                    const respostaRecursoTexto = teveRecurso ? (resposta.atende === true ? 'Atende' : 'Não Atende') : ''; // Mostra a resposta *final* se houve recurso
-                    const comentarioRecurso = teveRecurso ? (resposta.comentarioRecurso || '') : '';
-                    const evidenciasRecurso = teveRecurso ? (Array.isArray(resposta.evidencias) ? resposta.evidencias.filter(e => e.tipo === 'recurso').map(e => e.url) : []).join('; ') : '';
-                    const linkComprovanteRecurso = teveRecurso ? (resposta.linkComprovanteRecurso || '') : '';
-
-                    let todasEvidenciasRecurso = evidenciasRecurso;
-                    if (linkComprovanteRecurso && evidenciasRecurso) {
-                        todasEvidenciasRecurso = `${linkComprovanteRecurso}; ${evidenciasRecurso}`;
-                    } else if (linkComprovanteRecurso) {
-                        todasEvidenciasRecurso = linkComprovanteRecurso;
+                    let evidenciasRecurso = '';
+                    if (teveRecurso) {
+                        const evidenciasRecursoArray = Array.isArray(resposta.evidencias) ? 
+                            resposta.evidencias.filter(e => e.tipo === 'recurso').map(e => e.url) : [];
+                        
+                        if (resposta.linkComprovanteRecurso) {
+                            evidenciasRecursoArray.unshift(resposta.linkComprovanteRecurso);
+                        }
+                        
+                        evidenciasRecurso = evidenciasRecursoArray.length > 0 ? 
+                            evidenciasRecursoArray.join('; ') : '';
+                    } else {
+                        evidenciasRecurso = ''; 
                     }
-
 
                     const statusFinalConsiderado = analiseFinal.statusValidacaoPosRecurso || resposta.statusValidacao || 'pendente';
-                    const resultadoFinalTexto = statusFinalConsiderado === 'aprovado' ? 'Aprovado' : statusFinalConsiderado === 'rejeitado' ? 'Rejeitado' : 'Pendente';
-                    const comentarioFinal = analiseFinal.comentario || '';
+                    const resultadoFinal = statusFinalConsiderado === 'aprovado' ? 'Atende' : 
+                                        statusFinalConsiderado === 'rejeitado' ? 'Não Atende' : 'Pendente';
 
-
-                    // Escapa aspas duplas dentro dos campos e envolve com aspas duplas
                     const escapeCSV = (field) => {
                         const str = String(field === null || field === undefined ? '' : field);
-                        // Se o campo contém aspas duplas, vírgula, ponto e vírgula ou quebra de linha, envolve com aspas duplas
-                        if (str.includes('"') || str.includes(',') || str.includes(';') || str.includes('\n') || str.includes('\r')) {
-                            // Substitui aspas duplas internas por duas aspas duplas
+                        if (str.includes('"') || str.includes(';') || str.includes('\n') || str.includes('\r')) {
                             return `"${str.replace(/"/g, '""')}"`;
                         }
-                        // Se não precisar de tratamento especial, retorna o campo como está (sem aspas externas desnecessárias)
                         return str;
                     };
 
-
                     return [
-                        req.id || '',
-                        escapeCSV(req.texto || ''),
-                        req.pontuacao || 0,
-                        escapeCSV(atendeOriginalTexto),
-                        escapeCSV(resposta.comentarioSecretaria || ''),
-                        escapeCSV(todasEvidenciasOriginais),
-                        escapeCSV(resultadoPrimeiraAnalise),
-                        escapeCSV(resposta.comentarioAdmin || ''),
-                        escapeCSV(houveRecursoTexto),
-                        escapeCSV(respostaRecursoTexto),
+                        escapeCSV(requisito),
+                        escapeCSV(pontuacao),
+                        escapeCSV(respostaOriginal),
+                        escapeCSV(comentarioOriginal),
+                        escapeCSV(evidenciasOriginaisTexto),
+                        escapeCSV(respostaRecurso),
                         escapeCSV(comentarioRecurso),
-                        escapeCSV(todasEvidenciasRecurso),
-                        escapeCSV(resultadoFinalTexto),
-                        escapeCSV(comentarioFinal)
-                    ].join(','); // Usa vírgula como delimitador padrão
+                        escapeCSV(evidenciasRecurso),
+                        escapeCSV(resultadoFinal)
+                    ].join(';');
                 });
 
-                // Junta cabeçalho e linhas
-                const csvContent = [headers.join(','), ...rows].join('\n');
+                const csvContent = [headers.join(';'), ...rows].join('\n');
 
-                // Cria um Blob com o conteúdo CSV (com BOM para UTF-8)
                 const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
 
-                // Cria um link para download
                 const link = document.createElement("a");
-                if (link.download !== undefined) { // Checa se o browser suporta download
+                if (link.download !== undefined) { 
                     const url = URL.createObjectURL(blob);
-                    const nomeArquivo = `relatorio_avaliacao_${avaliacao.secretaria?.sigla || avaliacao.id}_${new Date().toISOString().slice(0,10)}.csv`;
+                    const nomeArquivo = `relatorio_simplificado_${avaliacao.secretaria?.sigla || avaliacao.id}_${new Date().toISOString().slice(0,10)}.csv`;
                     link.setAttribute("href", url);
                     link.setAttribute("download", nomeArquivo);
                     link.style.visibility = 'hidden';
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-                    console.log("Download CSV iniciado.");
+                    console.log("Download CSV simplificado iniciado.");
                 } else {
                     Swal.fire('Erro', 'Seu navegador não suporta a funcionalidade de download direto.', 'error');
                 }
@@ -1283,23 +1421,37 @@
                         pontuacaoPosAnalise += pontuacaoRequisito;
                     }
 
-                    const teveRecurso = resposta.atende !== resposta.atendeOriginal ||
-                                    resposta.comentarioRecurso ||
-                                    (Array.isArray(resposta.evidencias) && resposta.evidencias.some(e => e.tipo === 'recurso'));
+                    console.log(`[CALCULO PÓS-RECURSO] Requisito ${resposta.requisitoId}:`);
+                    console.log(`  - Pontuação: ${pontuacaoRequisito}`);
+                    console.log(`  - Status validação: ${resposta.statusValidacao}`);
+                    console.log(`  - Recurso Atende: ${resposta.recursoAtende}`);
+                    console.log(`  - Comentário Recurso: ${resposta.comentarioRecurso}`);
+                    console.log(`  - Evidências recurso: ${Array.isArray(resposta.evidencias) ? resposta.evidencias.filter(e => e.tipo === 'recurso').length : 0}`);
+
+                    const teveRecurso = resposta.recursoAtende !== null ||
+                                        resposta.comentarioRecurso ||
+                                        (Array.isArray(resposta.evidencias) && resposta.evidencias.some(e => e.tipo === 'recurso'));
+
+                    console.log(`  - Teve recurso: ${teveRecurso}`);
 
                     if (teveRecurso) {
-                        if (resposta.atende === true) {
-                            pontuacaoPosRecurso += pontuacaoRequisito;
-                        }
+                        pontuacaoPosRecurso += pontuacaoRequisito;
+                        console.log(`  - Adiciona ao pós-recurso: ${pontuacaoRequisito} (teve recurso)`);
                     } else {
                         if (resposta.statusValidacao === 'aprovado') {
                             pontuacaoPosRecurso += pontuacaoRequisito;
+                            console.log(`  - Adiciona ao pós-recurso: ${pontuacaoRequisito} (aprovado na 1ª análise)`);
+                        } else {
+                            console.log(`  - Adiciona ao pós-recurso: 0 (sem recurso e não aprovado)`);
                         }
                     }
 
                     const statusFinalConsiderado = resposta.analiseFinal?.statusValidacaoPosRecurso || resposta.statusValidacao;
                     if (statusFinalConsiderado === 'aprovado') {
                         pontuacaoFinalCalc += pontuacaoRequisito;
+                        console.log(`  - Adiciona à nota final: ${pontuacaoRequisito} (status final: ${statusFinalConsiderado})`);
+                    } else {
+                        console.log(`  - Adiciona à nota final: 0 (status final: ${statusFinalConsiderado})`);
                     }
                 });
 
@@ -1327,15 +1479,15 @@
                     titulo = 'PARABÉNS! EXCELÊNCIA TOTAL!';
                     mensagem = 'Sua secretaria atingiu a pontuação máxima na avaliação final, demonstrando comprometimento exemplar com a transparência e qualidade dos serviços.';
                     classe = ''; 
-                } else if (percentual >= 90) {
+                } else if (percentual >= 90 && percentual < 100) {
                     titulo = 'ÓTIMO DESEMPENHO!';
                     mensagem = 'Sua secretaria atingiu uma pontuação destacada na avaliação final, demonstrando comprometimento com a transparência e qualidade dos serviços.';
                     classe = 'boa';
-                } else if (percentual >= 70) {
+                } else if (percentual >= 70 && percentual < 90) {
                     titulo = 'DESEMPENHO SATISFATÓRIO';
                     mensagem = 'Sua secretaria obteve um bom resultado. Continue investindo em melhorias para alcançar patamares ainda mais elevados de transparência.';
                     classe = 'alerta';
-                } else if (percentual > 0) {
+                } else if (percentual > 0 && percentual < 70) {
                     titulo = 'OPORTUNIDADE DE MELHORIA';
                     mensagem = 'Sua secretaria precisa avançar na implementação dos requisitos de transparência. Recomendamos atenção especial aos itens não atendidos.';
                     classe = 'melhoria';
@@ -1455,7 +1607,6 @@
                         <div class="requisito-dossie ${cardClass}" data-resposta-id="${resposta.id}">
                             <div class="dossie-header">
                                 <div class="requisito-title">
-                                    ${numeroRequisito ? `<div class="requisito-number">${numeroRequisito}</div>` : ''}
                                     <h3>${resposta.requisito?.texto || 'Requisito não encontrado'}</h3>
                                 </div>
                                 <div class="status-indicator">
@@ -1520,20 +1671,34 @@
                     (resposta.atendeOriginal === (statusPrimeiraAnalise === 'aprovado') ? 'Mantido' : 'Alterado');
                 const statusClassePrimeiraAnalise = statusPrimeiraAnalise === 'pendente' ? 'pendente' : (statusPrimeiraAnalise === 'aprovado' ? 'aprovado' : 'rejeitado');
 
+                const linksPrimeiraAnaliseHTML = resposta.linksAnalista && resposta.linksAnalista.length > 0 ? `
+                    <div class="info-grid">
+                        <span class="info-label">Links de Referência (1ª Análise):</span>
+                        <ul class="evidence-list">
+                            ${resposta.linksAnalista.map(link => `
+                                <li class="evidence-item">
+                                    <a href="${link.url}" target="_blank">${link.url}</a>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                ` : '';
+
                 const analiseSCGEHTML = `
                     <div class="info-grid">
                         <span class="info-label">Resultado:</span>
                         <span class="status-badge-small status-${statusClassePrimeiraAnalise}">
-                           ${statusTextoPrimeiraAnalise} (${statusPrimeiraAnalise === 'aprovado' ? 'Aprovado' : statusPrimeiraAnalise === 'rejeitado' ? 'Rejeitado' : 'Pendente'})
+                        ${statusTextoPrimeiraAnalise} (${statusPrimeiraAnalise === 'aprovado' ? 'Aprovado' : statusPrimeiraAnalise === 'rejeitado' ? 'Rejeitado' : 'Pendente'})
                         </span>
                     </div>
                     ${resposta.comentarioAdmin ? `
                         <div class="info-grid">
                             <span class="info-label">Comentário:</span>
-                            <span>${resposta.comentarioAdmin}</span>
+                            <div class="comment-container">${resposta.comentarioAdmin}</div>
                         </div>
-                    ` : ''}`;
-
+                    ` : ''}
+                    ${linksPrimeiraAnaliseHTML} <!-- LINKS ADICIONADOS AQUI -->
+                `;
 
                 const teveRecurso = resposta.atende !== resposta.atendeOriginal || 
                                     resposta.comentarioRecurso ||
@@ -1558,7 +1723,7 @@
                         evidenciasRecursoHTML += `</ul></div>`;
                     }
 
-                     recursoHTML = `
+                    recursoHTML = `
                         <div class="info-grid">
                             <span class="info-label">Sua Nova Resposta:</span>
                             <span class="atende-badge ${decisaoRecursoAtende ? 'atende-sim' : 'atende-nao'}">
@@ -1568,7 +1733,7 @@
                         ${resposta.comentarioRecurso ? `
                             <div class="info-grid">
                                 <span class="info-label">Sua Justificativa:</span>
-                                <span>${resposta.comentarioRecurso}</span>
+                                <div class="comment-container">${resposta.comentarioRecurso}</div>
                             </div>
                         ` : ''}
                         ${evidenciasRecursoHTML}
@@ -1582,20 +1747,38 @@
                 const statusTextoFinal = determinarTextoStatusRecurso(resposta, statusFinalConsiderado); 
                 const statusClasseFinal = determinarStatusRecurso(resposta, statusFinalConsiderado);
 
-                 const analiseFinalHTML = `
+                // CORREÇÃO: USAR APENAS UM COMENTÁRIO (evitar duplicação)
+                const comentarioFinalHTML = resposta.comentarioAnaliseFinal ? `
+                    <div class="info-grid">
+                        <span class="info-label">Comentário Final:</span>
+                        <div class="comment-container">${resposta.comentarioAnaliseFinal}</div>
+                    </div>
+                ` : '';
+
+                // Links de Evidência da Análise Final
+                const linksAnaliseFinalHTML = resposta.linksAnaliseFinal && resposta.linksAnaliseFinal.length > 0 ? `
+                    <div class="info-grid">
+                        <span class="info-label">Links de Evidência Final:</span>
+                        <ul class="evidence-list">
+                            ${resposta.linksAnaliseFinal.map(link => `
+                                <li class="evidence-item">
+                                    <a href="${link.url}" target="_blank">${link.url}</a>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                ` : '';
+
+                const analiseFinalHTML = `
                     <div class="info-grid">
                         <span class="info-label">Decisão Final:</span>
                         <span class="status-badge-small status-${statusClasseFinal}">
                             ${statusTextoFinal} 
                         </span>
                     </div>
-                     ${analiseFinal.comentario ? `
-                        <div class="info-grid">
-                            <span class="info-label">Comentário Final:</span>
-                            <span>${analiseFinal.comentario}</span>
-                        </div>
-                    ` : ''}`;
-
+                    ${comentarioFinalHTML}
+                    ${linksAnaliseFinalHTML}
+                `;
 
                 return `
                     <div class="dossie-bloco">
@@ -1604,7 +1787,7 @@
                         ${resposta.comentarioSecretaria ? `
                             <div class="info-grid">
                                 <span class="info-label">Seu Comentário:</span>
-                                <span>${resposta.comentarioSecretaria}</span>
+                                <div class="comment-container">${resposta.comentarioSecretaria}</div>
                             </div>
                         ` : ''}
                         ${evidenciasHTML}
@@ -1653,7 +1836,19 @@
             async function carregarDados() {
                 try {
                     console.log(`[NOTA-FINAL] Buscando dados da avaliação final ID: ${avaliacaoId}`);
-                    const response = await fetch(`/api/my-nota-final/${avaliacaoId}`, {
+
+                    console.log('=== DEBUG LOCALSTORAGE ===');
+                    console.log('userData:', localStorage.getItem('userData'));
+                    console.log('authToken:', localStorage.getItem('authToken'));
+
+                    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+                    const isAdmin = userData.role === 'ADMIN';
+
+                    const apiUrl = isAdmin 
+                        ? `/api/admin/nota-final/${avaliacaoId}`
+                        : `/api/my-nota-final/${avaliacaoId}`;
+                    
+                    const response = await fetch(apiUrl, {
                         headers: {
                             'Authorization': `Bearer ${authToken}`,
                             'Content-Type': 'application/json'
@@ -1699,6 +1894,8 @@
                     totalFinalEl.textContent = pontuacoes.total;
 
                     atualizarGrafico(pontuacoes); 
+
+                    atualizarCardPorcentagemHeader(pontuacoes.final, pontuacoes.total);
 
                     exibirMensagemPorNota(pontuacoes.final, pontuacoes.total);
 

@@ -228,6 +228,16 @@
             background-color: #545b62;
         }
 
+        .btn-recurso-analise {
+            background-color: var(--amarelo-gov-detalhe);
+            color: #333;
+        }
+
+        .btn-recurso-analise:hover {
+            background-color: #e6c200;
+            color: #333;
+        }
+
         .avaliacao-card {
             background-color: var(--branco);
             border-radius: 8px;
@@ -536,6 +546,7 @@
                         } else if (avaliacao.status === 'EM_ANALISE_DE_RECURSO') {
                             actionPage = 'avaliacao-usuario';
                             actionText = 'Acompanhar Recurso';
+                            buttonClass = 'btn-recurso-analise';
                         } else {
                             actionPage = 'avaliacao-usuario';
                             actionText = 'Ver Detalhes';

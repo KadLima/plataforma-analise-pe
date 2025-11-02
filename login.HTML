@@ -669,6 +669,10 @@
                 const password = passwordInput.value;
                 const captchaAnswer = document.getElementById('captchaInput').value;
                 
+                console.log('🔍 [DEBUG] Tentando login para:', email);
+                console.log('🔍 [DEBUG] Primeiro acesso?', 'A verificar...');
+                console.log('🔍 [DEBUG] CAPTCHA ID:', currentCaptchaId);
+                
                 errorMessageDiv.style.display = 'none';
                 successMessageDiv.style.display = 'none';
 
@@ -700,30 +704,74 @@
                         }),
                     });
 
+                    console.log('🔍 [DEBUG] Status da resposta:', response.status);
+                    console.log('🔍 [DEBUG] Resposta OK?', response.ok);
+
                     const data = await response.json();
 
-                    if (!response.ok) {
-                        throw new Error(data.error || 'Ocorreu um erro.');
+                    console.log('🔍 [DEBUG] Dados da resposta:', data);
+
+                    if (response.ok) {
+                        console.log('🔍 [DEBUG] Login bem-sucedido!');
+                        localStorage.setItem('authToken', data.token);
+                        
+                        if (data.primeiroAcesso) {
+                            console.log('🔍 [DEBUG] Primeiro acesso detectado no login normal');
+                            showSuccess('Primeiro acesso detectado. Você deve alterar sua senha.');
+                            
+                            Swal.close();
+                            
+                            setTimeout(async () => {
+                                const userEmail = document.getElementById('email').value;
+                                
+                                await handleFirstAccessForced(userEmail);
+                            }, 1000);
+                        } else {
+                            console.log('🔍 [DEBUG] Login normal bem-sucedido, redirecionando...');
+                            showSuccess('Login bem-sucedido! Redirecionando...');
+                            
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Login realizado!',
+                                text: 'Você será redirecionado em instantes.',
+                                timer: 2000,
+                                showConfirmButton: false,
+                                allowOutsideClick: false
+                            });
+
+                            localStorage.setItem('userData', JSON.stringify({
+                                id: data.user?.id,
+                                email: data.user?.email,
+                                role: data.user?.role,
+                                secretariaId: data.user?.secretariaId
+                            }));
+                            
+                            setTimeout(() => {
+                                window.location.href = '/';
+                            }, 2000);
+                        }
+                    } else {
+                        console.log('🔍 [DEBUG] Erro no login - Status:', response.status);
+                        console.log('🔍 [DEBUG] Mensagem de erro:', data.error);
+                        console.log('🔍 [DEBUG] Primeiro acesso na resposta?', data.primeiroAcesso);
+                        
+                        if (response.status === 403 && data.primeiroAcesso) {
+                            console.log('🔍 [DEBUG] Primeiro acesso detectado via status 403');
+                            showError('Primeiro acesso detectado. Iniciando processo de cadastro...');
+                            
+                            Swal.close();
+                            
+                            setTimeout(async () => {
+                                await handleFirstAccessForced(data.email || email);
+                            }, 1500);
+                            
+                        } else {
+                            throw new Error(data.error || 'Erro no login');
+                        }
                     }
 
-                    localStorage.setItem('authToken', data.token);
-                    
-                    showSuccess('Login bem-sucedido! Redirecionando...');
-                    
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Login realizado!',
-                        text: 'Você será redirecionado em instantes.',
-                        timer: 2000,
-                        showConfirmButton: false,
-                        allowOutsideClick: false
-                    });
-                    
-                    setTimeout(() => {
-                        window.location.href = '/';
-                    }, 2000);
-
                 } catch (error) {
+                    console.log('🔍 [DEBUG] Erro catch:', error.message);
                     showError(error.message);
                     await loadCaptcha();
                 } finally {
@@ -759,6 +807,54 @@
             const successDiv = document.getElementById('success-message');
             successDiv.textContent = message;
             successDiv.style.display = 'block';
+        }
+
+        async function handleFirstAccessForced(email) {
+            try {
+                console.log('🔍 [DEBUG] Iniciando handleFirstAccessForced para:', email);
+                
+                if (!email) {
+                    throw new Error('Email não identificado');
+                }
+
+                Swal.fire({
+                    title: 'Preparando primeiro acesso...',
+                    text: 'Aguarde um momento',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                console.log('🔍 [DEBUG] Enviando requisição para /api/primeiro-acesso');
+                const response = await fetch('/api/primeiro-acesso', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email }),
+                });
+
+                console.log('🔍 [DEBUG] Resposta do primeiro acesso:', response.status);
+                const data = await response.json();
+                console.log('🔍 [DEBUG] Dados do primeiro acesso:', data);
+
+                if (response.ok) {
+                    Swal.close();
+                    console.log('🔍 [DEBUG] Primeiro acesso solicitado com sucesso, indo para código');
+                    await solicitarCodigoVerificacao(email, 'primeiro_acesso');
+                } else {
+                    throw new Error(data.error || 'Erro ao solicitar acesso');
+                }
+            } catch (error) {
+                console.log('🔍 [DEBUG] Erro em handleFirstAccessForced:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro',
+                    text: error.message,
+                    confirmButtonColor: 'var(--vermelho-erro)'
+                }).then(() => {
+                    window.location.reload();
+                });
+            }
         }
 
         async function handlePasswordRecovery() {
@@ -898,7 +994,7 @@
         }
 
         async function solicitarCodigoVerificacao(email, tipo) {
-            const { value: codigo } = await Swal.fire({
+            const result = await Swal.fire({
                 title: `Digite o código de 6 dígitos`,
                 html: `
                     <div class="code-inputs">
@@ -918,6 +1014,8 @@
                 confirmButtonText: 'Verificar',
                 cancelButtonText: 'Cancelar',
                 confirmButtonColor: 'var(--azul-gov-principal)',
+                allowOutsideClick: false, 
+                allowEscapeKey: true, 
                 preConfirm: () => {
                     const inputs = Swal.getHtmlContainer().querySelectorAll('.code-input');
                     let codigo = '';
@@ -950,6 +1048,27 @@
                 }
             });
 
+            if (result.dismiss === Swal.DismissReason.cancel || 
+                result.dismiss === Swal.DismissReason.close ||
+                result.dismiss === Swal.DismissReason.esc) {
+                
+                console.log('Usuário cancelou o modal de código. Reiniciando página...');
+                
+                await Swal.fire({
+                    icon: 'info',
+                    title: 'Processo cancelado',
+                    text: 'A página será recarregada para reiniciar o fluxo.',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    allowOutsideClick: false
+                });
+                
+                window.location.reload();
+                return; 
+            }
+
+            const codigo = result.value;
+
             if (codigo) {
                 try {
                     const response = await fetch('/api/verificar-codigo', {
@@ -970,16 +1089,33 @@
                         throw new Error(data.error || 'Código inválido');
                     }
                 } catch (error) {
-                     const result = await Swal.fire({
+                    const result = await Swal.fire({
                         icon: 'error',
                         title: 'Código inválido',
                         text: error.message,
                         showCancelButton: true,
                         confirmButtonText: 'Receber novo código',
-                        cancelButtonText: 'Tentar outro código',
+                        cancelButtonText: 'Cancelar e recarregar', 
                         confirmButtonColor: 'var(--azul-gov-principal)',
                         cancelButtonColor: 'var(--vermelho-erro)'
                     });
+
+                    if (result.dismiss === Swal.DismissReason.cancel) {
+                        await Swal.fire({
+                            icon: 'info',
+                            title: 'Recarregando...',
+                            text: 'A página será recarregada.',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        window.location.reload();
+                        return;
+                    }
+                    
+                    if (result.isConfirmed) {
+                        await reenviarCodigoVerificacao(email, tipo);
+                        await solicitarCodigoVerificacao(email, tipo); 
+                    }
                 }
             }
         }
@@ -987,7 +1123,7 @@
         async function redefinirSenha(email) {
             const suggestedPassword = await suggestPassword();
             
-            const { value: formValues } = await Swal.fire({
+            const result = await Swal.fire({
                 title: 'Nova Senha',
                 html: `
                     <input type="password" id="nova-senha" class="swal2-input" placeholder="Nova senha" required>
@@ -1004,6 +1140,8 @@
                 confirmButtonText: 'Redefinir Senha',
                 cancelButtonText: 'Cancelar',
                 confirmButtonColor: 'var(--azul-gov-principal)',
+                allowOutsideClick: false,  
+                allowEscapeKey: true,  
                 didOpen: () => {
                     const novaSenhaInput = document.getElementById('nova-senha');
                     const confirmarSenhaInput = document.getElementById('confirmar-senha');
@@ -1029,6 +1167,27 @@
                     return { novaSenha, confirmarSenha };
                 }
             });
+
+            if (result.dismiss === Swal.DismissReason.cancel || 
+                result.dismiss === Swal.DismissReason.close ||
+                result.dismiss === Swal.DismissReason.esc) {
+                
+                console.log('Usuário cancelou a redefinição de senha. Reiniciando página...');
+                
+                await Swal.fire({
+                    icon: 'info',
+                    title: 'Processo cancelado',
+                    text: 'A página será recarregada para reiniciar o fluxo.',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    allowOutsideClick: false
+                });
+                
+                window.location.reload();
+                return;
+            }
+
+            const formValues = result.value;
 
             if (formValues) {
                 try {
@@ -1064,7 +1223,7 @@
         async function criarSenhaPrimeiroAcesso(email) {
             const suggestedPassword = await suggestPassword();
             
-            const { value: formValues } = await Swal.fire({
+            const result = await Swal.fire({
                 title: 'Criar Senha',
                 html: `
                     <input type="password" id="nova-senha" class="swal2-input" placeholder="Crie sua senha" required>
@@ -1081,9 +1240,11 @@
                 `,
                 focusConfirm: false,
                 showCancelButton: true,
-                confirmButtonText: 'Criar Senha',
+                confirmButtonText: 'Criar Senha e Entrar',
                 cancelButtonText: 'Cancelar',
                 confirmButtonColor: 'var(--azul-gov-principal)',
+                allowOutsideClick: false,
+                allowEscapeKey: true,
                 didOpen: () => {
                     const novaSenhaInput = document.getElementById('nova-senha');
                     const confirmarSenhaInput = document.getElementById('confirmar-senha');
@@ -1110,6 +1271,27 @@
                 }
             });
 
+            if (result.dismiss === Swal.DismissReason.cancel || 
+                result.dismiss === Swal.DismissReason.close ||
+                result.dismiss === Swal.DismissReason.esc) {
+                
+                console.log('Usuário cancelou a criação de senha. Reiniciando página...');
+                
+                await Swal.fire({
+                    icon: 'info',
+                    title: 'Processo cancelado',
+                    text: 'A página será recarregada para reiniciar o fluxo.',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    allowOutsideClick: false
+                });
+                
+                window.location.reload();
+                return;
+            }
+
+            const formValues = result.value;
+
             if (formValues) {
                 try {
                     const response = await fetch('/api/criar-senha', {
@@ -1121,12 +1303,26 @@
                     const data = await response.json();
 
                     if (response.ok) {
+                        localStorage.setItem('authToken', data.token);
+
+                        localStorage.setItem('userData', JSON.stringify({
+                            id: data.user?.id,
+                            email: data.user?.email,
+                            role: data.user?.role,
+                            secretariaId: data.user?.secretariaId
+                        }));
+                        
                         await Swal.fire({
                             icon: 'success',
-                            title: 'Senha criada!',
-                            text: 'Sua conta foi ativada com sucesso. Você já pode fazer login.',
-                            confirmButtonColor: 'var(--azul-gov-principal)'
+                            title: 'Senha criada com sucesso!',
+                            text: 'Fazendo login automaticamente...',
+                            timer: 2000,
+                            showConfirmButton: false,
+                            allowOutsideClick: false
                         });
+
+                        window.location.href = '/';
+                        
                     } else {
                         throw new Error(data.error || 'Erro ao criar senha');
                     }
@@ -1140,6 +1336,7 @@
                 }
             }
         }
+
     </script>
 
     <script src="/global.js"></script>

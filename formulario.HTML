@@ -973,8 +973,8 @@
 
                             actionsHTML = `
                                 <div class="requisito-actions">
-                                     <button class="btn-toggle active" data-action="sim-${req.id}" data-atende="true">Sim</button>
-                                    <button class="btn-toggle" data-action="nao-${req.id}" data-atende="false">Não</button>
+                                    <button class="btn-toggle active" data-action="sim-${req.id}" data-atende="true" disabled style="cursor: not-allowed; opacity: 0.7;">Sim</button>
+                                    <button class="btn-toggle" data-action="nao-${req.id}" data-atende="false" disabled style="cursor: not-allowed; opacity: 0.7;">Não</button>
                                 </div>
                                 <div class="link-comprovante-wrapper show">
                                     <input type="url" class="link-input" value="${linkExibido}" readonly style="background-color: #e9e9e9;">

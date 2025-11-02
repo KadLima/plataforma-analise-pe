@@ -35,9 +35,54 @@ cron.schedule('* * * * *', () => {
   expirarRecursos();
 });
 
+// ROTA ESPECIAL PARA LOGIN APÓS PRIMEIRO ACESSO 
+app.post('/api/login-pos-primeiro-acesso', async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ error: 'E-mail e senha são obrigatórios.' });
+    }
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { email: email },
+        });
+
+        if (!user || !bcrypt.compareSync(password, user.password)) {
+            return res.status(401).json({ error: 'Credenciais inválidas.' });
+        }
+
+        if (user.primeiroAcesso) {
+            return res.status(400).json({ error: 'Usuário ainda precisa completar o primeiro acesso.' });
+        }
+
+        const token = jwt.sign(
+            { 
+                userId: user.id, 
+                userEmail: user.email, 
+                role: user.role, 
+                secretariaId: user.secretariaId,
+                primeiroAcesso: false
+            },
+            process.env.JWT_SECRET || 'SEGREDO_SUPER_SECRETO',
+            { expiresIn: '8h' }
+        );
+
+        res.json({
+            message: 'Login bem-sucedido!',
+            token: token,
+            primeiroAcesso: false
+        });
+
+    } catch (error) {
+        console.error("Erro na rota de login pós-primeiro acesso:", error);
+        res.status(500).json({ error: 'Ocorreu um erro interno.' });
+    }
+});
+
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
-  max: 5, 
+  max: 15, 
   message: {
     error: 'Muitas tentativas de login. Tente novamente em 15 minutos.'
   },
@@ -176,8 +221,6 @@ app.get("/dashboard", (req, res) => { res.sendFile(path.join(__dirname, 'dashboa
 app.get("/avaliacao-usuario/:id", (req, res) => { res.sendFile(path.join(__dirname, 'avaliacao-usuario.html')); });
 app.get("/analise-final/:id", (req, res) => { res.sendFile(path.join(__dirname, 'analise-final.html')); });
 
-
-// ROTA DE LOGIN
 app.post('/login', loginLimiter, async (req, res) => {
   const { email, password, captchaId, captchaAnswer } = req.body;
 
@@ -198,8 +241,22 @@ app.post('/login', loginLimiter, async (req, res) => {
       return res.status(401).json({ error: 'Credenciais inválidas.' });
     }
 
+    if (user.primeiroAcesso) {
+      return res.status(403).json({ 
+        error: 'Primeiro acesso requerido. Complete seu cadastro.',
+        primeiroAcesso: true,
+        email: user.email
+      });
+    }
+
     const token = jwt.sign(
-      { userId: user.id, userEmail: user.email, role: user.role, secretariaId: user.secretariaId },
+      { 
+        userId: user.id, 
+        userEmail: user.email, 
+        role: user.role, 
+        secretariaId: user.secretariaId,
+        primeiroAcesso: false
+      },
       process.env.JWT_SECRET || 'SEGREDO_SUPER_SECRETO',
       { expiresIn: '8h' }
     );
@@ -207,6 +264,13 @@ app.post('/login', loginLimiter, async (req, res) => {
     res.json({
       message: 'Login bem-sucedido!',
       token: token,
+      primeiroAcesso: false,
+      user: { 
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        secretariaId: user.secretariaId
+      }
     });
 
   } catch (error) {
@@ -247,7 +311,7 @@ app.post('/api/recuperar-senha', async (req, res) => {
       await transporter.sendMail({
         from: process.env.SMTP_USER,
         to: email,
-        subject: 'Recuperação de Senha - Sistema de Avaliação de Transparência',
+        subject: 'Recuperação de Senha - Sistema de Monitoramento da Transparência',
         html: `
           <!DOCTYPE html>
           <html>
@@ -334,7 +398,7 @@ app.post('/api/recuperar-senha', async (req, res) => {
                       <h3>Recuperação de Senha</h3>
                       
                       <p>Olá,</p>
-                      <p>Recebemos uma solicitação para redefinir a senha da sua conta no <strong>Sistema de Avaliação de Transparência</strong>.</p>
+                      <p>Recebemos uma solicitação para redefinir a senha da sua conta no <strong>Sistema de Monitoramento da Transparência</strong>.</p>
                       
                       <p>Seu código de verificação é:</p>
                       
@@ -356,7 +420,7 @@ app.post('/api/recuperar-senha', async (req, res) => {
                   </div>
                   
                   <div class="footer">
-                      <p><em>Este é um email automático do Sistema de Avaliação de Transparência.</em></p>
+                      <p><em>Este é um email automático do Sistema de Monitoramento da Transparência.</em></p>
                       <p>Secretaria da Controladoria-Geral do Estado de Pernambuco<br>
                       R. Santo Elias, 535 - Espinheiro, Recife-PE, 52020-090</p>
                       
@@ -485,7 +549,7 @@ app.post('/api/primeiro-acesso', async (req, res) => {
     await transporter.sendMail({
       from: process.env.SMTP_USER,
       to: email,
-      subject: 'Primeiro Acesso - Sistema de Avaliação de Transparência',
+      subject: 'Primeiro Acesso - Sistema de Monitoramento da Transparência',
       html: `
         <!DOCTYPE html>
         <html>
@@ -579,7 +643,7 @@ app.post('/api/primeiro-acesso', async (req, res) => {
                     <h3>Primeiro Acesso ao Sistema</h3>
                     
                     <div class="destaque">
-                        <p><strong>Bem-vindo(a) ao Sistema de Avaliação de Transparência!</strong></p>
+                        <p><strong>Bem-vindo(a) ao Sistema de Monitoramento da Transparência!</strong></p>
                     </div>
                     
                     <p>Olá,</p>
@@ -609,7 +673,7 @@ app.post('/api/primeiro-acesso', async (req, res) => {
                 </div>
                 
                 <div class="footer">
-                    <p><em>Este é um email automático do Sistema de Avaliação de Transparência.</em></p>
+                    <p><em>Este é um email automático do Sistema de Monitoramento da Transparência.</em></p>
                     <p>Secretaria da Controladoria-Geral do Estado de Pernambuco<br>
                     R. Santo Elias, 535 - Espinheiro, Recife-PE, 52020-090</p>
                     
@@ -654,16 +718,153 @@ app.post('/api/criar-senha', passwordRecoveryLimiter, async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(novaSenha, 12);
 
-    await prisma.user.update({
+    const usuarioAtualizado = await prisma.user.update({
       where: { email },
-      data: { password: hashedPassword },
+      data: { 
+        password: hashedPassword,
+        primeiroAcesso: false 
+      },
     });
 
-    res.json({ success: true, message: 'Senha criada com sucesso' });
+    const token = jwt.sign(
+      { 
+        userId: usuarioAtualizado.id, 
+        userEmail: usuarioAtualizado.email, 
+        role: usuarioAtualizado.role, 
+        secretariaId: usuarioAtualizado.secretariaId,
+        primeiroAcesso: false
+      },
+      process.env.JWT_SECRET || 'SEGREDO_SUPER_SECRETO',
+      { expiresIn: '8h' }
+    );
+
+    res.json({ 
+      success: true, 
+      message: 'Senha criada com sucesso',
+      token: token,
+      user: {
+        id: usuarioAtualizado.id,
+        email: usuarioAtualizado.email,
+        role: usuarioAtualizado.role,
+        secretariaId: usuarioAtualizado.secretariaId
+      }
+    });
 
   } catch (error) {
     console.error('Erro ao criar senha:', error);
     res.status(500).json({ error: 'Erro interno ao criar senha' });
+  }
+});
+
+// ROTA PARA ADMIN CRIAR NOVOS USUÁRIOS
+app.post('/api/users', authenticateToken, authenticateAdmin, async (req, res) => {
+  const { email, password, role, secretariaId } = req.body;
+
+  console.log(`[ADMIN] Recebida solicitação para criar usuário: ${email}, Role: ${role}, SecID: ${secretariaId}`);
+
+  if (!email || !password || !role || !secretariaId) {
+    return res.status(400).json({ error: 'Todos os campos (email, senha, papel, secretaria) são obrigatórios.' });
+  }
+  
+  if (role !== 'ADMIN' && role !== 'USER') {
+      return res.status(400).json({ error: 'Papel (role) inválido. Deve ser ADMIN ou USER.' });
+  }
+
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: { email: email.toLowerCase() },
+    });
+
+    if (existingUser) {
+      console.warn(`[ADMIN] Falha: Email ${email} já existe.`);
+      return res.status(409).json({ error: 'Este endereço de e-mail já está em uso.' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10); 
+
+    const newUser = await prisma.user.create({
+      data: {
+        nome: 'Usuário', // Nome padrão
+        email: email.toLowerCase(),
+        password: hashedPassword,
+        role: role, 
+        secretariaId: parseInt(secretariaId),
+      },
+    });
+
+    console.log(`[ADMIN] ✅ Usuário ${newUser.email} criado com sucesso.`);
+    
+    const { password: _, ...userSemSenha } = newUser;
+    res.status(201).json(userSemSenha);
+
+  } catch (error) {
+    console.error('[ADMIN] Erro ao criar usuário:', error);
+    if (error.code === 'P2003' || error.message.includes('Foreign key constraint failed')) {
+         return res.status(400).json({ error: 'ID da Secretaria não encontrado. Verifique se a secretaria selecionada é válida.' });
+    }
+    res.status(500).json({ error: 'Erro interno ao criar usuário.', details: error.message });
+  }
+});
+
+// ROTA PARA ADMIN CRIAR NOVAS SECRETARIAS
+app.post('/api/secretarias', authenticateToken, authenticateAdmin, async (req, res) => {
+  const { nome, sigla, url } = req.body;
+
+  console.log(`[ADMIN] Recebida solicitação para criar secretaria: ${sigla} - ${nome}`);
+
+  if (!nome || !sigla || !url) {
+    return res.status(400).json({ error: 'Todos os campos (nome, sigla, URL) são obrigatórios.' });
+  }
+
+  // Validar formato da sigla (apenas letras, 2-10 caracteres)
+  const siglaRegex = /^[A-Z]{2,10}$/;
+  if (!siglaRegex.test(sigla)) {
+    return res.status(400).json({ error: 'A sigla deve conter apenas letras maiúsculas e ter entre 2 e 10 caracteres.' });
+  }
+
+  // Validar URL
+  try {
+    new URL(url);
+  } catch (error) {
+    return res.status(400).json({ error: 'URL inválida. Certifique-se de incluir http:// ou https://.' });
+  }
+
+  try {
+    // Verificar se sigla já existe
+    const existingSigla = await prisma.secretaria.findUnique({
+      where: { sigla: sigla.toUpperCase() },
+    });
+
+    if (existingSigla) {
+      console.warn(`[ADMIN] Falha: Sigla ${sigla} já existe.`);
+      return res.status(409).json({ error: 'Esta sigla já está em uso.' });
+    }
+
+    // Verificar se nome já existe
+    const existingNome = await prisma.secretaria.findUnique({
+      where: { nome: nome },
+    });
+
+    if (existingNome) {
+      console.warn(`[ADMIN] Falha: Nome ${nome} já existe.`);
+      return res.status(409).json({ error: 'Este nome já está em uso.' });
+    }
+
+    const novaSecretaria = await prisma.secretaria.create({
+      data: {
+        nome: nome.trim(),
+        sigla: sigla.toUpperCase().trim(),
+        url: url.trim(),
+      },
+    });
+
+    console.log(`[ADMIN] ✅ Secretaria ${novaSecretaria.sigla} criada com sucesso.`);
+    
+    res.status(201).json(novaSecretaria);
+
+  } catch (error) {
+    console.error('[ADMIN] Erro ao criar secretaria:', error);
+    res.status(500).json({ error: 'Erro interno ao criar secretaria.', details: error.message });
   }
 });
 
@@ -717,7 +918,9 @@ app.get('/api/my-nota-final/:id', authenticateToken, async (req, res) => {
                 respostas: {
                     include: {
                         requisito: true,
-                        evidencias: true
+                        evidencias: true,
+                        linksAnalista: true,
+                        linksAnaliseFinal: true
                     }
                 }
             }
@@ -735,6 +938,38 @@ app.get('/api/my-nota-final/:id', authenticateToken, async (req, res) => {
 
     } catch (error) {
         console.error("Erro ao buscar nota final:", error);
+        res.status(500).json({ error: 'Ocorreu um erro interno ao carregar a nota final.' });
+    }
+});
+
+// ROTA PARA ADMIN VISUALIZAR NOTA FINAL DE QUALQUER SECRETARIA
+app.get('/api/admin/nota-final/:id', authenticateToken, authenticateAdmin, async (req, res) => {
+    try {
+        const { id: avaliacaoId } = req.params;
+
+        const avaliacao = await prisma.avaliacao.findUnique({
+            where: { id: parseInt(avaliacaoId) },
+            include: {
+                secretaria: true,
+                respostas: {
+                    include: {
+                        requisito: true,
+                        evidencias: true,
+                        linksAnalista: true,
+                        linksAnaliseFinal: true
+                    }
+                }
+            }
+        });
+
+        if (!avaliacao) {
+            return res.status(404).json({ error: 'Avaliação não encontrada.' });
+        }
+
+        res.json(avaliacao);
+
+    } catch (error) {
+        console.error("Erro ao buscar nota final para admin:", error);
         res.status(500).json({ error: 'Ocorreu um erro interno ao carregar a nota final.' });
     }
 });
@@ -761,7 +996,8 @@ app.get('/api/my-avaliacoes/:id', authenticateToken, async (req, res) => {
                     include: {
                         requisito: true,
                         evidencias: true,
-                        linksAnalista: true
+                        linksAnalista: true,
+                        linksAnaliseFinal: true
                     },
                     orderBy: {
                         requisitoId: 'asc'
@@ -952,7 +1188,8 @@ app.patch('/api/respostas/:id', authenticateToken, authenticateAdmin, async (req
               include: {
                 requisito: true,
                 evidencias: true,
-                linksAnalista: true 
+                linksAnalista: true,
+                linksAnaliseFinal: true
               }
           });
       });
@@ -973,46 +1210,94 @@ app.patch('/api/respostas/:id', authenticateToken, authenticateAdmin, async (req
 app.patch('/api/respostas/:id/analise-final', authenticateToken, authenticateAdmin, async (req, res) => {
     try {
         const { id } = req.params;
-        const { analiseFinal, atende } = req.body;
+        const { analiseFinal, atende, comentarioAnaliseFinal, linksAnaliseFinal } = req.body;
 
-        console.log('Recebendo análise final para resposta:', id, { analiseFinal, atende });
+        console.log('Recebendo análise final com nova estrutura:', { 
+            analiseFinal, 
+            atende, 
+            comentarioAnaliseFinal,
+            linksAnaliseFinal 
+        });
 
         const respostaAtual = await prisma.resposta.findUnique({
             where: { id: parseInt(id) },
-            include: { requisito: true }
+            include: { 
+                requisito: true,
+                linksAnaliseFinal: true
+            }
         });
 
         if (!respostaAtual) {
             return res.status(404).json({ error: 'Resposta não encontrada' });
         }
 
-        const dataToUpdate = {
-            analiseFinal: analiseFinal, 
-            statusRecurso: 'analisado'
+        const resultado = await prisma.$transaction(async (prisma) => {
+            const dataToUpdate = {
+                analiseFinal: analiseFinal,
+                statusRecurso: 'analisado'
+            };
+
+            if (comentarioAnaliseFinal !== undefined) {
+                dataToUpdate.comentarioAnaliseFinal = comentarioAnaliseFinal;
+            }
+
+            if (atende !== undefined) {
+                dataToUpdate.atende = atende;
+            }
+
+            console.log('Atualizando dados básicos:', dataToUpdate);
+
+            const respostaAtualizada = await prisma.resposta.update({
+                where: { id: parseInt(id) },
+                data: dataToUpdate
+            });
+
+            console.log('Processando linksAnaliseFinal:', linksAnaliseFinal);
+            
+            await prisma.linkAnaliseFinal.deleteMany({
+                where: { respostaId: parseInt(id) }
+            });
+
+            if (linksAnaliseFinal && Array.isArray(linksAnaliseFinal) && linksAnaliseFinal.length > 0) {
+                const linksValidos = linksAnaliseFinal.filter(link => 
+                    link && typeof link === 'string' && link.trim() !== ''
+                );
+
+                console.log('Links válidos encontrados:', linksValidos);
+
+                if (linksValidos.length > 0) {
+                    await prisma.linkAnaliseFinal.createMany({
+                        data: linksValidos.map(link => ({
+                            url: link.trim(),
+                            respostaId: parseInt(id)
+                        }))
+                    });
+                    console.log(`✅ ${linksValidos.length} links de análise final criados`);
+                }
+            } else {
+                console.log('⚠️ Nenhum link válido para salvar ou linksAnaliseFinal é undefined');
+            }
+
+            return await prisma.resposta.findUnique({
+                where: { id: parseInt(id) },
+                include: {
+                    requisito: true,
+                    evidencias: true,
+                    linksAnaliseFinal: true
+                }
+            });
+        });
+
+        console.log('✅ Análise final salva com sucesso - Nova estrutura');
+
+        const respostaFormatada = {
+            ...resultado,
+            atende: resultado.atende,
+            comentarioAnaliseFinal: resultado.comentarioAnaliseFinal,
+            linksAnaliseFinal: resultado.linksAnaliseFinal ? resultado.linksAnaliseFinal.map(link => link.url) : []
         };
 
-        if (atende !== undefined) {
-            dataToUpdate.atende = atende;
-            console.log(`Atualizando atende para: ${atende}`);
-        }
-
-        console.log('Dados para atualização:', dataToUpdate);
-
-        const respostaAtualizada = await prisma.resposta.update({
-            where: { id: parseInt(id) },
-            data: dataToUpdate,
-            include: {
-                requisito: true,
-                evidencias: true
-            }
-        });
-
-        console.log('✅ Análise final salva com sucesso:', respostaAtualizada.analiseFinal);
-
-        res.json({
-            ...respostaAtualizada,
-            atende: respostaAtualizada.atende
-        });
+        res.json(respostaFormatada);
 
     } catch (error) {
         console.error('❌ Erro ao salvar análise final:', error);
@@ -1024,13 +1309,39 @@ app.post('/api/avaliacoes/:id/devolver', authenticateToken, authenticateAdmin, a
   try {
     const { id } = req.params;
     
-    const prazoRecurso = new Date();
-    prazoRecurso.setSeconds(prazoRecurso.getSeconds() + 60);
+    function calcularPrazoRecurso(dataInicio) {
+      let data = new Date(dataInicio);
+      let diasUteis = 0;
+      const diasNecessarios = 5;
+      
+      data.setDate(data.getDate() + 1);
+      data.setHours(0, 0, 1, 0);
+      
+      let diaSemana = data.getDay();
+      if (diaSemana === 0) {
+        data.setDate(data.getDate() + 1); 
+      } else if (diaSemana === 6) { 
+        data.setDate(data.getDate() + 2); 
+      }
+      
+      while (diasUteis < diasNecessarios) {
+        data.setDate(data.getDate() + 1);
+        diaSemana = data.getDay();
+        if (diaSemana !== 0 && diaSemana !== 6) {
+          diasUteis++;
+        }
+      }
+      
+      data.setHours(23, 59, 59, 0);
+      
+      return data;
+    }
 
-    console.log(`Definindo prazo de 1 minuto: ${prazoRecurso}`);
+    const dataRecebimento = new Date(); 
+    const prazoRecurso = calcularPrazoRecurso(dataRecebimento);
+
+    console.log(`Definindo prazo de 5 dias úteis: ${prazoRecurso}`);
     
-    // Em produção, use: prazoRecurso.setDate(prazoRecurso.getDate() + 5);
-
     const avaliacaoAtualizada = await prisma.avaliacao.update({
       where: { id: parseInt(id) },
       data: {
@@ -1166,13 +1477,22 @@ app.post('/api/avaliacoes/:id/finalizar', authenticateToken, authenticateAdmin, 
         let pontuacaoFinal = 0;
         let pontuacaoTotal = 0;
 
+        if (avaliacao.pontuacaoPosRecurso !== null && avaliacao.pontuacaoPosRecurso !== undefined) {
+            console.log(`📊 Usando nota pós-recurso já salva do recurso: ${avaliacao.pontuacaoPosRecurso}`);
+            pontuacaoPosRecurso = avaliacao.pontuacaoPosRecurso;
+        } 
+        else {
+            console.log('🔄 Calculando nota pós-recurso com lógica avançada...');
+            pontuacaoPosRecurso = 0;
+        }
+
         for (const resposta of avaliacao.respostas) { 
             const pontuacaoRequisito = resposta.requisito?.pontuacao || 0;
             pontuacaoTotal += pontuacaoRequisito;
             const analiseFinal = resposta.analiseFinal || {}; 
 
             console.log(`\n[FINALIZAR LOG] Requisito ID: ${resposta.requisitoId} (Valor: ${pontuacaoRequisito} pts)`);
-            console.log(`  > Dados Brutos: atendeOriginal=${resposta.atendeOriginal}, statusValidacao=${resposta.statusValidacao}, teveRecurso=${/* Calcula abaixo */ ''}, recursoAtende=${resposta.recursoAtende}, statusFinal=${analiseFinal.statusValidacaoPosRecurso}`);
+            console.log(`  > Dados Brutos: atendeOriginal=${resposta.atendeOriginal}, statusValidacao=${resposta.statusValidacao}, recursoAtende=${resposta.recursoAtende}, statusFinal=${analiseFinal.statusValidacaoPosRecurso}`);
 
             if (resposta.atendeOriginal === true) {
                 pontuacaoAutoavaliacao += pontuacaoRequisito;
@@ -1182,28 +1502,32 @@ app.post('/api/avaliacoes/:id/finalizar', authenticateToken, authenticateAdmin, 
                 pontuacaoPrimeiraAnalise += pontuacaoRequisito;
             }
 
-            let pontuacaoRequisitoPosRecurso = 0;
-            const teveRecurso = resposta.recursoAtende !== null ||
-                                resposta.comentarioRecurso ||
-                                (Array.isArray(resposta.evidencias) && resposta.evidencias.some(e => e.tipo === 'recurso'));
-            console.log(`  > Teve Recurso? ${teveRecurso}`);
+            if (avaliacao.pontuacaoPosRecurso === null || avaliacao.pontuacaoPosRecurso === undefined) {
+                let pontuacaoRequisitoPosRecurso = 0;
+                const teveRecurso = resposta.recursoAtende !== null ||
+                                    resposta.comentarioRecurso ||
+                                    (Array.isArray(resposta.evidencias) && resposta.evidencias.some(e => e.tipo === 'recurso'));
 
-            if (teveRecurso) {
-                if (resposta.recursoAtende === true) {
-                    pontuacaoRequisitoPosRecurso = pontuacaoRequisito;
-                    console.log(`  -> Pós-Recurso: +${pontuacaoRequisito} (Motivo: Teve recurso, e recursoAtende === true)`);
+                console.log(`  > Teve Recurso? ${teveRecurso}`);
+
+                if (teveRecurso) {
+                    const statusFinalConsiderado = analiseFinal.statusValidacaoPosRecurso || resposta.statusValidacao;
+                    if (statusFinalConsiderado === 'aprovado') {
+                        pontuacaoRequisitoPosRecurso = pontuacaoRequisito;
+                        console.log(`  -> Pós-Recurso: +${pontuacaoRequisito} (Motivo: Teve recurso e foi aprovado na análise final)`);
+                    } else {
+                        console.log(`  -> Pós-Recurso: +0 (Motivo: Teve recurso mas foi rejeitado na análise final)`);
+                    }
                 } else {
-                    console.log(`  -> Pós-Recurso: +0 (Motivo: Teve recurso, mas recursoAtende !== true)`);
+                    if (resposta.statusValidacao === 'aprovado') {
+                        pontuacaoRequisitoPosRecurso = pontuacaoRequisito;
+                        console.log(`  -> Pós-Recurso: +${pontuacaoRequisito} (Motivo: Sem recurso, aprovado na 1ª análise)`);
+                    } else {
+                        console.log(`  -> Pós-Recurso: +0 (Motivo: Sem recurso, rejeitado na 1ª análise)`);
+                    }
                 }
-            } else {
-                if (resposta.statusValidacao === 'aprovado') {
-                    pontuacaoRequisitoPosRecurso = pontuacaoRequisito;
-                    console.log(`  -> Pós-Recurso: +${pontuacaoRequisito} (Motivo: Sem recurso, statusValidacao === 'aprovado')`);
-                } else {
-                    console.log(`  -> Pós-Recurso: +0 (Motivo: Sem recurso, statusValidacao !== 'aprovado')`);
-                }
+                pontuacaoPosRecurso += pontuacaoRequisitoPosRecurso;
             }
-            pontuacaoPosRecurso += pontuacaoRequisitoPosRecurso;
 
             const statusFinalConsiderado = analiseFinal.statusValidacaoPosRecurso || resposta.statusValidacao;
             console.log(`  > Status Final Considerado: '${statusFinalConsiderado}' (Priorizou: ${analiseFinal.statusValidacaoPosRecurso ? 'Análise Final' : '1ª Análise'})`);
@@ -1216,6 +1540,10 @@ app.post('/api/avaliacoes/:id/finalizar', authenticateToken, authenticateAdmin, 
             }
         } 
 
+        if (avaliacao.pontuacaoPosRecurso === null || avaliacao.pontuacaoPosRecurso === undefined) {
+            pontuacaoPosRecurso = Math.round(pontuacaoPosRecurso);
+        }
+
         console.log(`\n[FINALIZAR LOG] Totais calculados FINAIS: Auto=${pontuacaoAutoavaliacao}, 1ª Análise=${pontuacaoPrimeiraAnalise}, Pós-Recurso=${pontuacaoPosRecurso}, Final=${pontuacaoFinal}, Total Possível=${pontuacaoTotal}`);
 
         const avaliacaoFinalizada = await prisma.avaliacao.update({
@@ -1225,7 +1553,7 @@ app.post('/api/avaliacoes/:id/finalizar', authenticateToken, authenticateAdmin, 
                 pontuacaoFinal: Math.round(pontuacaoFinal),
                 pontuacaoAutoavaliacao: Math.round(pontuacaoAutoavaliacao),
                 pontuacaoPrimeiraAnalise: Math.round(pontuacaoPrimeiraAnalise),
-                pontuacaoPosRecurso: Math.round(pontuacaoPosRecurso),
+                pontuacaoPosRecurso: pontuacaoPosRecurso,
                 pontuacaoTotal: pontuacaoTotal,
                 dataFinalizacao: new Date()
             },
@@ -1250,7 +1578,7 @@ app.post('/api/avaliacoes/:id/finalizar', authenticateToken, authenticateAdmin, 
             notas: {
                 autoavaliacao: Math.round(pontuacaoAutoavaliacao),
                 primeiraAnalise: Math.round(pontuacaoPrimeiraAnalise),
-                posRecurso: Math.round(pontuacaoPosRecurso),
+                posRecurso: pontuacaoPosRecurso, 
                 final: Math.round(pontuacaoFinal),
                 total: pontuacaoTotal
             }
@@ -1259,6 +1587,51 @@ app.post('/api/avaliacoes/:id/finalizar', authenticateToken, authenticateAdmin, 
     } catch (error) {
         console.error(`[FINALIZAR LOG] ❌ Erro crítico ao finalizar avaliação ${avaliacaoId}:`, error);
         res.status(500).json({ error: 'Ocorreu um erro interno ao tentar finalizar a avaliação.', details: error.message });
+    }
+});
+
+// NOVA ROTA - Salvar nota pós-recurso quando o recurso é enviado
+app.patch('/api/avaliacoes/:id/nota-pos-recurso', authenticateToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { pontuacaoPosRecurso } = req.body;
+
+        console.log(`💾 Salvando nota pós-recurso: ${pontuacaoPosRecurso} para avaliação ${id}`);
+
+        const avaliacao = await prisma.avaliacao.findUnique({
+            where: { id: parseInt(id) },
+            include: { secretaria: true }
+        });
+
+        if (!avaliacao) {
+            return res.status(404).json({ error: 'Avaliação não encontrada' });
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { id: req.user.userId }
+        });
+
+        if (user.secretariaId !== avaliacao.secretariaId && user.role !== 'ADMIN') {
+            return res.status(403).json({ error: 'Sem permissão para atualizar esta avaliação' });
+        }
+
+        const avaliacaoAtualizada = await prisma.avaliacao.update({
+            where: { id: parseInt(id) },
+            data: {
+                pontuacaoPosRecurso: Math.round(pontuacaoPosRecurso)
+            }
+        });
+
+        console.log(`✅ Nota pós-recurso salva com sucesso: ${avaliacaoAtualizada.pontuacaoPosRecurso}`);
+        res.json({ 
+            success: true, 
+            pontuacaoPosRecurso: avaliacaoAtualizada.pontuacaoPosRecurso,
+            message: 'Nota pós-recurso salva com sucesso'
+        });
+
+    } catch (error) {
+        console.error('❌ Erro ao salvar nota pós-recurso:', error);
+        res.status(500).json({ error: 'Erro interno ao salvar nota pós-recurso' });
     }
 });
 
@@ -1300,11 +1673,11 @@ app.post('/api/enviar-relatorio-email', upload.single('relatorioPdf'), async (re
     
     if (percentual === 100) {
       mensagemDestaque = 'PARABÉNS! EXCELÊNCIA TOTAL! Sua secretaria atingiu a pontuação máxima';
-    } else if (percentual >= 90) {
+    } else if (percentual >= 90 && percentual < 100) {
       mensagemDestaque = 'ÓTIMO DESEMPENHO! Sua secretaria atingiu uma pontuação destacada';
-    } else if (percentual >= 70) {
+    } else if (percentual >= 70 && percentual < 90) {
       mensagemDestaque = 'DESEMPENHO SATISFATÓRIO. Continue investindo em melhorias';
-    } else if (percentual >= 1) {
+    } else if (percentual >= 1 && percentual < 70) {
       mensagemDestaque = 'OPORTUNIDADE DE MELHORIA. Sua secretaria precisa focar em corrigir os requisitos que não atende';
     } else {
       mensagemDestaque = 'DESEMPENHO CRÍTICO. É fundamental uma ação imediata.';
@@ -1417,7 +1790,7 @@ app.post('/api/enviar-relatorio-email', upload.single('relatorioPdf'), async (re
   }
 });
 
-// ROTA DE DEBUG SEM AUTENTICAÇÃO (TEMPORÁRIA)
+// ROTA DE DEBUG SEM AUTENTICAÇÃO 
 app.get('/api/debug/prazo-publico/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -1470,52 +1843,139 @@ app.post('/api/enviar-email-confirmacao', authenticateToken, async (req, res) =>
                 <head>
                     <meta charset="utf-8">
                     <style>
-                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; }
-                        .header { background: #002776; color: white; padding: 25px; text-align: center; }
-                        .content { padding: 25px; background: #f9f9f9; }
-                        .footer { background: #e9ecef; padding: 20px; text-align: center; font-size: 12px; color: #666; }
-                        .info-box { background: white; padding: 15px; border-radius: 6px; margin: 15px 0; border-left: 4px solid #002776; }
+                        body { 
+                            font-family: Arial, sans-serif; 
+                            line-height: 1.6; 
+                            color: #333; 
+                            max-width: 600px; 
+                            margin: 0 auto;
+                            background: #f5f5f5;
+                        }
+                        .email-container {
+                            background: white;
+                            border-radius: 8px;
+                            overflow: hidden;
+                            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                        }
+                        .header-img {
+                            width: 100%;
+                            max-width: 600px;
+                            height: auto;
+                            display: block;
+                            object-fit: contain;
+                        }
+                        .content { 
+                            padding: 30px; 
+                        }
+                        .footer { 
+                            background: #e9ecef; 
+                            padding: 20px; 
+                            text-align: center; 
+                            font-size: 12px; 
+                            color: #666;
+                        }
+                        .info-box { 
+                            background: white; 
+                            border: 1px solid #ddd;
+                            border-left: 4px solid #28a745;
+                            border-radius: 6px;
+                            padding: 20px;
+                            margin: 15px 0;
+                        }
+                        .destaque { 
+                            background: #e8f4fd; 
+                            border: 1px solid #b3d9ff;
+                            border-radius: 6px;
+                            padding: 15px;
+                            margin: 15px 0;
+                        }
+                        .badge { 
+                            display: inline-block; 
+                            padding: 6px 12px; 
+                            border-radius: 15px; 
+                            font-size: 0.8em;
+                            font-weight: bold;
+                        }
+                        .analise { 
+                            background: #17a2b8; 
+                            color: white; 
+                        }
+                        .footer-images {
+                            display: flex;
+                            justify-content: center;
+                            gap: 20px;
+                            margin: 15px 0;
+                            align-items: center;
+                        }
+                        .footer-img {
+                            max-width: 150px;
+                            height: 60px;
+                            object-fit: contain;
+                        }
+                        .footer-img[alt="SIMPE"] {
+                            max-width: 200px;
+                            height: 80px;
+                        }
+                        h3 { color: #002776; margin-top: 0; }
+                        h4 { color: #333; margin-top: 0; }
                     </style>
                 </head>
                 <body>
-                    <div class="header">
-                        <h1>Governo de Pernambuco</h1>
-                        <h2>Controladoria Geral do Estado</h2>
-                    </div>
-                    
-                    <div class="content">
-                        <h3>Prezado(a) ${nomeResponsavel},</h3>
+                    <div class="email-container">
+                        <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/logo-footer.png" 
+                             alt="Controladoria Geral do Estado" 
+                             class="header-img">
                         
-                        <p>Recebemos a sua avaliação de transparência ativa com sucesso!</p>
-                        
-                        <div class="info-box">
-                            <h4>Detalhes da Avaliação</h4>
-                            <p><strong>Órgão/Entidade:</strong> ${nomeSecretaria}</p>
-                            <p><strong>URL Avaliada:</strong> ${urlSecretaria}</p>
-                            <p><strong>Status:</strong> EM ANÁLISE PELA SCGE</p>
-                            <p><strong>Data do Envio:</strong> ${new Date().toLocaleDateString('pt-BR')}</p>
+                        <div class="content">
+                            <h3>Confirmação de Recebimento</h3>
+                            
+                            <div class="destaque">
+                                <p><strong>Sua avaliação de transparência ativa foi recebida com sucesso!</strong></p>
+                            </div>
+                            
+                            <p>Prezado(a) <strong>${nomeResponsavel}</strong>,</p>
+                            <p>Informamos que a sua avaliação de transparência ativa foi recebida pelo sistema e está em processamento.</p>
+                            
+                            <div class="info-box">
+                                <h4>Detalhes da Avaliação</h4>
+                                <p><strong>Órgão/Entidade:</strong> ${nomeSecretaria}</p>
+                                <p><strong>URL Avaliada:</strong> ${urlSecretaria}</p>
+                                <p><strong>Data do Envio:</strong> ${new Date().toLocaleDateString('pt-BR')}</p>
+                                <p><strong>Status:</strong> <span class="badge analise">EM ANÁLISE PELA SCGE</span></p>
+                            </div>
+                            
+                            <div class="info-box">
+                                <h4>Próximos Passos</h4>
+                                <ul>
+                                    <li>Sua avaliação será analisada pela equipe da Controladoria Geral do Estado</li>
+                                    <li>Em breve, você receberá notificações sobre o andamento do processo</li>
+                                    <li>Em caso de necessidade de ajustes, entraremos em contato</li>
+                                </ul>
+                            </div>
+                            
+                            <p><strong>Acompanhamento:</strong></p>
+                            <p>Você pode acompanhar o status da sua avaliação através do sistema, na sua área pessoal.</p>
+                            
+                            <p style="margin-top: 25px;">
+                                Atenciosamente,<br>
+                                <strong>Equipe da Coordenação de Transparência Ativa (CTA)</strong>
+                            </p>
                         </div>
                         
-                        <p><strong>Próximos Passos:</strong></p>
-                        <ul>
-                            <li>Sua avaliação será analisada pela equipe da Controladoria Geral do Estado</li>
-                            <li>Você receberá notificações sobre o andamento do processo</li>
-                            <li>Em caso de necessidade de ajustes, entraremos em contato</li>
-                        </ul>
-                        
-                        <p><strong>Informações Importantes:</strong></p>
-                        <p>Você pode acompanhar o status da sua avaliação através do sistema, na sua área pessoal.</p>
-                        
-                        <p>Atenciosamente,<br>
-                        <strong>Equipe da Coordenação de Transparência Ativa (CTA) Controladoria Geral do Estado de Pernambuco</strong></p>
-                        <strong>Secretaria da Controladoria-Geral do Estado de Pernambuco</strong></p>
-
-                    </div>
-                    
-                    <div class="footer">
-                        <p><em>Este é um email automático. Por favor, não responda diretamente a esta mensagem.</em></p>
-                        <p>Secretaria da Controladoria-Geral do Estado de Pernambuco<br>
-                        R. Santo Elias, 535 - Espinheiro, Recife-PE, 52020-090</p>
+                        <div class="footer">
+                            <p><em>Este é um email automático do Sistema de Avaliação de Transparência.</em></p>
+                            <p>Secretaria da Controladoria-Geral do Estado de Pernambuco<br>
+                            R. Santo Elias, 535 - Espinheiro, Recife-PE, 52020-090</p>
+                            
+                            <div class="footer-images">
+                                <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/SIMPE-marca.png" 
+                                     alt="SIMPE" 
+                                     class="footer-img">
+                                <img src="${process.env.BASE_URL || 'http://localhost:3000'}/assets/logo-header.png" 
+                                     alt="Governo de Pernambuco" 
+                                     class="footer-img">
+                            </div>
+                        </div>
                     </div>
                 </body>
                 </html>
@@ -1547,8 +2007,8 @@ app.post('/api/notificar-controladoria', authenticateToken, async (req, res) => 
         }
 
         const mailOptions = {
-            from: `"Sistema de Avaliação - PE" <${process.env.SMTP_USER}>`,
-            to: ['kadsonlima91@gmail.com', 'roberta.gomes@scge.pe.gov.br','transparencia@scge.pe.gov.br', 'luiz.f-neto@scge.pe.gov.br'],
+            from: `"Sistema de Monitoramento - PE" <${process.env.SMTP_USER}>`,
+            to: ['kadsonlima91@gmail.com'/*,'transparencia@scge.pe.gov.br'*/],
             subject: `Nova Autoavaliação Recebida - ${nomeSecretaria}`,
             html: `
                 <!DOCTYPE html>
@@ -1604,7 +2064,7 @@ app.post('/api/notificar-controladoria', authenticateToken, async (req, res) => 
                         }
                         .btn { 
                             background: #002776; 
-                            color: white; 
+                            color: #ffffff !important; 
                             padding: 12px 25px; 
                             text-decoration: none; 
                             border-radius: 6px; 
@@ -1666,7 +2126,7 @@ app.post('/api/notificar-controladoria', authenticateToken, async (req, res) => 
                             
                             <p style="margin-top: 25px; text-align: center;">
                                 <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/admin" 
-                                   class="btn">
+                                   class="btn" style="color: #ffffff !important;">
                                    Acessar Área Administrativa
                                 </a>
                             </p>
@@ -1678,7 +2138,7 @@ app.post('/api/notificar-controladoria', authenticateToken, async (req, res) => 
                         </div>
                         
                         <div class="footer">
-                            <p><em>Este é um email automático do Sistema de Avaliação de Transparência.</em></p>
+                            <p><em>Este é um email automático do Sistema de Monitoramento da Transparência.</em></p>
                             <p>Secretaria da Controladoria-Geral do Estado de Pernambuco<br>
                             R. Santo Elias, 535 - Espinheiro, Recife-PE, 52020-090</p>
                             
@@ -1751,8 +2211,8 @@ app.post('/api/avaliacoes/:id/notificar-recurso', authenticateToken, async (req,
         ).length;
 
         const mailOptions = {
-            from: `"Sistema de Avaliação - PE" <${process.env.SMTP_USER}>`,
-            to: ['kadsonlima91@gmail.com', 'roberta.gomes@scge.pe.gov.br','transparencia@scge.pe.gov.br', 'luiz.f-neto@scge.pe.gov.br'],
+            from: `"Sistema de Monitoramento - PE" <${process.env.SMTP_USER}>`,
+            to: ['kadsonlima91@gmail.com' /*,'transparencia@scge.pe.gov.br'*/],
             subject: `Recurso Recebido - ${avaliacao.secretaria.sigla} - Ciclo 2025`,
             html: `
                 <!DOCTYPE html>
@@ -1819,7 +2279,7 @@ app.post('/api/avaliacoes/:id/notificar-recurso', authenticateToken, async (req,
                         }
                         .btn { 
                             background: #6f42c1; 
-                            color: white; 
+                            color: #ffffff !important; 
                             padding: 12px 25px; 
                             text-decoration: none; 
                             border-radius: 6px; 
@@ -1885,8 +2345,8 @@ app.post('/api/avaliacoes/:id/notificar-recurso', authenticateToken, async (req,
                             
                             <p style="margin-top: 25px; text-align: center;">
                                 <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/admin" 
-                                   class="btn">
-                                   Acessar Área Administrativa
+                                  class="btn" style="color: #ffffff !important;">
+                                  Acessar Área Administrativa
                                 </a>
                             </p>
                             
@@ -1897,7 +2357,7 @@ app.post('/api/avaliacoes/:id/notificar-recurso', authenticateToken, async (req,
                         </div>
                         
                         <div class="footer">
-                            <p><em>Este é um email automático do Sistema de Avaliação de Transparência.</em></p>
+                            <p><em>Este é um email automático do Sistema de Monitoramento da Transparência.</em></p>
                             <p>Secretaria da Controladoria-Geral do Estado de Pernambuco<br>
                             R. Santo Elias, 535 - Espinheiro, Recife-PE, 52020-090</p>
                             
@@ -1968,8 +2428,35 @@ app.post('/api/avaliacoes/:id/notificar-devolucao-recurso', authenticateToken, a
 
       pontuacaoAtual = Math.round(pontuacaoAtual); 
 
-      const prazoRecurso = new Date();
-      prazoRecurso.setDate(prazoRecurso.getDate() + 5); 
+    function calcularPrazoRecurso(dataInicio) {
+      let data = new Date(dataInicio);
+      let diasUteis = 0;
+      const diasNecessarios = 5;
+      
+      data.setDate(data.getDate() + 1);
+      data.setHours(0, 0, 1, 0);
+      
+      let diaSemana = data.getDay();
+      if (diaSemana === 0) { 
+        data.setDate(data.getDate() + 1); 
+      } else if (diaSemana === 6) { 
+        data.setDate(data.getDate() + 2); 
+      }
+      
+      while (diasUteis < diasNecessarios) {
+        data.setDate(data.getDate() + 1);
+        diaSemana = data.getDay();
+        if (diaSemana !== 0 && diaSemana !== 6) {
+          diasUteis++;
+        }
+      }
+      
+      data.setHours(23, 59, 59, 0);
+      
+      return data;
+    }
+
+    const prazoRecurso = calcularPrazoRecurso(new Date()); 
 
       await prisma.avaliacao.update({
           where: { id: parseInt(avaliacaoId) },
@@ -2044,7 +2531,7 @@ app.post('/api/avaliacoes/:id/notificar-devolucao-recurso', authenticateToken, a
                       }
                       .btn { 
                           background: #002776; 
-                          color: white; 
+                          color: #ffffff !important; 
                           padding: 12px 25px; 
                           text-decoration: none; 
                           border-radius: 6px; 
@@ -2097,7 +2584,7 @@ app.post('/api/avaliacoes/:id/notificar-devolucao-recurso', authenticateToken, a
                           <div class="info-box">
                               <h4>Próximos Passos</h4>
                               <p><strong>Você tem a oportunidade de interpor recurso sobre os itens divergentes.</strong></p>
-                              <p><strong>Prazo para recurso:</strong> 5 dias (até ${prazoRecurso.toLocaleDateString('pt-BR')})</p>
+                              <p><strong>Prazo para recurso:</strong> 5 dias úteis (até ${prazoRecurso.toLocaleDateString('pt-BR')} às 23:59:59)</p>
                               <p style="font-size: 0.9em; color: #666;">
                                   ⚠️ O prazo exato de expiração será mostrado no sistema.
                               </p>
@@ -2110,8 +2597,8 @@ app.post('/api/avaliacoes/:id/notificar-devolucao-recurso', authenticateToken, a
                           
                           <p style="margin-top: 25px; text-align: center;">
                               <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/avaliacao-usuario/${avaliacaoId}" 
-                                 class="btn">
-                                 Acessar Sistema para Recurso
+                                class="btn" style="color: #ffffff !important;">
+                                Acessar Sistema para Recurso
                               </a>
                           </p>
                           
@@ -2122,7 +2609,7 @@ app.post('/api/avaliacoes/:id/notificar-devolucao-recurso', authenticateToken, a
                       </div>
                       
                       <div class="footer">
-                          <p><em>Este é um email automático do Sistema de Avaliação de Transparência.</em></p>
+                          <p><em>Este é um email automático do Sistema de Monitoramento da Transparência.</em></p>
                           <p>Secretaria da Controladoria-Geral do Estado de Pernambuco<br>
                           R. Santo Elias, 535 - Espinheiro, Recife-PE, 52020-090</p>
                           
@@ -2437,7 +2924,7 @@ app.get('/api/avaliacoes/:id', authenticateToken, authenticateAdmin, async (req,
   try {
     const avaliacao = await prisma.avaliacao.findUnique({
       where: { id: parseInt(id) },
-      include: { secretaria: true, respostas: { orderBy: { requisitoId: 'asc' }, include: { requisito: true, evidencias: true, linksAnalista: true  } } },
+      include: { secretaria: true, respostas: { orderBy: { requisitoId: 'asc' }, include: { requisito: true, evidencias: true, linksAnalista: true, linksAnaliseFinal: true  } } },
     });
     if (!avaliacao) { return res.status(404).json({ error: "Avaliação não encontrada." }); }
     res.json(avaliacao);
@@ -2729,15 +3216,33 @@ app.post('/api/teste/expirar-recurso/:id', authenticateToken, authenticateAdmin,
   }
 });
 
-// ROTA GET TEMPORÁRIA PARA RESETAR PRAZO (TESTE NO NAVEGADOR)
+// ROTA GET TEMPORÁRIA PARA RESETAR PRAZO 
 app.get('/api/teste/reset-prazo-publico/:id', async (req, res) => {
   try {
     const { id } = req.params;
     
-    const prazoRecurso = new Date();
-    prazoRecurso.setSeconds(prazoRecurso.getSeconds() + 600);
-    
-    console.log(`🔄 Resetando prazo via GET para 1 minuto: ${prazoRecurso}`);
+    function calcularPrazoTeste(dataInicio) {
+      let data = new Date(dataInicio);
+      let diasUteis = 0;
+      const diasNecessarios = 5;
+      
+      data.setDate(data.getDate() + 1);
+      data.setHours(0, 0, 1, 0);
+      
+      while (diasUteis < diasNecessarios) {
+        data.setDate(data.getDate() + 1);
+        const diaSemana = data.getDay();
+        if (diaSemana !== 0 && diaSemana !== 6) {
+          diasUteis++;
+        }
+      }
+      
+      return data;
+    }
+
+    const prazoRecurso = calcularPrazoTeste(new Date());
+
+    console.log(`🔄 Resetando prazo via GET para 5 dias úteis: ${prazoRecurso}`);
 
     const avaliacaoAtualizada = await prisma.avaliacao.update({
       where: { id: parseInt(id) },
@@ -2748,12 +3253,16 @@ app.get('/api/teste/reset-prazo-publico/:id', async (req, res) => {
       },
     });
 
+    const agora = new Date();
+    const segundosRestantes = Math.max(0, Math.ceil((prazoRecurso - agora) / 1000));
+
     res.json({ 
       success: true, 
-      message: '✅ Prazo resetado para 1 minuto via GET',
+      message: '✅ Prazo resetado para 5 dias úteis via GET',
       prazoRecurso: prazoRecurso,
       novoPrazoFormatado: prazoRecurso.toLocaleString('pt-BR'),
-      segundosRestantes: 60
+      segundosRestantes: segundosRestantes,
+      detalhes: 'Começa a contar da meia-noite e 1 segundo do próximo dia, excluindo finais de semana'
     });
   } catch (error) {
     console.error("Erro ao resetar prazo via GET:", error);
@@ -2856,7 +3365,7 @@ async function enviarEmailRecursoExpirado(avaliacao) {
         <body>
             <div class="header">
                 <h2>Controladoria Geral do Estado</h2>
-                <h3>Sistema de Avaliação de Transparência</h3>
+                <h3>Sistema de Monitoramento da Transparência</h3>
             </div>
             
             <div class="content">
@@ -2893,7 +3402,7 @@ async function enviarEmailRecursoExpirado(avaliacao) {
             </div>
             
             <div class="footer">
-                <p><em>Este é um email automático do Sistema de Avaliação de Transparência.</em></p>
+                <p><em>Este é um email automático do Sistema de Monitoramento da Transparência.</em></p>
                   <p>Controladoria Geral do Estado de Pernambuco<br>
                   R. Santo Elias, 535 - Espinheiro, Recife-PE, 52020-090</p>
             </div>
@@ -2923,11 +3432,11 @@ async function enviarEmailNotaFinal(avaliacao) {
 
   if (percentual === 100) {
     mensagemDestaque = 'EXCELÊNCIA TOTAL!';
-  } else if (percentual >= 90) {
+  } else if (percentual >= 90 && percentual < 100) {
     mensagemDestaque = 'ÓTIMO DESEMPENHO!';
-  } else if (percentual >= 70) {
+  } else if (percentual >= 70 && percentual < 90) {
     mensagemDestaque = 'DESEMPENHO SATISFATÓRIO.';
-  } else if (percentual > 0) {
+  } else if (percentual > 0 && percentual < 70) {
     mensagemDestaque = 'OPORTUNIDADE DE MELHORIA.';
   } else {
     mensagemDestaque = 'DESEMPENHO CRÍTICO.';
@@ -2994,7 +3503,7 @@ async function enviarEmailNotaFinal(avaliacao) {
                 .reprovado { background: #dc3545; }
                 .btn { 
                     background: #002776; 
-                    color: white; 
+                    color: #ffffff !important;  
                     padding: 12px 25px; 
                     text-decoration: none; 
                     border-radius: 6px; 
@@ -3050,7 +3559,7 @@ async function enviarEmailNotaFinal(avaliacao) {
                     <p>Você pode acessar o relatório detalhado completo, com os comentários da análise final e a evolução da sua pontuação, clicando no botão abaixo:</p>
                     
                     <p style="margin-top: 25px; text-align: center;">
-                        <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/nota-final/${avaliacao.id}" class="btn">
+                        <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/nota-final/${avaliacao.id}" class="btn" style="color: #ffffff !important;">
                             Ver Relatório Final Detalhado
                         </a>
                     </p>
@@ -3062,7 +3571,7 @@ async function enviarEmailNotaFinal(avaliacao) {
                 </div>
                 
                 <div class="footer">
-                    <p><em>Este é um email automático do Sistema de Avaliação de Transparência.</em></p>
+                    <p><em>Este é um email automático do Sistema de Monitoramento da Transparência.</em></p>
                     <p>Secretaria da Controladoria-Geral do Estado de Pernambuco<br>
                     R. Santo Elias, 535 - Espinheiro, Recife-PE, 52020-090</p>
                     

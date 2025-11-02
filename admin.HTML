@@ -342,6 +342,241 @@
             margin-bottom: 5px;
         }
 
+        /* NOVOS ESTILOS PARA OS MODAIS */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal {
+            background: var(--branco);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalAppear 0.3s ease-out;
+        }
+
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background-color: var(--azul-gov-principal);
+            color: var(--branco);
+            padding: 20px 25px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.4em;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--branco);
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .modal-close:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .create-user-form, .create-secretaria-form {
+            background: var(--branco);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px 20px;
+        }
+
+        .form-grid-full {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group-full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            color: var(--cinza-texto);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            border: 1px solid var(--cinza-borda);
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--azul-gov-principal);
+            box-shadow: 0 0 0 2px rgba(0, 39, 118, 0.1);
+        }
+
+        .form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 1px solid var(--cinza-borda);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background-color: var(--azul-gov-principal);
+            color: var(--branco);
+        }
+
+        .btn-primary:hover {
+            background-color: #001a4d;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: var(--branco);
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+
+        .btn-success {
+            background-color: var(--verde-sucesso);
+            color: var(--branco);
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-warning {
+            background-color: var(--laranja-alerta);
+            color: var(--branco);
+        }
+
+        .btn-warning:hover {
+            background-color: #e06c1c;
+        }
+
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .admin-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid var(--cinza-borda);
+        }
+
+        .admin-actions .btn {
+            padding: 12px 30px;
+            font-size: 1em;
+        }
+
+        .form-help {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        /* Para quando não há avaliações */
+        .empty-state + .admin-actions {
+            border-top: none;
+            margin-top: 20px;
+        }
+
+        /* Ajuste para telas menores */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                grid-column: 1 / 2;
+                flex-direction: column;
+            }
+            
+            .modal {
+                width: 95%;
+                margin: 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -357,7 +592,8 @@
                 </a>
             </div>
             <ul id="nav-links">
-                </ul>
+                <!-- Menu será carregado pelo global.js -->
+            </ul>
         </nav>
     </header>
 
@@ -381,8 +617,96 @@
             <div id="avaliacoes-list">
                 <div class="loading-state">Carregando avaliações...</div>
             </div>
+
+            <!-- BOTÃO PARA ABRIR O MODAL - ABAIXO DAS AVALIAÇÕES -->
+            <div class="admin-actions">
+                <button id="create-user-btn" class="btn btn-success" style="display: none;">
+                    <span>Criar Novo Usuário</span> 
+                </button>
+            </div>
         </div>
     </main>
+
+    <!-- MODAL PARA CRIAR USUÁRIO -->
+    <div id="create-user-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Criar Novo Usuário</h2>
+                <button class="modal-close" id="close-user-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="create-user-form" class="create-user-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="user-email">E-mail</label>
+                            <input type="email" id="user-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-password">Senha Provisória</label>
+                            <input type="password" id="user-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-role">Papel (Permissão)</label>
+                            <select id="user-role" required>
+                                <option value="USER">Usuário (Secretaria)</option>
+                                <option value="ADMIN">Administrador (SCGE)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-secretaria">Secretaria</label>
+                            <select id="user-secretaria" required>
+                                <option value="">Carregando secretarias...</option>
+                            </select>
+                            <div style="margin-top: 8px;">
+                                <button type="button" id="add-secretaria-btn" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.85em;">
+                                    + Adicionar Nova Secretaria
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" id="cancel-create-user">Cancelar</button>
+                            <button type="submit" class="btn btn-success">Criar Usuário</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA CRIAR SECRETARIA -->
+    <div id="create-secretaria-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Adicionar Nova Secretaria</h2>
+                <button class="modal-close" id="close-secretaria-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="create-secretaria-form" class="create-secretaria-form">
+                    <div class="form-grid-full">
+                        <div class="form-group">
+                            <label for="secretaria-nome">Nome Completo da Secretaria</label>
+                            <input type="text" id="secretaria-nome" required placeholder="Ex: Secretaria de Estado da Saúde">
+                            <div class="form-help">Digite o nome completo da secretaria, conforme consta oficialmente</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="secretaria-sigla">Sigla</label>
+                            <input type="text" id="secretaria-sigla" required placeholder="Ex: SES" maxlength="10" style="text-transform: uppercase;">
+                            <div class="form-help">Apenas letras maiúsculas, 2-10 caracteres (Ex: SES, SECTI, SCGE)</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="secretaria-url">URL Oficial</label>
+                            <input type="url" id="secretaria-url" required placeholder="Ex: https://www.saude.pe.gov.br">
+                            <div class="form-help">URL completa do site oficial da secretaria</div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" id="cancel-create-secretaria">Cancelar</button>
+                            <button type="submit" class="btn btn-success">Adicionar Secretaria</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <footer class="main-footer">
         <div class="footer-content">
@@ -399,6 +723,292 @@
             const statusFilter = document.getElementById('statusFilter');
             const authToken = localStorage.getItem('authToken');
             
+            // --- VARIÁVEIS DOS MODAIS ---
+            const createUserBtn = document.getElementById('create-user-btn');
+            const createUserModal = document.getElementById('create-user-modal');
+            const closeUserModalBtn = document.getElementById('close-user-modal');
+            const cancelCreateUserBtn = document.getElementById('cancel-create-user');
+            const createUserForm = document.getElementById('create-user-form');
+            const secretariaSelect = document.getElementById('user-secretaria');
+            const addSecretariaBtn = document.getElementById('add-secretaria-btn');
+
+            const createSecretariaModal = document.getElementById('create-secretaria-modal');
+            const closeSecretariaModalBtn = document.getElementById('close-secretaria-modal');
+            const cancelCreateSecretariaBtn = document.getElementById('cancel-create-secretaria');
+            const createSecretariaForm = document.getElementById('create-secretaria-form');
+
+            // --- FUNÇÕES DOS MODAIS ---
+            function openUserModal() {
+                createUserModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeUserModal() {
+                createUserModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                createUserForm.reset();
+            }
+
+            function openSecretariaModal() {
+                closeUserModal(); // Fecha o modal de usuário
+                createSecretariaModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeSecretariaModal() {
+                createSecretariaModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                createSecretariaForm.reset();
+            }
+
+            // Event Listeners para os modais
+            createUserBtn.addEventListener('click', openUserModal);
+            closeUserModalBtn.addEventListener('click', closeUserModal);
+            cancelCreateUserBtn.addEventListener('click', closeUserModal);
+
+            addSecretariaBtn.addEventListener('click', openSecretariaModal);
+            closeSecretariaModalBtn.addEventListener('click', closeSecretariaModal);
+            cancelCreateSecretariaBtn.addEventListener('click', closeSecretariaModal);
+
+            // Fechar modais clicando fora
+            createUserModal.addEventListener('click', (event) => {
+                if (event.target === createUserModal) closeUserModal();
+            });
+            createSecretariaModal.addEventListener('click', (event) => {
+                if (event.target === createSecretariaModal) closeSecretariaModal();
+            });
+
+            // Fechar modais com ESC
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    if (createUserModal.style.display === 'flex') closeUserModal();
+                    if (createSecretariaModal.style.display === 'flex') closeSecretariaModal();
+                }
+            });
+
+            // --- FUNÇÃO PARA CARREGAR SECRETARIAS ---
+            async function popularSelectSecretarias() {
+                try {
+                    const response = await fetch('/secretarias', {
+                         headers: { 'Authorization': `Bearer ${authToken}` }
+                    });
+                    if (!response.ok) throw new Error('Erro ao buscar secretarias');
+                    
+                    const secretarias = await response.json();
+                    
+                    // Ordena por sigla
+                    secretarias.sort((a, b) => a.sigla.localeCompare(b.sigla));
+
+                    secretariaSelect.innerHTML = '<option value="">-- Selecione uma secretaria --</option>';
+                    
+                    // Adiciona opção para ADMIN (sem secretaria específica)
+                    const adminOption = document.createElement('option');
+                    adminOption.value = 'ADMIN';
+                    adminOption.textContent = 'SCGE - Administração do Sistema';
+                    adminOption.setAttribute('data-admin', 'true');
+                    secretariaSelect.appendChild(adminOption);
+                    
+                    // Adiciona as secretarias
+                    secretarias.forEach(sec => {
+                        const option = document.createElement('option');
+                        option.value = sec.id;
+                        option.textContent = `${sec.sigla} - ${sec.nome}`;
+                        secretariaSelect.appendChild(option);
+                    });
+
+                } catch (error) {
+                    console.error("Erro ao popular secretarias:", error);
+                    secretariaSelect.innerHTML = '<option value="">Erro ao carregar secretarias</option>';
+                }
+            }
+
+            // --- FUNÇÃO PARA CRIAR USUÁRIO ---
+            async function handleCreateUser(event) {
+                event.preventDefault();
+                
+                const email = document.getElementById('user-email').value;
+                const password = document.getElementById('user-password').value;
+                const role = document.getElementById('user-role').value;
+                const secretariaValue = document.getElementById('user-secretaria').value;
+
+                // Validação especial para ADMIN
+                let secretariaId;
+                if (role === 'ADMIN') {
+                    // Para ADMIN, usa a secretaria SCGE (ID 1)
+                    secretariaId = 1; // SCGE tem ID 1
+                } else {
+                    // Para USER, precisa ser uma secretaria válida
+                    secretariaId = parseInt(secretariaValue);
+                    if (isNaN(secretariaId)) {
+                        Swal.fire({
+                            title: 'Erro!',
+                            text: 'Para usuários da secretaria, é necessário selecionar uma secretaria válida.',
+                            icon: 'error',
+                            confirmButtonColor: 'var(--vermelho-destaque)'
+                        });
+                        return;
+                    }
+                }
+
+                const submitButton = createUserForm.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                submitButton.textContent = 'Criando...';
+
+                try {
+                    const response = await fetch('/api/users', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: JSON.stringify({ 
+                            email, 
+                            password, 
+                            role, 
+                            secretariaId 
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                         throw new Error(data.error || 'Erro desconhecido');
+                    }
+
+                    // Sucesso!
+                    Swal.fire({
+                        title: 'Sucesso!',
+                        text: `Usuário "${data.email}" criado com sucesso.`,
+                        icon: 'success',
+                        confirmButtonColor: 'var(--verde-sucesso)'
+                    });
+                    
+                    closeUserModal();
+
+                } catch (error) {
+                    console.error("Erro ao criar usuário:", error.message);
+                    Swal.fire({
+                        title: 'Erro!',
+                        text: `Não foi possível criar o usuário: ${error.message}`,
+                        icon: 'error',
+                        confirmButtonColor: 'var(--vermelho-destaque)'
+                    });
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Criar Usuário';
+                }
+            }
+
+            // --- FUNÇÃO PARA CRIAR SECRETARIA ---
+            async function handleCreateSecretaria(event) {
+                event.preventDefault();
+                
+                const nome = document.getElementById('secretaria-nome').value.trim();
+                const sigla = document.getElementById('secretaria-sigla').value.trim().toUpperCase();
+                const url = document.getElementById('secretaria-url').value.trim();
+
+                const submitButton = createSecretariaForm.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                submitButton.textContent = 'Adicionando...';
+
+                try {
+                    const response = await fetch('/api/secretarias', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: JSON.stringify({ 
+                            nome, 
+                            sigla, 
+                            url 
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                         throw new Error(data.error || 'Erro desconhecido');
+                    }
+
+                    // Sucesso!
+                    Swal.fire({
+                        title: 'Sucesso!',
+                        text: `Secretaria "${data.sigla} - ${data.nome}" criada com sucesso.`,
+                        icon: 'success',
+                        confirmButtonColor: 'var(--verde-sucesso)'
+                    });
+                    
+                    // Atualiza a lista de secretarias no select
+                    await popularSelectSecretarias();
+                    
+                    // Fecha o modal e reabre o modal de criar usuário
+                    closeSecretariaModal();
+                    openUserModal();
+
+                } catch (error) {
+                    console.error("Erro ao criar secretaria:", error.message);
+                    Swal.fire({
+                        title: 'Erro!',
+                        text: `Não foi possível criar a secretaria: ${error.message}`,
+                        icon: 'error',
+                        confirmButtonColor: 'var(--vermelho-destaque)'
+                    });
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Adicionar Secretaria';
+                }
+            }
+
+            // --- VALIDAÇÃO EM TEMPO REAL DA SIGLA ---
+            document.getElementById('secretaria-sigla').addEventListener('input', function(e) {
+                this.value = this.value.toUpperCase().replace(/[^A-Z]/g, '');
+            });
+
+            // --- VERIFICAR SE É ADMIN E CONFIGURAR ---
+            async function verificarAdminEConfigurarFormulario() {
+                try {
+                    const response = await fetch('/verify-token', {
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    });
+                    if (!response.ok) throw new Error('Token inválido');
+                    
+                    const userData = await response.json();
+
+                    // Se for ADMIN, mostra o botão e carrega os dados
+                    if (userData.user && userData.user.role === 'ADMIN') {
+                        createUserBtn.style.display = 'inline-flex';
+                        await popularSelectSecretarias();
+                        
+                        // Adiciona os event listeners
+                        createUserForm.addEventListener('submit', handleCreateUser);
+                        createSecretariaForm.addEventListener('submit', handleCreateSecretaria);
+                        
+                        // Lógica para mostrar/ocultar secretaria baseado no role
+                        const roleSelect = document.getElementById('user-role');
+                        const secretariaGroup = document.querySelector('.form-group:nth-child(4)');
+                        
+                        roleSelect.addEventListener('change', function() {
+                            if (this.value === 'ADMIN') {
+                                secretariaGroup.style.opacity = '0.7';
+                                secretariaSelect.value = 'ADMIN';
+                                secretariaSelect.disabled = true;
+                            } else {
+                                secretariaGroup.style.opacity = '1';
+                                secretariaSelect.value = '';
+                                secretariaSelect.disabled = false;
+                            }
+                        });
+                        
+                    } else {
+                         console.log("Usuário não é ADMIN. Botão de criação de usuário permanecerá oculto.");
+                    }
+                } catch (error) {
+                    console.error("Erro ao verificar status de admin:", error);
+                }
+            }
+
+            // --- FUNÇÕES EXISTENTES PARA CARREGAR AVALIAÇÕES ---
             const statusMap = {
                 'PENDENTE_SECRETARIA': 'Enviado',
                 'EM_ANALISE_SCGE': 'Em Análise',
@@ -485,12 +1095,12 @@
                 });
             }
 
+            // --- INICIALIZAÇÃO ---
             statusFilter.addEventListener('change', loadAvaliacoes);
-
+            verificarAdminEConfigurarFormulario();
             loadAvaliacoes();
         });
     </script>
     <script src="/global.js"></script>
-
 </body>
 </html>
