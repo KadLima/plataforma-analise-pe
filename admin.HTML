@@ -417,6 +417,90 @@
             padding: 25px;
         }
 
+        .users-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--cinza-borda);
+            border-radius: 6px;
+        }
+
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--cinza-borda);
+            background: var(--branco);
+        }
+
+        .user-item:last-child {
+            border-bottom: none;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-email {
+            font-weight: 600;
+            color: var(--azul-gov-principal);
+            margin-bottom: 4px;
+        }
+
+        .user-details {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .user-role-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .role-ADMIN {
+            background-color: var(--vermelho-destaque);
+            color: var(--branco);
+        }
+
+        .role-USER {
+            background-color: var(--azul-gov-principal);
+            color: var(--branco);
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-danger {
+            background-color: var(--vermelho-destaque);
+            color: var(--branco);
+            padding: 6px 12px;
+            font-size: 0.8em;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-danger:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .empty-users-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            background: var(--branco);
+            border-radius: 6px;
+            border: 2px dashed #ddd;
+        }
+
         .create-user-form, .create-secretaria-form {
             background: var(--branco);
         }
@@ -542,6 +626,7 @@
             margin-top: 30px;
             padding-top: 20px;
             border-top: 2px solid var(--cinza-borda);
+            gap: 15px;
         }
 
         .admin-actions .btn {
@@ -555,13 +640,15 @@
             margin-top: 4px;
         }
 
-        /* Para quando não há avaliações */
         .empty-state + .admin-actions {
             border-top: none;
             margin-top: 20px;
         }
 
-        /* Ajuste para telas menores */
+        .swal2-container {
+            z-index: 3000 !important;
+        }
+
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -618,16 +705,17 @@
                 <div class="loading-state">Carregando avaliações...</div>
             </div>
 
-            <!-- BOTÃO PARA ABRIR O MODAL - ABAIXO DAS AVALIAÇÕES -->
             <div class="admin-actions">
                 <button id="create-user-btn" class="btn btn-success" style="display: none;">
                     <span>Criar Novo Usuário</span> 
+                </button>
+                <button id="view-users-btn" class="btn btn-primary" style="display: none;">
+                    <span>Ver Todos os Usuários</span> 
                 </button>
             </div>
         </div>
     </main>
 
-    <!-- MODAL PARA CRIAR USUÁRIO -->
     <div id="create-user-modal" class="modal-overlay">
         <div class="modal">
             <div class="modal-header">
@@ -673,7 +761,6 @@
         </div>
     </div>
 
-    <!-- MODAL PARA CRIAR SECRETARIA -->
     <div id="create-secretaria-modal" class="modal-overlay">
         <div class="modal">
             <div class="modal-header">
@@ -708,6 +795,20 @@
         </div>
     </div>
 
+    <div id="view-users-modal" class="modal-overlay">
+        <div class="modal" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2>Gerenciar Usuários do Sistema</h2>
+                <button class="modal-close" id="close-users-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="users-list-container">
+                    <div class="loading-state">Carregando usuários...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="main-footer">
         <div class="footer-content">
             <p>&copy; 2025 Governo de Pernambuco. Todos os direitos reservados. <a id="admin-footer-link" href="/admin" style="display: none;">Área Administrativa</a></p>
@@ -723,7 +824,6 @@
             const statusFilter = document.getElementById('statusFilter');
             const authToken = localStorage.getItem('authToken');
             
-            // --- VARIÁVEIS DOS MODAIS ---
             const createUserBtn = document.getElementById('create-user-btn');
             const createUserModal = document.getElementById('create-user-modal');
             const closeUserModalBtn = document.getElementById('close-user-modal');
@@ -737,7 +837,191 @@
             const cancelCreateSecretariaBtn = document.getElementById('cancel-create-secretaria');
             const createSecretariaForm = document.getElementById('create-secretaria-form');
 
-            // --- FUNÇÕES DOS MODAIS ---
+            const viewUsersBtn = document.getElementById('view-users-btn');
+            const viewUsersModal = document.getElementById('view-users-modal');
+            const closeUsersModalBtn = document.getElementById('close-users-modal');
+            const usersListContainer = document.getElementById('users-list-container');
+
+            function openUsersModal() {
+                viewUsersModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                loadUsersList();
+            }
+
+            function closeUsersModal() {
+                viewUsersModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+
+            viewUsersBtn.addEventListener('click', openUsersModal);
+            closeUsersModalBtn.addEventListener('click', closeUsersModal);
+
+            viewUsersModal.addEventListener('click', (event) => {
+                if (event.target === viewUsersModal) closeUsersModal();
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && viewUsersModal.style.display === 'flex') {
+                    closeUsersModal();
+                }
+            });
+
+            async function loadUsersList() {
+                try {
+                    usersListContainer.innerHTML = '<div class="loading-state">Carregando usuários...</div>';
+                    
+                    const response = await fetch('/api/users', {
+                        headers: { 
+                            'Authorization': `Bearer ${authToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Erro ao carregar usuários');
+                    }
+
+                    const users = await response.json();
+
+                    if (users.length === 0) {
+                        usersListContainer.innerHTML = '<div class="empty-users-state">Nenhum usuário cadastrado no sistema.</div>';
+                        return;
+                    }
+
+                    users.sort((a, b) => {
+                        if (a.role === 'ADMIN' && b.role !== 'ADMIN') return -1;
+                        if (a.role !== 'ADMIN' && b.role === 'ADMIN') return 1;
+                        return a.email.localeCompare(b.email);
+                    });
+
+                    usersListContainer.innerHTML = `
+                        <div class="users-list">
+                            ${users.map(user => `
+                                <div class="user-item">
+                                    <div class="user-info">
+                                        <div class="user-email">${user.email}</div>
+                                        <div class="user-details">
+                                            <span class="user-role-badge role-${user.role}">${user.role}</span>
+                                            ${user.nome || 'Nome não informado'} 
+                                            ${user.secretaria ? `- ${user.secretaria.sigla}` : ''}
+                                        </div>
+                                    </div>
+                                    <div class="user-actions">
+                                        <button class="btn btn-danger delete-user-btn" 
+                                                data-user-id="${user.id}" 
+                                                data-user-email="${user.email}"
+                                                ${user.role === 'ADMIN' ? 'disabled' : ''}>
+                                            Excluir
+                                        </button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+
+                    document.querySelectorAll('.delete-user-btn').forEach(btn => {
+                        btn.addEventListener('click', handleDeleteUser);
+                    });
+
+                } catch (error) {
+                    console.error('Erro ao carregar usuários:', error);
+                    usersListContainer.innerHTML = `<div class="error-state">Erro ao carregar usuários: ${error.message}</div>`;
+                }
+            }
+
+            async function handleDeleteUser(event) {
+                const userId = event.target.getAttribute('data-user-id');
+                const userEmail = event.target.getAttribute('data-user-email');
+                
+                const result = await Swal.fire({
+                    title: 'Confirmar Exclusão',
+                    html: `Tem certeza que deseja excluir o usuário <strong>${userEmail}</strong>?<br><br>
+                        <span style="color: var(--vermelho-destaque); font-size: 0.9em;">
+                        ⚠️ Esta ação não pode ser desfeita!</span>`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: 'var(--vermelho-destaque)',
+                    cancelButtonColor: 'var(--cinza-texto)',
+                    confirmButtonText: 'Sim, excluir!',
+                    cancelButtonText: 'Cancelar'
+                });
+
+                if (result.isConfirmed) {
+                    try {
+                        const response = await fetch(`/api/users/${userId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': `Bearer ${authToken}`,
+                                'Content-Type': 'application/json'
+                            }
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.error || 'Erro ao excluir usuário');
+                        }
+
+                        Swal.fire({
+                            title: 'Excluído!',
+                            text: `Usuário "${userEmail}" foi excluído com sucesso.`,
+                            icon: 'success',
+                            confirmButtonColor: 'var(--verde-sucesso)'
+                        });
+
+                        loadUsersList();
+
+                    } catch (error) {
+                        console.error('Erro ao excluir usuário:', error);
+                        Swal.fire({
+                            title: 'Erro!',
+                            text: `Não foi possível excluir o usuário: ${error.message}`,
+                            icon: 'error',
+                            confirmButtonColor: 'var(--vermelho-destaque)'
+                        });
+                    }
+                }
+            }
+
+            async function verificarAdminEConfigurarFormulario() {
+                try {
+                    const response = await fetch('/verify-token', {
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    });
+                    if (!response.ok) throw new Error('Token inválido');
+                    
+                    const userData = await response.json();
+
+                    if (userData.user && userData.user.role === 'ADMIN') {
+                        createUserBtn.style.display = 'inline-flex';
+                        viewUsersBtn.style.display = 'inline-flex'; 
+                        await popularSelectSecretarias();
+                        
+                        createUserForm.addEventListener('submit', handleCreateUser);
+                        createSecretariaForm.addEventListener('submit', handleCreateSecretaria);
+                        
+                        const roleSelect = document.getElementById('user-role');
+                        const secretariaGroup = document.querySelector('.form-group:nth-child(4)');
+                        
+                        roleSelect.addEventListener('change', function() {
+                            if (this.value === 'ADMIN') {
+                                secretariaGroup.style.opacity = '0.7';
+                                secretariaSelect.value = 'ADMIN';
+                                secretariaSelect.disabled = true;
+                            } else {
+                                secretariaGroup.style.opacity = '1';
+                                secretariaSelect.value = '';
+                                secretariaSelect.disabled = false;
+                            }
+                        });
+                        
+                    } else {
+                        console.log("Usuário não é ADMIN. Botões de administração permanecerão ocultos.");
+                    }
+                } catch (error) {
+                    console.error("Erro ao verificar status de admin:", error);
+                }
+            }
+
             function openUserModal() {
                 createUserModal.style.display = 'flex';
                 document.body.style.overflow = 'hidden';
@@ -750,7 +1034,7 @@
             }
 
             function openSecretariaModal() {
-                closeUserModal(); // Fecha o modal de usuário
+                closeUserModal(); 
                 createSecretariaModal.style.display = 'flex';
                 document.body.style.overflow = 'hidden';
             }
@@ -761,7 +1045,6 @@
                 createSecretariaForm.reset();
             }
 
-            // Event Listeners para os modais
             createUserBtn.addEventListener('click', openUserModal);
             closeUserModalBtn.addEventListener('click', closeUserModal);
             cancelCreateUserBtn.addEventListener('click', closeUserModal);
@@ -770,7 +1053,6 @@
             closeSecretariaModalBtn.addEventListener('click', closeSecretariaModal);
             cancelCreateSecretariaBtn.addEventListener('click', closeSecretariaModal);
 
-            // Fechar modais clicando fora
             createUserModal.addEventListener('click', (event) => {
                 if (event.target === createUserModal) closeUserModal();
             });
@@ -778,7 +1060,6 @@
                 if (event.target === createSecretariaModal) closeSecretariaModal();
             });
 
-            // Fechar modais com ESC
             document.addEventListener('keydown', (event) => {
                 if (event.key === 'Escape') {
                     if (createUserModal.style.display === 'flex') closeUserModal();
@@ -786,7 +1067,6 @@
                 }
             });
 
-            // --- FUNÇÃO PARA CARREGAR SECRETARIAS ---
             async function popularSelectSecretarias() {
                 try {
                     const response = await fetch('/secretarias', {
@@ -796,19 +1076,16 @@
                     
                     const secretarias = await response.json();
                     
-                    // Ordena por sigla
                     secretarias.sort((a, b) => a.sigla.localeCompare(b.sigla));
 
                     secretariaSelect.innerHTML = '<option value="">-- Selecione uma secretaria --</option>';
                     
-                    // Adiciona opção para ADMIN (sem secretaria específica)
                     const adminOption = document.createElement('option');
                     adminOption.value = 'ADMIN';
                     adminOption.textContent = 'SCGE - Administração do Sistema';
                     adminOption.setAttribute('data-admin', 'true');
                     secretariaSelect.appendChild(adminOption);
                     
-                    // Adiciona as secretarias
                     secretarias.forEach(sec => {
                         const option = document.createElement('option');
                         option.value = sec.id;
@@ -822,7 +1099,6 @@
                 }
             }
 
-            // --- FUNÇÃO PARA CRIAR USUÁRIO ---
             async function handleCreateUser(event) {
                 event.preventDefault();
                 
@@ -831,13 +1107,10 @@
                 const role = document.getElementById('user-role').value;
                 const secretariaValue = document.getElementById('user-secretaria').value;
 
-                // Validação especial para ADMIN
                 let secretariaId;
                 if (role === 'ADMIN') {
-                    // Para ADMIN, usa a secretaria SCGE (ID 1)
-                    secretariaId = 1; // SCGE tem ID 1
+                    secretariaId = 1; 
                 } else {
-                    // Para USER, precisa ser uma secretaria válida
                     secretariaId = parseInt(secretariaValue);
                     if (isNaN(secretariaId)) {
                         Swal.fire({
@@ -875,7 +1148,6 @@
                          throw new Error(data.error || 'Erro desconhecido');
                     }
 
-                    // Sucesso!
                     Swal.fire({
                         title: 'Sucesso!',
                         text: `Usuário "${data.email}" criado com sucesso.`,
@@ -899,7 +1171,6 @@
                 }
             }
 
-            // --- FUNÇÃO PARA CRIAR SECRETARIA ---
             async function handleCreateSecretaria(event) {
                 event.preventDefault();
                 
@@ -931,7 +1202,6 @@
                          throw new Error(data.error || 'Erro desconhecido');
                     }
 
-                    // Sucesso!
                     Swal.fire({
                         title: 'Sucesso!',
                         text: `Secretaria "${data.sigla} - ${data.nome}" criada com sucesso.`,
@@ -939,10 +1209,8 @@
                         confirmButtonColor: 'var(--verde-sucesso)'
                     });
                     
-                    // Atualiza a lista de secretarias no select
                     await popularSelectSecretarias();
                     
-                    // Fecha o modal e reabre o modal de criar usuário
                     closeSecretariaModal();
                     openUserModal();
 
@@ -960,55 +1228,10 @@
                 }
             }
 
-            // --- VALIDAÇÃO EM TEMPO REAL DA SIGLA ---
             document.getElementById('secretaria-sigla').addEventListener('input', function(e) {
                 this.value = this.value.toUpperCase().replace(/[^A-Z]/g, '');
             });
 
-            // --- VERIFICAR SE É ADMIN E CONFIGURAR ---
-            async function verificarAdminEConfigurarFormulario() {
-                try {
-                    const response = await fetch('/verify-token', {
-                        headers: { 'Authorization': `Bearer ${authToken}` }
-                    });
-                    if (!response.ok) throw new Error('Token inválido');
-                    
-                    const userData = await response.json();
-
-                    // Se for ADMIN, mostra o botão e carrega os dados
-                    if (userData.user && userData.user.role === 'ADMIN') {
-                        createUserBtn.style.display = 'inline-flex';
-                        await popularSelectSecretarias();
-                        
-                        // Adiciona os event listeners
-                        createUserForm.addEventListener('submit', handleCreateUser);
-                        createSecretariaForm.addEventListener('submit', handleCreateSecretaria);
-                        
-                        // Lógica para mostrar/ocultar secretaria baseado no role
-                        const roleSelect = document.getElementById('user-role');
-                        const secretariaGroup = document.querySelector('.form-group:nth-child(4)');
-                        
-                        roleSelect.addEventListener('change', function() {
-                            if (this.value === 'ADMIN') {
-                                secretariaGroup.style.opacity = '0.7';
-                                secretariaSelect.value = 'ADMIN';
-                                secretariaSelect.disabled = true;
-                            } else {
-                                secretariaGroup.style.opacity = '1';
-                                secretariaSelect.value = '';
-                                secretariaSelect.disabled = false;
-                            }
-                        });
-                        
-                    } else {
-                         console.log("Usuário não é ADMIN. Botão de criação de usuário permanecerá oculto.");
-                    }
-                } catch (error) {
-                    console.error("Erro ao verificar status de admin:", error);
-                }
-            }
-
-            // --- FUNÇÕES EXISTENTES PARA CARREGAR AVALIAÇÕES ---
             const statusMap = {
                 'PENDENTE_SECRETARIA': 'Enviado',
                 'EM_ANALISE_SCGE': 'Em Análise',
@@ -1095,7 +1318,6 @@
                 });
             }
 
-            // --- INICIALIZAÇÃO ---
             statusFilter.addEventListener('change', loadAvaliacoes);
             verificarAdminEConfigurarFormulario();
             loadAvaliacoes();

@@ -784,7 +784,7 @@ app.post('/api/users', authenticateToken, authenticateAdmin, async (req, res) =>
 
     const newUser = await prisma.user.create({
       data: {
-        nome: 'Usuário', // Nome padrão
+        nome: 'Usuário', 
         email: email.toLowerCase(),
         password: hashedPassword,
         role: role, 
@@ -806,6 +806,79 @@ app.post('/api/users', authenticateToken, authenticateAdmin, async (req, res) =>
   }
 });
 
+// ROTA PARA LISTAR TODOS OS USUÁRIOS (APENAS ADMIN)
+app.get('/api/users', authenticateToken, authenticateAdmin, async (req, res) => {
+    try {
+        const users = await prisma.user.findMany({
+            select: {
+                id: true,
+                email: true,
+                nome: true,
+                role: true,
+                secretariaId: true,
+                primeiroAcesso: true,
+                createdAt: true,
+                secretaria: {
+                    select: {
+                        id: true,
+                        nome: true,
+                        sigla: true
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+
+        res.json(users);
+    } catch (error) {
+        console.error('[ADMIN] Erro ao listar usuários:', error);
+        res.status(500).json({ error: 'Erro interno ao buscar usuários.' });
+    }
+});
+
+// ROTA PARA EXCLUIR USUÁRIO 
+app.delete('/api/users/:id', authenticateToken, authenticateAdmin, async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: parseInt(id) }
+        });
+
+        if (!user) {
+            return res.status(404).json({ error: 'Usuário não encontrado.' });
+        }
+
+        if (parseInt(id) === req.user.userId) {
+            return res.status(400).json({ error: 'Você não pode excluir sua própria conta.' });
+        }
+
+        // Impedir exclusão de outros administradores (opcional - descomente se quiser)
+        // if (user.role === 'ADMIN') {
+        //     return res.status(400).json({ error: 'Não é permitido excluir outros administradores.' });
+        // }
+
+        // Excluir o usuário
+        await prisma.user.delete({
+            where: { id: parseInt(id) }
+        });
+
+        console.log(`[ADMIN] Usuário ${user.email} excluído por ${req.user.userEmail}`);
+        res.json({ success: true, message: 'Usuário excluído com sucesso.' });
+
+    } catch (error) {
+        console.error('[ADMIN] Erro ao excluir usuário:', error);
+        
+        if (error.code === 'P2025') {
+            return res.status(404).json({ error: 'Usuário não encontrado.' });
+        }
+        
+        res.status(500).json({ error: 'Erro interno ao excluir usuário.' });
+    }
+});
+
 // ROTA PARA ADMIN CRIAR NOVAS SECRETARIAS
 app.post('/api/secretarias', authenticateToken, authenticateAdmin, async (req, res) => {
   const { nome, sigla, url } = req.body;
@@ -816,13 +889,11 @@ app.post('/api/secretarias', authenticateToken, authenticateAdmin, async (req, r
     return res.status(400).json({ error: 'Todos os campos (nome, sigla, URL) são obrigatórios.' });
   }
 
-  // Validar formato da sigla (apenas letras, 2-10 caracteres)
   const siglaRegex = /^[A-Z]{2,10}$/;
   if (!siglaRegex.test(sigla)) {
     return res.status(400).json({ error: 'A sigla deve conter apenas letras maiúsculas e ter entre 2 e 10 caracteres.' });
   }
 
-  // Validar URL
   try {
     new URL(url);
   } catch (error) {
@@ -830,7 +901,6 @@ app.post('/api/secretarias', authenticateToken, authenticateAdmin, async (req, r
   }
 
   try {
-    // Verificar se sigla já existe
     const existingSigla = await prisma.secretaria.findUnique({
       where: { sigla: sigla.toUpperCase() },
     });
@@ -840,7 +910,6 @@ app.post('/api/secretarias', authenticateToken, authenticateAdmin, async (req, r
       return res.status(409).json({ error: 'Esta sigla já está em uso.' });
     }
 
-    // Verificar se nome já existe
     const existingNome = await prisma.secretaria.findUnique({
       where: { nome: nome },
     });
@@ -2008,7 +2077,7 @@ app.post('/api/notificar-controladoria', authenticateToken, async (req, res) => 
 
         const mailOptions = {
             from: `"Sistema de Monitoramento - PE" <${process.env.SMTP_USER}>`,
-            to: ['kadsonlima91@gmail.com'/*,'transparencia@scge.pe.gov.br'*/],
+            to: ['kadsonlima91@gmail.com','transparencia@scge.pe.gov.br'],
             subject: `Nova Autoavaliação Recebida - ${nomeSecretaria}`,
             html: `
                 <!DOCTYPE html>
@@ -2212,7 +2281,7 @@ app.post('/api/avaliacoes/:id/notificar-recurso', authenticateToken, async (req,
 
         const mailOptions = {
             from: `"Sistema de Monitoramento - PE" <${process.env.SMTP_USER}>`,
-            to: ['kadsonlima91@gmail.com' /*,'transparencia@scge.pe.gov.br'*/],
+            to: ['kadsonlima91@gmail.com' , 'transparencia@scge.pe.gov.br'],
             subject: `Recurso Recebido - ${avaliacao.secretaria.sigla} - Ciclo 2025`,
             html: `
                 <!DOCTYPE html>
