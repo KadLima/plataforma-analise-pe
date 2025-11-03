@@ -1747,7 +1747,6 @@
                 const statusTextoFinal = determinarTextoStatusRecurso(resposta, statusFinalConsiderado); 
                 const statusClasseFinal = determinarStatusRecurso(resposta, statusFinalConsiderado);
 
-                // CORREÇÃO: USAR APENAS UM COMENTÁRIO (evitar duplicação)
                 const comentarioFinalHTML = resposta.comentarioAnaliseFinal ? `
                     <div class="info-grid">
                         <span class="info-label">Comentário Final:</span>
@@ -1755,7 +1754,6 @@
                     </div>
                 ` : '';
 
-                // Links de Evidência da Análise Final
                 const linksAnaliseFinalHTML = resposta.linksAnaliseFinal && resposta.linksAnaliseFinal.length > 0 ? `
                     <div class="info-grid">
                         <span class="info-label">Links de Evidência Final:</span>

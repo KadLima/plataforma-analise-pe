@@ -21,19 +21,16 @@ function protectPage() {
     /*const dataLiberacao = new Date('2025-11-14T00:00:00');
     const hoje = new Date();
 
-    // Se a página é o formulário E hoje é ANTES da data de liberação
     if (path.startsWith('/formulario') && hoje < dataLiberacao) {
-        // Precisamos verificar o cargo do usuário antes de bloquear
-        // Esta chamada é assíncrona, então precisamos reestruturar um pouco
         fetch('/verify-token', {
             headers: { 'Authorization': `Bearer ${token}` }
         })
         .then(res => res.json())
         .then(data => {
-            // Se o usuário NÃO for admin, bloqueia o acesso
             if (data.user && data.user.role !== 'ADMIN') {
                 Swal.fire({
                     icon: 'info',
+                    iconColor: '#002776',
                     title: 'Aguarde a Liberação',
                     html: `A Autoavaliação estará disponível a partir de <strong>14 de Novembro de 2025</strong>.<br>Agradecemos a sua compreensão.`,
                     confirmButtonText: 'Voltar ao Início',
@@ -47,7 +44,6 @@ function protectPage() {
     }*/
 }
 
-// --- LÓGICA DO CABEÇALHO E LINKS DINÂMICOS ---
 async function setupDynamicLinks() {
     const navLinks = document.getElementById('nav-links');
     const token = localStorage.getItem('authToken');
@@ -157,5 +153,79 @@ function setupFooterLink(isLoggedIn, user) {
     }
 }
 
-protectPage();
-document.addEventListener('DOMContentLoaded', setupDynamicLinks);
+function addFooterBanner() {
+    if (document.querySelector('.footer-transparency-banner')) {
+        return;
+    }
+
+    if (!document.querySelector('#footer-banner-styles')) {
+        const styles = document.createElement('style');
+        styles.id = 'footer-banner-styles';
+        styles.textContent = `
+            .footer-transparency-banner {
+                position: absolute;
+                left: 5%;
+                top: 55%;
+                transform: translateY(-50%);
+                z-index: 10;
+            }
+            .footer-transparency-banner a {
+                display: block;
+            }
+            .footer-transparency-banner img {
+                height: 65px;
+                width: auto;
+                cursor: pointer;
+                transition: transform 0.3s ease;
+                border-radius: 4px;
+            }
+
+            @media (max-width: 768px) {
+                .footer-transparency-banner {
+                    position: relative;
+                    left: auto;
+                    top: auto;
+                    transform: none;
+                    text-align: center;
+                    margin-bottom: 10px;
+                }
+                .footer-transparency-banner img {
+                    height: 50px;
+                }
+            }
+        `;
+        document.head.appendChild(styles);
+    }
+    
+    const bannerHTML = `
+        <div class="footer-transparency-banner">
+            <a href="https://transparencia.pe.gov.br/" target="_blank" rel="noopener noreferrer">
+                <img src="/assets/image-portal.png" 
+                     alt="Portal da Transparência de Pernambuco">
+            </a>
+        </div>
+    `;
+
+    const footer = document.querySelector('footer');
+    if (footer) {
+        footer.insertAdjacentHTML('beforeend', bannerHTML);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    protectPage();
+    setupDynamicLinks();
+    addFooterBanner();
+});
+
+if (typeof History !== 'undefined') {
+    const originalPushState = history.pushState;
+    history.pushState = function() {
+        originalPushState.apply(this, arguments);
+        setTimeout(addFooterBanner, 100);
+    };
+
+    window.addEventListener('popstate', function() {
+        setTimeout(addFooterBanner, 100);
+    });
+}

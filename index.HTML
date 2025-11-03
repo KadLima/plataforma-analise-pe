@@ -474,7 +474,43 @@
                                 <div class="icon"><i class="fas fa-search"></i></div>
                                 <h3>Scanner de Links</h3>
                                 <p>Uma ferramenta completa para verificar todos os links de um site, identificar links quebrados e garantir a integridade do seu portal.</p>
-                                <a href="/scanner" class="cta-button">Utilizar Ferramenta</a>
+                                <a href="#" class="cta-button" style="background-color: grey; cursor: not-allowed;">Utilizar Ferramenta</a>
+                            </div>
+                        </div>
+                        
+                        <div class="swiper-slide">
+                            <div class="feature-card">
+                                <div class="icon"><i class="fas fa-file-alt"></i></div>
+                                <h3>Autoavaliação de Transparência</h3>
+                                <p>Preencha o checklist de transparência ativa de forma inteligente, com pré-validação automática de requisitos.</p>
+                                <a id="form-card-link" href="#" class="cta-button">Iniciar Avaliação</a>
+                            </div>
+                        </div>
+                        
+                        <div class="swiper-slide">
+                            <div class="feature-card">
+                                <div class="icon"><i class="fas fa-chart-line"></i></div>
+                                <h3>Consultar Nota Final</h3>
+                                <p>Consulte a nota final das suas avaliações já concluídas e acesse os relatórios detalhados de desempenho.</p>
+                                <a href="#" id="nota-final-link" class="cta-button">Consultar Nota</a>
+                            </div>
+                        </div>
+                        
+                        <div class="swiper-slide">
+                            <div class="feature-card">
+                                <div class="icon"><i class="fas fa-universal-access"></i></div>
+                                <h3>Auditoria de Acessibilidade (Em Breve)</h3>
+                                <p>Verifique se o seu site atende às diretrizes de acessibilidade, garantindo que todos os cidadãos possam navegar com facilidade.</p>
+                                <a href="#" class="cta-button" style="background-color: grey; cursor: not-allowed;">Indisponível</a>
+                            </div>
+                        </div>
+
+                        <div class="swiper-slide">
+                            <div class="feature-card">
+                                <div class="icon"><i class="fas fa-search"></i></div>
+                                <h3>Scanner de Links</h3>
+                                <p>Uma ferramenta completa para verificar todos os links de um site, identificar links quebrados e garantir a integridade do seu portal.</p>
+                                <a href="#" class="cta-button" style="background-color: grey; cursor: not-allowed;">Utilizar Ferramenta</a>
                             </div>
                         </div>
                         
@@ -685,15 +721,16 @@
             
             const swiper = new Swiper('.swiper', {
                 effect: 'slide',
+                speed: 600,
                 slidesPerView: 1, 
                 spaceBetween: 10,
-                loop: false,
+                loop: true,
                 centeredSlides: true,
                 grabCursor: true,
                 autoplay: {
-                delay: 4000,
+                delay: 3000,
                 disableOnInteraction: false,
-                pauseOnMouseEnter: true,
+                pauseOnMouseEnter: false,
                 },
                 breakpoints: {
                     768: {

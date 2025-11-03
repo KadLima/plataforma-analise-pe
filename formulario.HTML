@@ -1280,14 +1280,16 @@
                     );
 
                     document.querySelector('.container').innerHTML = `
-                        <div style="text-align: center; padding: 40px;">
+                        <div style="text-align: center; padding: 80px 40px; min-height: 60vh; display: flex; flex-direction: column; justify-content: center;">
                             <h2 style="color: var(--verde-sucesso);">Avaliação Enviada com Sucesso!</h2>
                             <p>Obrigado por preencher o formulário. A equipe da SCGE será notificada.</p>
                             ${emailEnviado ? 
                                 `<p>Um email de confirmação foi enviado para <strong>${emailResponsavel}</strong>.</p>` : 
                                 `<p style="color: #666;"><em>Seu formulário foi enviado com sucesso.</em></p>`
                             }
-                            <a href="/dashboard" class="btn">Ir para Minha Área</a>
+                            <div style="margin-top: 30px;">
+                                <a href="/dashboard" class="btn">Ir para Minha Área</a>
+                            </div>
                         </div>
                     `;
 

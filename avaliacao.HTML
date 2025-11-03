@@ -751,7 +751,13 @@
                                         }
                                     }
                                     
-                                    await Swal.fire('Sucesso!', 'A avaliação foi processada com sucesso.', 'success');
+                                    await Swal.fire({
+                                        title: 'Sucesso!',
+                                        text: 'A avaliação foi processada com sucesso.',
+                                        icon: 'success',
+                                        confirmButtonColor: 'var(--azul-gov-principal)',
+                                        confirmButtonText: 'OK'
+                                    });
                                     window.location.href = '/admin';
                                 } catch (error) {
                                     Swal.fire('Erro!', error.message, 'error');
