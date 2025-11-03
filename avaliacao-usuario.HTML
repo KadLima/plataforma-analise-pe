@@ -2140,12 +2140,11 @@
                 });
             }
 
-            // === NOVA FUNÇÃO PARA CALCULAR E SALVAR NOTA PÓS-RECURSO ===
+            // NOVA FUNÇÃO PARA CALCULAR E SALVAR NOTA PÓS-RECURSO 
             async function calcularESalvarNotaPosRecurso(avaliacaoId, respostasDoRecurso) {
                 try {
                     console.log('🧮 Calculando nota pós-recurso...');
                     
-                    // Buscar dados atualizados da avaliação
                     const response = await fetch(`/api/my-avaliacoes/${avaliacaoId}`, {
                         headers: { 'Authorization': `Bearer ${authToken}` }
                     });
