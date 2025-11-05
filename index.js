@@ -3237,7 +3237,7 @@ async function initialCleanup() {
   } catch (error) { console.error('❌ Erro na limpeza inicial:', error); }
 }
 
-// --- FUNÇÃO DE LIMPEZA PARA SESSÕES ZUMBIS ---
+// --- FUNÇÃO DE LIMPEZA PARA SESSÕES NÃO ENCERRADAS ---
 async function cleanupZombieScans() {
   try {
     const zombieScans = await prisma.scanSession.findMany({
@@ -3258,7 +3258,7 @@ async function cleanupZombieScans() {
 }
 
 // ROTA PARA TESTE - FORÇAR EXPIRAÇÃO DO PRAZO
-app.post('/api/teste/expirar-recurso/:id', authenticateToken, authenticateAdmin, async (req, res) => {
+/*app.post('/api/teste/expirar-recurso/:id', authenticateToken, authenticateAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -3337,9 +3337,9 @@ app.get('/api/teste/reset-prazo-publico/:id', async (req, res) => {
     console.error("Erro ao resetar prazo via GET:", error);
     res.status(500).json({ error: 'Erro ao resetar prazo.' });
   }
-});
+});*/
 
-// --- FUNÇÃO PARA EXPIRAR RECURSOS VENCIDOS (ATUALIZADA) ---
+// --- FUNÇÃO PARA EXPIRAR RECURSOS VENCIDOS ---
 async function expirarRecursos() {
   try {
     const agora = new Date();
